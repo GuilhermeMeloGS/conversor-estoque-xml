@@ -9,3 +9,10 @@ facilitando a organização e manipulação das informações dos produtos.
 - Gerenciamento de Estoque 
 - Conversão de estoque para XML
 - Conversão de XML para Estoque
+
+# Programas utilizados
+
+- intelij
+- vscode
+- git
+
