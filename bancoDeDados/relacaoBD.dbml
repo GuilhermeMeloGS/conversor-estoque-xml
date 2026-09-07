@@ -1,0 +1,62 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+
+Table usuario {
+  idUsuario integer [primary key]
+  nome varchar
+  sobrenome varchar
+  email varchar [unique]
+  senha varchar
+  tipo enum('Admin','Cliente')
+  criadoEm timestamp
+}
+
+Table categoria{
+  idCategoria integer [primary key, not null]
+  nome varchar
+}
+
+Table produto{
+  idProduto integer [primary key, not null]
+  idCategoria int [not null]
+  nome varchar
+  codigoDeBarras varchar [unique]
+  descricao text
+  preco decimal(10,2)
+  quantidadeEstoque int
+  volumeML int
+}
+
+Table venda{
+  idVenda int [primary key, not null]
+  idUsuario int [not null]
+  dataVenda timestamp
+  valorTotal decimal(10,2)
+  status enum('Pendente','Cancelado','Concluido')
+}
+
+Table itemVenda{
+  idItemVenda int [primary key, not null]
+  idVenda int [not null]
+  idProduto int [not null]
+  quantidade int
+  precoUnitario decimal (10,2)
+}
+
+Table importacaoXML {
+  idImportacoa int [pk, not null]
+  idUsuarioAdmin int [not null]
+  nomeArquivo varchar
+  dataImportacao timestamp
+}
+
+Ref: usuario.idUsuario < venda.idUsuario
+Ref: categoria.idCategoria < produto.idCategoria
+Ref: venda.idVenda < itemVenda.idVenda
+Ref: produto.idProduto < itemVenda.idProduto
+Ref: usuario.idUsuario < importacaoXML.idUsuarioAdmin
+
+
+
