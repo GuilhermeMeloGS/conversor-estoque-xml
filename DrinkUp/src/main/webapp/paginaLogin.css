@@ -1,0 +1,190 @@
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+/* ===== BODY (container principal) ===== */
+body {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #ffffff;
+    color: #222;
+}
+
+/* ===== LADO ESQUERDO - IMAGEM ===== */
+.login-banner {
+    width: 41%;
+    min-height: 100vh;
+    overflow: hidden;
+    background: #111;
+}
+
+.imagemLogin {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
+    display: block;
+}
+
+/* ===== LADO DIREITO - FORMULÁRIO ===== */
+.area-login {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 40px 6%;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 720px;
+}
+
+.login-box h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 32px;
+}
+
+/* ===== CAMPOS ===== */
+.info-forms {
+    margin-bottom: 18px;
+}
+
+.info-forms label {
+    display: block;
+    font-size: 0.75rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.info-forms input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    background: #f1f2f5;
+    border: none;
+    border-bottom: 1px solid #e2e3e8;
+    border-radius: 2px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #333;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.info-forms input::placeholder {
+    color: #8a8d96;
+}
+
+.info-forms input:focus {
+    background: #ebecf0;
+    border-bottom-color: #ffcc00;
+}
+
+/* ===== CAMPO DE SENHA COM ÍCONE ===== */
+.senha-box {
+    position: relative;
+}
+
+.senha-box input {
+    padding-right: 42px;
+    /* espaço para o ícone */
+}
+
+.opcoes-forms {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 24px 0 14px;
+    font-size: 0.72rem;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    cursor: pointer;
+}
+
+.remember input {
+    width: 13px;
+    height: 13px;
+    accent-color: #ffcc00;
+    cursor: pointer;
+}
+
+.esqueceu-senha,
+.link-amarelo {
+    color: #f5c400;
+    text-decoration: none;
+    font-size: 0.72rem;
+}
+
+.esqueceu-senha:hover,
+.link-amarelo:hover {
+    text-decoration: underline;
+}
+
+/* ===== BOTÃO ===== */
+.botao-login {
+    width: 100%;
+    height: 40px;
+    background: #ffcc00;
+    border: 1px solid #2f6fb0;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #222;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.botao-login:hover {
+    background: #f0bf00;
+}
+
+/* ===== CADASTRO ===== */
+.cadastro {
+    margin-top: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ececec;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 900px) {
+    .login-banner {
+        width: 45%;
+    }
+}
+
+@media (max-width: 700px) {
+    body {
+        flex-direction: column;
+    }
+
+    .login-banner {
+        width: 100%;
+        min-height: auto;
+        height: 260px;
+    }
+
+    .imagemLogin {
+        object-position: center 30%;
+    }
+
+    .area-login {
+        padding: 32px 24px;
+    }
+}
