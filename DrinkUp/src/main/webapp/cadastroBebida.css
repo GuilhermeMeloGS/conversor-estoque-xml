@@ -1,0 +1,278 @@
+.pagina-cadastro {
+    min-height: calc(100vh - 84px);
+    padding: 38px 5.5% 56px;
+    background: #fafafa;
+}
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 0 26px 8px;
+}
+
+.voltar {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: #333333;
+    font-size: 23px;
+    transition: background .2s;
+}
+
+.voltar:hover {
+    background: #eeeeee;
+}
+
+.cabecalho-pagina h1 {
+    font-size: 30px;
+    margin-bottom: 6px;
+}
+
+.cabecalho-pagina p,
+.titulo-painel p {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.formulario-cadastro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, .8fr);
+    gap: 20px;
+}
+
+.painel-formulario,
+.painel-imagem {
+    padding: 26px;
+    border: 1px solid #e6e8ec;
+    border-radius: 10px;
+    background: var(--white);
+}
+
+.titulo-painel {
+    margin-bottom: 24px;
+}
+
+.titulo-painel h2 {
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+.campos-produto {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
+}
+
+.campo {
+    min-width: 0;
+}
+
+.campo-largo {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    color: #242424;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo label span {
+    color: #b28300;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #dfe2e7;
+    border-radius: 7px;
+    background: #fbfbfc;
+    color: #20242b;
+    font: inherit;
+    font-size: 13px;
+}
+
+.campo textarea {
+    min-height: 112px;
+    resize: vertical;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: #969ba5;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: 2px solid rgba(232, 182, 0, .25);
+    border-color: var(--yellow-dark);
+}
+
+.painel-imagem {
+    display: flex;
+    flex-direction: column;
+}
+
+.area-upload {
+    min-height: 340px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    border: 1px dashed #d7dbe1;
+    border-radius: 8px;
+    background: #fafbfc;
+    text-align: center;
+}
+
+.icone-upload {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: #fff3c5;
+    color: #8a6900;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.area-upload p {
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.formatos-imagem {
+    color: var(--gray);
+    font-size: 12px;
+}
+
+.botao-upload {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    margin-top: 22px;
+    padding: 0 16px;
+    border: 1px solid #dfe2e7;
+    border-radius: 7px;
+    background: var(--white);
+    color: #262626;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.botao-upload:hover {
+    border-color: var(--yellow-dark);
+}
+
+.area-upload input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+.area-upload:focus-within .botao-upload {
+    outline: 2px solid var(--yellow-dark);
+    outline-offset: 3px;
+}
+
+.acoes-formulario {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.botao-cancelar,
+.botao-salvar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid #dfe2e7;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.botao-cancelar {
+    background: var(--white);
+}
+
+.botao-salvar {
+    border-color: var(--yellow);
+    background: var(--yellow);
+    color: var(--black);
+}
+
+.botao-salvar:hover {
+    background: var(--yellow-dark);
+}
+
+@media (max-width: 900px) {
+    .formulario-cadastro {
+        grid-template-columns: 1fr;
+    }
+
+    .painel-imagem {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    .pagina-cadastro {
+        padding: 30px 5% 40px;
+    }
+
+    .cabecalho-pagina {
+        gap: 12px;
+        margin-left: 0;
+    }
+
+    .cabecalho-pagina h1 {
+        font-size: 25px;
+    }
+
+    .painel-formulario,
+    .painel-imagem {
+        padding: 20px;
+    }
+
+    .campos-produto {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-largo {
+        grid-column: auto;
+    }
+
+    .acoes-formulario {
+        flex-direction: column-reverse;
+    }
+
+    .botao-cancelar,
+    .botao-salvar {
+        width: 100%;
+    }
+}

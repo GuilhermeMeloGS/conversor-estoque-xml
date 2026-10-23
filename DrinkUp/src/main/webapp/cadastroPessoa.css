@@ -1,0 +1,115 @@
+.cadastro-pessoa-main {
+    min-height: calc(100vh - 84px);
+    display: grid;
+    place-items: center;
+    padding: 48px 20px;
+    background: #f2f3f7;
+}
+
+.cartao-cadastro-pessoa {
+    width: min(100%, 500px);
+    padding: 36px 38px 30px;
+    border: 1px solid #e7e8ec;
+    background: #ffffff;
+}
+
+.cartao-cadastro-pessoa h1 {
+    margin-bottom: 30px;
+    color: #222222;
+    font-size: 25px;
+    text-align: center;
+}
+
+.formulario-pessoa {
+    display: grid;
+    gap: 17px;
+}
+
+.campos-nome {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.campo-pessoa {
+    min-width: 0;
+}
+
+.campo-pessoa label {
+    display: block;
+    margin-bottom: 6px;
+    color: #252525;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.campo-pessoa input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #e3e5ea;
+    border-radius: 3px;
+    background: #f2f3f7;
+    color: #252525;
+    font: inherit;
+    font-size: 13px;
+}
+
+.campo-pessoa input::placeholder {
+    color: #888d98;
+}
+
+.campo-pessoa input:focus {
+    outline: 2px solid rgba(232, 182, 0, .25);
+    border-color: #e8b600;
+}
+
+.botao-cadastrar-pessoa {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid #ffcc00;
+    border-radius: 3px;
+    background: #ffcc00;
+    color: #222222;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.botao-cadastrar-pessoa:hover {
+    background: #e8b600;
+}
+
+.link-login-pessoa {
+    margin-top: 23px;
+    padding-top: 18px;
+    border-top: 1px solid #eeeeee;
+    color: #555555;
+    font-size: 12px;
+    text-align: center;
+}
+
+.link-login-pessoa a {
+    color: #8a6900;
+    font-weight: 700;
+}
+
+.link-login-pessoa a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+    .cadastro-pessoa-main {
+        padding: 30px 16px;
+    }
+
+    .cartao-cadastro-pessoa {
+        padding: 30px 22px 24px;
+    }
+
+    .campos-nome {
+        grid-template-columns: 1fr;
+    }
+}

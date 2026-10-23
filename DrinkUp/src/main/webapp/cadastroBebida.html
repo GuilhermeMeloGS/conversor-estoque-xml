@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Cadastrar bebida</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="cadastroBebida.css">
+</head>
+
+<body>
+    <header class="cabecalho">
+        <a href="index.html#inicio" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo Drink Up" class="logo-imagem">
+        </a>
+
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="index.html#categorias">Cervejas</a>
+            <a href="index.html#categorias">Refrigerantes</a>
+            <a href="index.html#produtos">Combos</a>
+            <a href="index.html#ofertas" class="destaque">Ofertas</a>
+        </nav>
+
+        <div class="acoes-cabecalho">
+            <a href="paginaLogin.html" class="botao-cabecalho botao-login-cabecalho">Entrar</a>
+            <a href="index.html#carrinho" class="botao-cabecalho">🛒 Carrinho</a>
+        </div>
+    </header>
+
+    <main class="pagina-cadastro">
+        <div class="cabecalho-pagina">
+            <a href="index.html" class="voltar" aria-label="Voltar para a página inicial">&larr;</a>
+            <div>
+                <h1>Nova bebida</h1>
+                <p>Adicione uma nova bebida ao catálogo.</p>
+            </div>
+        </div>
+
+        <form class="formulario-cadastro" action="#" method="post" enctype="multipart/form-data">
+            <section class="painel-formulario" aria-labelledby="titulo-informacoes">
+                <div class="titulo-painel">
+                    <h2 id="titulo-informacoes">Informações básicas</h2>
+                    <p>Preencha os dados principais do produto.</p>
+                </div>
+
+                <div class="campos-produto">
+                    <div class="campo campo-largo">
+                        <label for="nome">Nome da bebida <span aria-hidden="true">*</span></label>
+                        <input type="text" id="nome" name="nome" placeholder="Ex.: Coca-Cola lata 350 ml" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="codigoDeBarras">Código de barras <span aria-hidden="true">*</span></label>
+                        <input type="text" id="codigoDeBarras" name="codigoDeBarras"
+                               placeholder="Ex.: 7891234567890" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="idCategoria">Categoria <span aria-hidden="true">*</span></label>
+                        <select id="idCategoria" name="idCategoria" required>
+                            <option value="" selected disabled>Selecione uma categoria</option>
+                            <option value="1">Cervejas</option>
+                            <option value="2">Refrigerantes</option>
+                            <option value="3">Combos</option>
+                        </select>
+                    </div>
+
+                    <div class="campo campo-largo">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" name="descricao" rows="4"
+                                  placeholder="Descreva a bebida, o sabor, a embalagem e outras informações"></textarea>
+                    </div>
+
+                    <div class="campo">
+                        <label for="preco">Preço (R$) <span aria-hidden="true">*</span></label>
+                        <input type="number" id="preco" name="preco" min="0" step="0.01"
+                               placeholder="0,00" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="quantidadeEstoque">Quantidade em estoque <span aria-hidden="true">*</span></label>
+                        <input type="number" id="quantidadeEstoque" name="quantidadeEstoque" min="0" step="1"
+                               placeholder="Ex.: 24" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="volumeML">Volume (ml) <span aria-hidden="true">*</span></label>
+                        <input type="number" id="volumeML" name="volumeML" min="1" step="1"
+                               placeholder="Ex.: 350" required>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="painel-imagem" aria-labelledby="titulo-imagem">
+                <div class="titulo-painel">
+                    <h2 id="titulo-imagem">Imagem do produto</h2>
+                    <p>Escolha uma foto para o catálogo.</p>
+                </div>
+
+                <div class="area-upload">
+                    <span class="icone-upload" aria-hidden="true">↑</span>
+                    <p>Selecione uma imagem do produto</p>
+                    <span class="formatos-imagem">Formatos aceitos: PNG ou JPG</span>
+                    <label class="botao-upload" for="imagem">Escolher imagem</label>
+                    <input type="file" id="imagem" name="imagem" accept="image/png,image/jpeg">
+                </div>
+            </aside>
+
+            <div class="acoes-formulario">
+                <a href="index.html" class="botao-cancelar">Cancelar</a>
+                <button type="submit" class="botao-salvar">Cadastrar bebida</button>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>

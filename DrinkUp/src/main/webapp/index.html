@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Distribuidora de Bebidas</title>
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="cabecalho">
+
+        <a href="#inicio" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo Drink Up" class="logo-imagem">
+        </a>
+
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="#categorias">Cervejas</a>
+            <a href="#categorias">Refrigerantes</a>
+            <a href="#produtos">Combos</a>
+            <a href="#ofertas" class="destaque">Ofertas</a>
+        </nav>
+
+        <div class="acoes-cabecalho">
+            <a href="paginaLogin.html" class="botao-cabecalho botao-login-cabecalho">Entrar</a>
+            <a href="#carrinho" class="botao-cabecalho">🛒 Carrinho</a>
+        </div>
+
+    </header>
+
+    <main class="conteudo-principal">
+
+        <!-- APRESENTAÇÃO -->
+        <section class="apresentacao" id="inicio">
+
+            <div class="conteudo-apresentacao">
+                <span class="selo-apresentacao">BEM-VINDO À DRINKUP</span>
+
+                <h1>
+                    Sua bebida,<br>
+                    do <span>estoque até você.</span>
+                </h1>
+
+                <p class="descricao-apresentacao">
+                    Encontre suas bebidas favoritas em um só lugar.
+                    Explore nosso catálogo, confira as opções disponíveis
+                    e conheça os produtos da DrinkUp.
+                </p>
+
+                <div class="acoes-apresentacao">
+                    <a href="#produtos" class="botao-primario">
+                        Explorar bebidas &rarr;
+                    </a>
+
+                    <a href="#categorias" class="botao-secundario">
+                        Ver categorias
+                    </a>
+                </div>
+
+                <div class="beneficios-apresentacao">
+                    <span><strong>✓</strong> Grandes marcas</span>
+                    <span><strong>✓</strong> Catálogo organizado</span>
+                    <span><strong>✓</strong> Compra prática</span>
+                </div>
+            </div>
+
+            <div class="visual-apresentacao">
+                <div class="icone-visual">🍺</div>
+                <span class="rotulo-visual">SEU CATÁLOGO DE BEBIDAS</span>
+                <h2>Encontre suas favoritas.</h2>
+                <p>
+                    Explore as categorias e descubra as opções
+                    disponíveis para você.
+                </p>
+                <a href="#produtos" class="botao-primario">
+                    Ver produtos &rarr;
+                </a>
+            </div>
+
+        </section>
+
+        <!-- VANTAGENS -->
+        <section class="vantagens" aria-label="Vantagens">
+            <div class="item-vantagem">
+                <div class="icone-vantagem">♧</div>
+                <div>
+                    <h3>Variedade de bebidas</h3>
+                    <p>Diferentes opções em um só lugar</p>
+                </div>
+            </div>
+
+            <div class="item-vantagem">
+                <div class="icone-vantagem">✓</div>
+                <div>
+                    <h3>Catálogo organizado</h3>
+                    <p>Encontre produtos com facilidade</p>
+                </div>
+            </div>
+
+            <div class="item-vantagem">
+                <div class="icone-vantagem">★</div>
+                <div>
+                    <h3>Marcas conhecidas</h3>
+                    <p>Confira os produtos em destaque</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIAS -->
+        <section class="secao" id="categorias">
+
+            <div class="cabecalho-secao">
+                <div>
+                    <h2>Explore as categorias</h2>
+                    <p>Encontre a bebida ideal para cada ocasião.</p>
+                </div>
+
+                <a href="#produtos" class="link-secao">
+                    Ver produtos &rarr;
+                </a>
+            </div>
+
+            <div class="categorias">
+
+                <a href="#produtos" class="cartao-categoria">
+                    <div class="icone-categoria">🍺</div>
+                    <div>
+                        <h3>Cervejas</h3>
+                        <p>Diferentes marcas e estilos</p>
+                    </div>
+                </a>
+
+                <a href="#produtos" class="cartao-categoria">
+                    <div class="icone-categoria">🥤</div>
+                    <div>
+                        <h3>Refrigerantes</h3>
+                        <p>Opções para refrescar</p>
+                    </div>
+                </a>
+
+                <a href="#produtos" class="cartao-categoria">
+                    <div class="icone-categoria">🍹</div>
+                    <div>
+                        <h3>Combos</h3>
+                        <p>Produtos para compartilhar</p>
+                    </div>
+                </a>
+
+                <a href="#ofertas" class="cartao-categoria">
+                    <div class="icone-categoria">✨</div>
+                    <div>
+                        <h3>Ofertas</h3>
+                        <p>Confira os destaques</p>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- PRODUTOS -->
+        <section class="secao secao-produtos" id="produtos">
+
+            <div class="cabecalho-secao">
+                <div>
+                    <h2>Produtos em destaque</h2>
+                    <p>Confira algumas opções do catálogo DrinkUp.</p>
+                </div>
+
+                <a href="#categorias" class="link-secao">
+                    Explorar categorias &rarr;
+                </a>
+            </div>
+
+            <div class="produtos">
+
+                <article class="cartao-produto">
+                    <div class="imagem-produto">🍺</div>
+                    <div class="info-produto">
+                        <p class="categoria-produto">Cerveja nacional</p>
+                        <h3>Brahma Chopp</h3>
+                        <p class="descricao-produto">Lata 350 ml</p>
+                        <div class="base-produto">
+                            <span class="preco-produto">R$ 8,90</span>
+                            <button class="botao-adicionar" type="button"
+                                    aria-label="Adicionar Brahma ao carrinho">+</button>
+                        </div>
+                        <p class="estoque-produto">● Disponível</p>
+                    </div>
+                </article>
+
+                <article class="cartao-produto">
+                    <div class="imagem-produto">🍺</div>
+                    <div class="info-produto">
+                        <p class="categoria-produto">Cerveja importada</p>
+                        <h3>Heineken</h3>
+                        <p class="descricao-produto">Long Neck 330 ml</p>
+                        <div class="base-produto">
+                            <span class="preco-produto">R$ 6,50</span>
+                            <button class="botao-adicionar" type="button"
+                                    aria-label="Adicionar Heineken ao carrinho">+</button>
+                        </div>
+                        <p class="estoque-produto">● Disponível</p>
+                    </div>
+                </article>
+
+                <article class="cartao-produto">
+                    <div class="imagem-produto">🍺</div>
+                    <div class="info-produto">
+                        <p class="categoria-produto">Cerveja nacional</p>
+                        <h3>Skol</h3>
+                        <p class="descricao-produto">Lata 350 ml</p>
+                        <div class="base-produto">
+                            <span class="preco-produto">R$ 4,20</span>
+                            <button class="botao-adicionar" type="button"
+                                    aria-label="Adicionar Skol ao carrinho">+</button>
+                        </div>
+                        <p class="estoque-produto">● Disponível</p>
+                    </div>
+                </article>
+
+                <article class="cartao-produto">
+                    <div class="imagem-produto">🥤</div>
+                    <div class="info-produto">
+                        <p class="categoria-produto">Refrigerante</p>
+                        <h3>Coca-Cola</h3>
+                        <p class="descricao-produto">Garrafa 2 litros</p>
+                        <div class="base-produto">
+                            <span class="preco-produto">R$ 9,90</span>
+                            <button class="botao-adicionar" type="button"
+                                    aria-label="Adicionar Coca-Cola ao carrinho">+</button>
+                        </div>
+                        <p class="estoque-produto">● Disponível</p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- OFERTAS -->
+        <section class="chamada-ofertas" id="ofertas">
+            <div>
+                <h2>Conheça a DrinkUp!</h2>
+                <p>
+                    Explore o catálogo, conheça os produtos em destaque
+                    e encontre suas bebidas favoritas.
+                </p>
+            </div>
+
+            <a href="#produtos" class="botao-primario">
+                Ver catálogo &rarr;
+            </a>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="rodape">
+
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">
+                Distribuidora de bebidas<br>
+                &copy; 2026 DrinkUp. Projeto acadêmico.
+            </p>
+        </div>
+
+        <nav class="links-rodape" aria-label="Links do rodapé">
+            <a href="#inicio">Início</a>
+            <a href="#categorias">Categorias</a>
+            <a href="#produtos">Produtos</a>
+            <a href="paginaLogin.html">Entrar</a>
+        </nav>
+
+    </footer>
+
+</body>
+</html>
