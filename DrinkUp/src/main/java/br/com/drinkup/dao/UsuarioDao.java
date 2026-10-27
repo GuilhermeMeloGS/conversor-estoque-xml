@@ -1,11 +1,11 @@
 package br.com.drinkup.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import br.com.drinkup.model.Usuario;
+import br.com.drinkup.servlet.config.ConnectionPoolConfig;
 
 public class UsuarioDao {
     
@@ -14,9 +14,8 @@ public class UsuarioDao {
         String SQL = "INSERT INTO USUARIO (NOME, SOBRENOME, EMAIL, SENHA, TIPO) VALUES (?, ?, ?, ?, ?)";
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:h2/test" , "sa", "sa");
-            System.out.println("Conexão estabelecida com sucesso!");
-
+            Connection connection = ConnectionPoolConfig.getConnection();
+            
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
             preparedStatement.setString(1, usuario.getNome());
             preparedStatement.setString(2, usuario.getSobrenome());

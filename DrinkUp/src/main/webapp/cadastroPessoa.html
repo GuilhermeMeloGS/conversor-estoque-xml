@@ -32,18 +32,18 @@
         <section class="cartao-cadastro-pessoa" aria-labelledby="titulo-cadastro">
             <h1 id="titulo-cadastro">Cadastrar</h1>
 
-            <form action="#" method="post" class="formulario-pessoa">
+            <form action="/criarUsuario" method="post" class="formulario-pessoa">
                 <div class="campos-nome">
                     <div class="campo-pessoa">
                         <label for="nome">Nome</label>
                         <input type="text" id="nome" name="nome" placeholder="Seu nome"
-                               autocomplete="given-name" required>
+                            autocomplete="given-name" required>
                     </div>
 
                     <div class="campo-pessoa">
                         <label for="sobrenome">Sobrenome</label>
                         <input type="text" id="sobrenome" name="sobrenome" placeholder="Seu sobrenome"
-                               autocomplete="family-name" required>
+                            autocomplete="family-name" required>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
                             autocomplete="new-password" minlength="8" required>
                 </div>
 
-                <button type="submit" class="botao-cadastrar-pessoa" action="criarUsuario">Cadastrar</button>
+                <button type="submit" class="botao-cadastrar-pessoa">Cadastrar</button>
             </form>
 
             <p class="link-login-pessoa">

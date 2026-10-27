@@ -1,3 +1,6 @@
+classpath:/Users/guilhermemelo/.m2/repository/org/apache/commons/commons-dbcp2/2.9.0/commons-dbcp2-2.9.0.jar	211301:1627744215000
+classpath:/Users/guilhermemelo/.m2/repository/org/apache/commons/commons-pool2/2.10.0/commons-pool2-2.10.0.jar	141192:1622235072000
+classpath:/Users/guilhermemelo/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar	61829:1404583945000
 classpath:/Users/guilhermemelo/.m2/repository/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar	85353:1310499652000
 classpath:/Users/guilhermemelo/.m2/repository/javax/servlet/jstl/1.2/jstl-1.2.jar	414240:1308849601000
 classpath:/Users/guilhermemelo/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar	2543012:1655232620000
