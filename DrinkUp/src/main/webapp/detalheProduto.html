@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Detalhe do Produto</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="detalheProduto.css">
+    <script src="shared/auth.js"></script>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <a href="index.html" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo DrinkUp" class="logo-imagem">
+        </a>
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html" class="ativo">Produtos</a>
+            <a href="index.html#categorias">Categorias</a>
+            <a href="index.html#ofertas" class="destaque">Ofertas</a>
+        </nav>
+        <div class="acoes-cabecalho"></div>
+    </header>
+
+    <main class="pagina-detalhe">
+
+        <nav class="breadcrumb">
+            <a href="index.html">Início</a> /
+            <a href="listaProdutos.html">Produtos</a> /
+            <span id="bcNome">Produto</span>
+        </nav>
+
+        <div class="layout-detalhe">
+
+            <!-- GALERIA / FOTO -->
+            <div class="galeria-produto">
+                <div class="foto-principal" id="fotoPrincipal">🍺</div>
+                <div class="miniaturas" id="miniaturas">
+                    <button class="miniatura ativo">🍺</button>
+                    <button class="miniatura">🍺</button>
+                    <button class="miniatura">🍺</button>
+                </div>
+            </div>
+
+            <!-- INFORMAÇÕES -->
+            <div class="info-detalhe">
+                <span class="categoria-tag" id="detCategoria">Cervejas</span>
+                <h1 id="detNome">Cerveja Heineken Long Neck 330ml</h1>
+                <p class="descricao-detalhe" id="detDescricao">Garrafa 330 ml • Cerveja Premium Puro Malte de origem holandesa, com sabor suave e refrescante. Ideal para qualquer ocasião.</p>
+
+                <div class="bloco-preco-detalhe">
+                    <span class="preco-original-detalhe" id="detPrecoAnt">R$ 11,90</span>
+                    <span class="preco-atual-detalhe" id="detPreco">R$ 9,90</span>
+                    <span class="badge-off" id="detOff">15% OFF</span>
+                </div>
+
+                <p class="parcelamento-detalhe" id="detParcelamento">Em até 3x de R$ 3,30 sem juros</p>
+
+                <div class="estoque-detalhe">
+                    <span class="dot-verde">●</span> Em estoque — <strong>Pronto para envio</strong>
+                </div>
+
+                <!-- SELETOR DE QUANTIDADE -->
+                <div class="seletor-qty">
+                    <label>Quantidade</label>
+                    <div class="controle-qty-detalhe">
+                        <button onclick="alterarQty(-1)">−</button>
+                        <span id="qtyValor">1</span>
+                        <button onclick="alterarQty(1)">+</button>
+                    </div>
+                </div>
+
+                <!-- AÇÕES -->
+                <div class="acoes-detalhe">
+                    <button class="botao-comprar-detalhe" onclick="comprar()">🛒 Adicionar ao carrinho</button>
+                    <a href="carrinho.html" class="botao-ir-carrinho">Ver carrinho</a>
+                </div>
+
+                <!-- TAGS DE BENEFÍCIO -->
+                <div class="tags-beneficio">
+                    <span>🚚 Frete grátis acima de R$ 50</span>
+                    <span>🔄 Troca facilitada</span>
+                    <span>🔒 Compra segura</span>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast-carrinho" id="toastCarrinho">
+        <span>✓</span>
+        <span id="toastMensagem">Produto adicionado!</span>
+    </div>
+
+    <footer class="rodape">
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">Distribuidora de bebidas<br>&copy; 2026 DrinkUp. Projeto acadêmico.</p>
+        </div>
+        <nav class="links-rodape">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Produtos</a>
+            <a href="paginaLogin.html">Entrar</a>
+        </nav>
+    </footer>
+
+<script>
+    /* Mock dos produtos — mesmos do listaProdutos */
+    const PRODUTOS = [
+        { id:1, nome:'Cerveja Heineken Long Neck 330ml',       categoria:'Cervejas',      icone:'🍺', preco:9.90,  precoAnt:11.90, off:'15% OFF', parcelamento:'Em até 3x de R$ 3,30 sem juros',       descricao:'Garrafa 330 ml • Cerveja Premium Puro Malte, origem holandesa, sabor suave e refrescante.' },
+        { id:2, nome:'Coca-Cola Original Lata 350ml',          categoria:'Refrigerantes', icone:'🥤', preco:4.50,  precoAnt:5.20,  off:'13% OFF', parcelamento:'Preço especial de estoque',             descricao:'Lata 350 ml • O sabor original da Coca-Cola, gelada e refrescante para qualquer momento.' },
+        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml',        categoria:'Cervejas',      icone:'🍺', preco:3.80,  precoAnt:4.20,  off:'10% OFF', parcelamento:'Em até 2x no cartão',                  descricao:'Lata 350 ml • Cerveja Pilsen leve e refrescante, a mais tradicional do Brasil.' },
+        { id:4, nome:'Red Bull Energy Drink 250ml',            categoria:'Energéticos',   icone:'⚡', preco:11.90, precoAnt:13.90, off:'14% OFF', parcelamento:'Em até 3x sem juros',                  descricao:'Lata 250 ml • Vitaliza mente e corpo. Rico em taurina, cafeína e vitaminas do complexo B.' },
+        { id:5, nome:'Suco Del Valle Uva 1L',                  categoria:'Sucos',         icone:'🧃', preco:7.90,  precoAnt:9.50,  off:'17% OFF', parcelamento:'Pronto para beber',                    descricao:'Garrafa 1000 ml • Suco integral de uva, sem adição de conservantes.' },
+        { id:6, nome:'Água Mineral Crystal sem Gás 500ml',     categoria:'Águas',         icone:'💧', preco:2.50,  precoAnt:null,  off:null,      parcelamento:'Preço unitário',                       descricao:'Garrafa 500 ml • Água mineral pura, sem gás, ideal para hidratação.' },
+        { id:7, nome:'Vinho Tinto Seco Reserva 750ml',         categoria:'Vinhos',        icone:'🍷', preco:45.90, precoAnt:57.00, off:'20% OFF', parcelamento:'Em até 4x de R$ 11,48 sem juros',      descricao:'Garrafa 750 ml • Vinho fino Cabernet Sauvignon, aromas de frutas vermelhas e especiarias.' },
+        { id:8, nome:'Whisky Escocês 12 Anos 1L',              categoria:'Destilados',    icone:'🥃', preco:149.90,precoAnt:184.00,off:'18% OFF', parcelamento:'Em até 6x de R$ 24,98 sem juros',      descricao:'Garrafa 1000 ml • Whisky envelhecido 12 anos, notas de baunilha, mel e carvalho.' },
+    ];
+
+    let qty = 1;
+    let produtoAtual = null;
+
+    function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+
+    function alterarQty(delta) {
+        qty = Math.max(1, qty + delta);
+        document.getElementById('qtyValor').textContent = qty;
+    }
+
+    function comprar() {
+        if (!produtoAtual) return;
+        for (let i = 0; i < qty; i++) Carrinho.adicionar({ ...produtoAtual });
+
+        const toast = document.getElementById('toastCarrinho');
+        document.getElementById('toastMensagem').textContent = `"${produtoAtual.nome}" adicionado!`;
+        toast.classList.add('visivel');
+        setTimeout(() => toast.classList.remove('visivel'), 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        renderHeader();
+
+        const params = new URLSearchParams(window.location.search);
+        const id = parseInt(params.get('id')) || 1;
+        produtoAtual = PRODUTOS.find(p => p.id === id) || PRODUTOS[0];
+
+        document.getElementById('bcNome').textContent         = produtoAtual.nome;
+        document.getElementById('detNome').textContent        = produtoAtual.nome;
+        document.getElementById('detCategoria').textContent   = produtoAtual.categoria;
+        document.getElementById('detDescricao').textContent   = produtoAtual.descricao;
+        document.getElementById('detPreco').textContent       = fmt(produtoAtual.preco);
+        document.getElementById('detParcelamento').textContent= produtoAtual.parcelamento;
+        document.getElementById('fotoPrincipal').textContent  = produtoAtual.icone;
+
+        const precoAntEl = document.getElementById('detPrecoAnt');
+        const offEl = document.getElementById('detOff');
+        if (produtoAtual.precoAnt) {
+            precoAntEl.textContent = fmt(produtoAtual.precoAnt);
+            offEl.textContent = produtoAtual.off;
+        } else {
+            precoAntEl.style.display = 'none';
+            offEl.style.display = 'none';
+        }
+
+        document.querySelectorAll('.miniatura').forEach(m => m.textContent = produtoAtual.icone);
+    });
+</script>
+</body>
+</html>

@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="paginaLogin.css">
+    <script src="shared/auth.js"></script>
 </head>
 
 <body>
@@ -27,10 +28,7 @@
             <a href="index.html#ofertas" class="destaque">Ofertas</a>
         </nav>
 
-        <div class="acoes-cabecalho">
-            <a href="paginaLogin.html" class="botao-cabecalho botao-login-cabecalho">Entrar</a>
-            <a href="index.html#carrinho" class="botao-cabecalho">🛒 Carrinho</a>
-        </div>
+        <div class="acoes-cabecalho"></div>
     </header>
 
     <main class="conteudo-login">
@@ -64,7 +62,8 @@
                         <a href="#" class="esqueceu-senha">Esqueceu a senha?</a>
                     </div>
 
-                    <button type="submit" class="botao-login">Entrar</button>
+                    <button type="submit" id="btnLogin" class="botao-login">Entrar</button>
+                    <p id="erroLogin" style="color:#c0392b;font-size:0.78rem;margin-top:8px;display:none;">E-mail ou senha incorretos.</p>
 
                 </form>
 
@@ -74,6 +73,21 @@
             </div>
         </section>
     </main>
-</body>
+<script>
+    if (Auth.isLoggedIn()) window.location.href = 'index.html';
+    renderHeader();
 
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+        const ok = Auth.login(email, senha);
+        if (ok) {
+            window.location.href = Auth.isAdmin() ? 'admin.html' : 'index.html';
+        } else {
+            document.getElementById('erroLogin').style.display = 'block';
+        }
+    });
+</script>
+</body>
 </html>

@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="listaProdutos.css">
+    <script src="shared/auth.js"></script>
 </head>
 
 <body>
@@ -29,12 +30,7 @@
             <a href="index.html#ofertas" class="destaque">Ofertas</a>
         </nav>
 
-        <div class="acoes-cabecalho">
-            <a href="paginaLogin.html" class="botao-cabecalho botao-login-cabecalho">Entrar</a>
-            <a href="#carrinho" class="botao-cabecalho" id="btnCarrinho">
-                🛒 Carrinho <span class="contador-carrinho" id="contadorCarrinho">0</span>
-            </a>
-        </div>
+        <div class="acoes-cabecalho"></div>
 
     </header>
 
@@ -131,9 +127,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Cerveja Heineken 330ml')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(1,'Cerveja Heineken Long Neck 330ml',9.90,'🍺')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=1" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -162,9 +159,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Coca-Cola Lata 350ml')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(2,'Coca-Cola Original Lata 350ml',4.50,'🥤')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=2" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -193,9 +191,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Cerveja Brahma Chopp')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(3,'Cerveja Brahma Chopp Lata 350ml',3.80,'🍺')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=3" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -224,9 +223,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Red Bull 250ml')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(4,'Red Bull Energy Drink 250ml',11.90,'⚡')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=4" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -254,9 +254,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Suco Del Valle Uva')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(5,'Suco Del Valle Uva 1L',7.90,'🧃')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=5" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -282,9 +283,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Água Mineral Crystal')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(6,'Água Mineral Crystal sem Gás 500ml',2.50,'💧')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=6" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -314,9 +316,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Vinho Tinto Seco')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(7,'Vinho Tinto Seco Reserva 750ml',45.90,'🍷')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=7" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -346,9 +349,10 @@
                         <span>●</span> Em estoque
                     </div>
 
-                    <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Whisky Escocês 12 Anos')">
-                        🛒 Comprar
-                    </button>
+                    <div class="acoes-produto">
+                        <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(8,'Whisky Escocês 12 Anos 1L',149.90,'🥃')">🛒 Comprar</button>
+                        <a href="detalheProduto.html?id=8" class="botao-detalhe">Ver detalhes</a>
+                    </div>
                 </div>
             </article>
 
@@ -391,19 +395,16 @@
 
     <!-- SCRIPT DE FILTROS, BUSCA E CARRINHO -->
     <script>
-        let carrinhoCount = 0;
+        renderHeader();
 
-        function adicionarAoCarrinho(nome) {
-            carrinhoCount++;
-            document.getElementById('contadorCarrinho').textContent = carrinhoCount;
+        function adicionarAoCarrinho(id, nome, preco, icone) {
+            Carrinho.adicionar({ id, nome, preco, icone });
 
             const toast = document.getElementById('toastCarrinho');
             document.getElementById('toastMensagem').textContent = `"${nome}" adicionado ao carrinho!`;
             toast.classList.add('visivel');
 
-            setTimeout(() => {
-                toast.classList.remove('visivel');
-            }, 2500);
+            setTimeout(() => toast.classList.remove('visivel'), 2500);
         }
 
         document.addEventListener('DOMContentLoaded', function () {

@@ -2,8 +2,13 @@ package br.com.drinkup.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import br.com.drinkup.model.TipoUsuario;
 import br.com.drinkup.model.Usuario;
 import br.com.drinkup.servlet.config.ConnectionPoolConfig;
 
@@ -30,5 +35,38 @@ public class UsuarioDao {
         } catch (Exception e) {
             System.out.println("Erro ao criar usuário: " + e.getMessage());
         }
+    }
+
+    public List<Usuario> mostrarUsuarios(){
+        String SQL = "SELECT * FROM USUARIO";
+
+        try{
+            Connection connection = ConnectionPoolConfig.getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Usuario> usuarios = new ArrayList<>();
+            while(resultSet.next()){
+                Usuario usuario = new Usuario(
+                    resultSet.getInt("IDUSUARIO"),
+                    resultSet.getString("NOME"),
+                    resultSet.getString("SOBRENOME"),
+                    resultSet.getString("EMAIL"),
+                    resultSet.getString("SENHA"),
+                    TipoUsuario.valueOf(resultSet.getString("TIPO")),
+                    resultSet.getObject("CRIADOEM", LocalDateTime.class)
+                );
+                usuarios.add(usuario);
+            }
+
+            connection.close();
+            return usuarios;
+
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar usuários: " + e.getMessage());
+            return null;
+        }
+
     }
 }

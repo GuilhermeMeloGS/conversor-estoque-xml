@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Carrinho</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="carrinho.css">
+    <script src="shared/auth.js"></script>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <a href="index.html" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo DrinkUp" class="logo-imagem">
+        </a>
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Produtos</a>
+            <a href="index.html#categorias">Categorias</a>
+            <a href="index.html#ofertas" class="destaque">Ofertas</a>
+        </nav>
+        <div class="acoes-cabecalho"></div>
+    </header>
+
+    <main class="pagina-carrinho">
+
+        <div class="titulo-pagina">
+            <h1>🛒 Meu Carrinho</h1>
+            <a href="listaProdutos.html" class="voltar-loja">← Continuar comprando</a>
+        </div>
+
+        <div class="layout-carrinho">
+
+            <!-- LISTA DE ITENS -->
+            <section class="itens-carrinho" id="itensCarrinho">
+                <!-- preenchido pelo JS -->
+            </section>
+
+            <!-- RESUMO DO PEDIDO -->
+            <aside class="resumo-pedido">
+                <h2>Resumo do pedido</h2>
+
+                <div class="linha-resumo">
+                    <span>Subtotal</span>
+                    <span id="resumoSubtotal">R$ 0,00</span>
+                </div>
+                <div class="linha-resumo">
+                    <span>Frete</span>
+                    <span id="resumoFrete">R$ 0,00</span>
+                </div>
+                <div class="linha-resumo linha-total">
+                    <span>Total</span>
+                    <span id="resumoTotal">R$ 0,00</span>
+                </div>
+
+                <button id="btnFinalizar" class="botao-finalizar" onclick="finalizarCompra()">
+                    Finalizar Compra →
+                </button>
+
+                <div id="msgCarrinhoVazio" class="msg-vazio" style="display:none;">
+                    Seu carrinho está vazio.<br>
+                    <a href="listaProdutos.html">Ver produtos</a>
+                </div>
+            </aside>
+        </div>
+
+    </main>
+
+    <footer class="rodape">
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">Distribuidora de bebidas<br>&copy; 2026 DrinkUp. Projeto acadêmico.</p>
+        </div>
+        <nav class="links-rodape">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Produtos</a>
+            <a href="paginaLogin.html">Entrar</a>
+        </nav>
+    </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        renderHeader();
+        renderCarrinho();
+    });
+
+    function fmt(v) {
+        return 'R$ ' + v.toFixed(2).replace('.', ',');
+    }
+
+    function renderCarrinho() {
+        const items = Carrinho.get();
+        const container = document.getElementById('itensCarrinho');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+        const msgVazio = document.getElementById('msgCarrinhoVazio');
+
+        if (items.length === 0) {
+            container.innerHTML = '';
+            btnFinalizar.style.display = 'none';
+            msgVazio.style.display = 'block';
+            atualizarResumo(0);
+            return;
+        }
+
+        btnFinalizar.style.display = 'block';
+        msgVazio.style.display = 'none';
+
+        container.innerHTML = items.map(item => `
+            <div class="item-carrinho">
+                <div class="icone-item">${item.icone}</div>
+                <div class="info-item">
+                    <p class="nome-item">${item.nome}</p>
+                    <p class="preco-unit">${fmt(item.preco)} / un.</p>
+                </div>
+                <div class="controle-qty">
+                    <button onclick="alterarQty(${item.id}, ${item.qty - 1})">−</button>
+                    <span>${item.qty}</span>
+                    <button onclick="alterarQty(${item.id}, ${item.qty + 1})">+</button>
+                </div>
+                <div class="subtotal-item">${fmt(item.preco * item.qty)}</div>
+                <button class="remover-item" onclick="removerItem(${item.id})" title="Remover">✕</button>
+            </div>
+        `).join('');
+
+        const subtotal = items.reduce((s, i) => s + i.preco * i.qty, 0);
+        atualizarResumo(subtotal);
+    }
+
+    function atualizarResumo(subtotal) {
+        const frete = subtotal > 0 && subtotal < 50 ? 8.90 : 0;
+        document.getElementById('resumoSubtotal').textContent = fmt(subtotal);
+        document.getElementById('resumoFrete').textContent   = frete === 0 && subtotal > 0 ? 'Grátis' : fmt(frete);
+        document.getElementById('resumoTotal').textContent   = fmt(subtotal + frete);
+    }
+
+    function alterarQty(id, qty) {
+        if (qty < 1) { removerItem(id); return; }
+        Carrinho.atualizar(id, qty);
+        renderCarrinho();
+    }
+
+    function removerItem(id) {
+        Carrinho.remover(id);
+        renderCarrinho();
+    }
+
+    function finalizarCompra() {
+        if (!Auth.isLoggedIn()) {
+            window.location.href = 'paginaLogin.html';
+            return;
+        }
+        alert('✅ Pedido realizado com sucesso! (simulação — backend ainda não implementado)');
+        Carrinho.limpar();
+        renderCarrinho();
+    }
+</script>
+</body>
+</html>

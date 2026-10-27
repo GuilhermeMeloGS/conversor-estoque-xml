@@ -505,6 +505,61 @@ button, input, select {
     transform: scale(0.98);
 }
 
+.acoes-produto {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.acoes-produto .botao-comprar {
+    flex: 1;
+    margin-top: 0;
+}
+
+.botao-detalhe {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    border-radius: 10px;
+    border: 1.5px solid #dddddd;
+    background: var(--white);
+    color: var(--black);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s;
+    white-space: nowrap;
+}
+
+.botao-detalhe:hover {
+    border-color: var(--yellow);
+    color: var(--yellow-dark);
+}
+
+/* botão admin no header */
+.botao-admin-cabecalho {
+    background: #2d2d2d;
+    border-color: var(--yellow);
+    color: var(--yellow);
+    font-weight: 800;
+}
+
+.botao-sair {
+    background: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    border-radius: 8px;
+    padding: 0 12px;
+    height: 40px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.botao-sair:hover { border-color: #ff6b6b; color: #ff6b6b; }
+
 /* ESTADO VAZIO / SEM RESULTADOS */
 
 .estado-vazio {

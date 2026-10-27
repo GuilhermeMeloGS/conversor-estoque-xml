@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Minha Conta</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="minhaConta.css">
+    <script src="shared/auth.js"></script>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <a href="index.html" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo DrinkUp" class="logo-imagem">
+        </a>
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Produtos</a>
+            <a href="index.html#categorias">Categorias</a>
+            <a href="index.html#ofertas" class="destaque">Ofertas</a>
+        </nav>
+        <div class="acoes-cabecalho"></div>
+    </header>
+
+    <main class="pagina-conta">
+
+        <!-- SIDEBAR PERFIL -->
+        <aside class="sidebar-conta">
+            <div class="avatar-conta">👤</div>
+            <h2 id="nomeUsuario">Carregando...</h2>
+            <p id="emailUsuario" class="email-conta">—</p>
+            <span id="badgeRole" class="badge-role">Cliente</span>
+
+            <nav class="menu-conta">
+                <a href="#pedidos"   class="item-menu-conta ativo" data-tab="pedidos">📦 Meus Pedidos</a>
+                <a href="#perfil"    class="item-menu-conta"       data-tab="perfil">👤 Meu Perfil</a>
+                <a href="index.html" class="item-menu-conta sair-conta" onclick="fazerLogout()">⏏ Sair</a>
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <div class="conteudo-conta">
+
+            <!-- ABA PEDIDOS -->
+            <section class="aba-conta ativo" id="tab-pedidos">
+                <h2 class="titulo-aba">Histórico de Pedidos</h2>
+
+                <table class="tabela-pedidos">
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Data</th>
+                            <th>Itens</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1001</td>
+                            <td>20/06/2025</td>
+                            <td>Heineken x2, Coca-Cola x3</td>
+                            <td>R$ 33,30</td>
+                            <td><span class="badge-status enviado">Enviado</span></td>
+                        </tr>
+                        <tr>
+                            <td>#1002</td>
+                            <td>14/07/2025</td>
+                            <td>Red Bull x4</td>
+                            <td>R$ 47,60</td>
+                            <td><span class="badge-status pago">Pago</span></td>
+                        </tr>
+                        <tr>
+                            <td>#1003</td>
+                            <td>27/10/2026</td>
+                            <td>Whisky Escocês x1</td>
+                            <td>R$ 149,90</td>
+                            <td><span class="badge-status pendente">Pendente</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ABA PERFIL -->
+            <section class="aba-conta" id="tab-perfil">
+                <h2 class="titulo-aba">Meu Perfil</h2>
+
+                <form class="form-perfil" onsubmit="return false;">
+                    <div class="campo-form-conta">
+                        <label>Nome completo</label>
+                        <input type="text" id="perfilNome" placeholder="Seu nome">
+                    </div>
+                    <div class="campo-form-conta">
+                        <label>E-mail</label>
+                        <input type="email" id="perfilEmail" placeholder="seu@email.com" readonly>
+                    </div>
+                    <div class="campo-form-conta">
+                        <label>Nova senha</label>
+                        <input type="password" placeholder="Deixe em branco para manter" minlength="8">
+                    </div>
+                    <button type="submit" class="botao-salvar-perfil"
+                            onclick="alert('Salvamento simulado — backend não implementado.')">
+                        Salvar alterações
+                    </button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="rodape">
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">Distribuidora de bebidas<br>&copy; 2026 DrinkUp. Projeto acadêmico.</p>
+        </div>
+        <nav class="links-rodape">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Produtos</a>
+        </nav>
+    </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!Auth.isLoggedIn()) { window.location.href = 'paginaLogin.html'; return; }
+        renderHeader();
+
+        const user = Auth.getUser();
+        document.getElementById('nomeUsuario').textContent  = user.nome;
+        document.getElementById('emailUsuario').textContent = user.email;
+        document.getElementById('perfilNome').value         = user.nome;
+        document.getElementById('perfilEmail').value        = user.email;
+
+        const badge = document.getElementById('badgeRole');
+        if (user.role === 'admin') { badge.textContent = 'Administrador'; badge.classList.add('admin'); }
+
+        // Tabs
+        document.querySelectorAll('.item-menu-conta[data-tab]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.item-menu-conta').forEach(l => l.classList.remove('ativo'));
+                document.querySelectorAll('.aba-conta').forEach(s => s.classList.remove('ativo'));
+                this.classList.add('ativo');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('ativo');
+            });
+        });
+    });
+</script>
+</body>
+</html>
