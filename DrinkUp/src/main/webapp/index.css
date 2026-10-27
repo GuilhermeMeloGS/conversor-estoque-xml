@@ -684,3 +684,26 @@ button {
         flex-direction: column;
     }
 }
+
+/* HEADER DINÂMICO — estados de botão extras */
+.botao-admin-cabecalho {
+    background: #2d2d2d;
+    border-color: var(--yellow);
+    color: var(--yellow);
+    font-weight: 800;
+}
+
+.botao-sair {
+    background: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    border-radius: 8px;
+    padding: 0 12px;
+    min-height: 40px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
+    white-space: nowrap;
+}
+
+.botao-sair:hover { border-color: #ff6b6b; color: #ff6b6b; }

@@ -24,7 +24,7 @@ public class CreateUsuarioServlet extends HttpServlet {
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
 
-        Usuario usuario = new Usuario(LocalDateTime.now(), email, nome, senha, sobrenome);
+        Usuario usuario = new Usuario(email, nome, senha, sobrenome);
         
         UsuarioDao usuarioDao = new UsuarioDao();
 

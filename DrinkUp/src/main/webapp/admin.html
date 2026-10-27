@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Painel Admin</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="shared/auth.js"></script>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <a href="index.html" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo DrinkUp" class="logo-imagem">
+        </a>
+        <nav class="navegacao" aria-label="Menu principal">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Loja</a>
+            <a href="admin.html" class="ativo destaque">⚙ Admin</a>
+        </nav>
+        <div class="acoes-cabecalho"></div>
+    </header>
+
+    <main class="pagina-admin">
+
+        <!-- SIDEBAR ADMIN -->
+        <aside class="sidebar-admin">
+            <p class="label-painel">PAINEL ADMIN</p>
+            <nav class="menu-admin">
+                <a class="item-admin ativo" data-tab="produtos">📦 Produtos</a>
+                <a class="item-admin" data-tab="usuarios">👥 Usuários</a>
+                <a class="item-admin" data-tab="pedidos">📋 Pedidos</a>
+            </nav>
+        </aside>
+
+        <!-- ÁREA DE CONTEÚDO -->
+        <div class="conteudo-admin">
+
+            <!-- ══════════════ ABA: PRODUTOS ══════════════ -->
+            <section class="aba-admin ativo" id="tab-produtos">
+
+                <div class="cabecalho-painel">
+                    <h2>Gerenciar Produtos</h2>
+                    <button class="btn-novo" onclick="abrirModal('produto')">+ Novo Produto</button>
+                </div>
+
+                <table class="tabela-admin">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaProdutos">
+                        <!-- preenchido pelo JS -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ══════════════ ABA: USUÁRIOS ══════════════ -->
+            <section class="aba-admin" id="tab-usuarios">
+
+                <div class="cabecalho-painel">
+                    <h2>Gerenciar Usuários</h2>
+                </div>
+
+                <table class="tabela-admin">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaUsuarios">
+                        <!-- preenchido pelo JS -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ══════════════ ABA: PEDIDOS ══════════════ -->
+            <section class="aba-admin" id="tab-pedidos">
+
+                <div class="cabecalho-painel">
+                    <h2>Gestão de Pedidos</h2>
+                </div>
+
+                <table class="tabela-admin">
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Cliente</th>
+                            <th>Data</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Alterar Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaPedidos">
+                        <!-- preenchido pelo JS -->
+                    </tbody>
+                </table>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- MODAL: CRIAR / EDITAR PRODUTO -->
+    <div class="overlay-modal" id="overlayModal">
+        <div class="modal-admin" id="modalAdmin">
+            <div class="cabecalho-modal">
+                <h3 id="tituloModal">Novo Produto</h3>
+                <button class="fechar-modal" onclick="fecharModal()">✕</button>
+            </div>
+
+            <form class="form-admin" onsubmit="salvarProduto(event)">
+                <div class="grid-form-admin">
+                    <div class="campo-admin">
+                        <label>Nome do Produto *</label>
+                        <input type="text" id="prodNome" required placeholder="Ex: Cerveja Heineken 330ml">
+                    </div>
+                    <div class="campo-admin">
+                        <label>Categoria *</label>
+                        <select id="prodCategoria" required>
+                            <option value="">Selecione...</option>
+                            <option>Cervejas</option>
+                            <option>Refrigerantes</option>
+                            <option>Sucos</option>
+                            <option>Energéticos</option>
+                            <option>Vinhos</option>
+                            <option>Destilados</option>
+                            <option>Águas</option>
+                        </select>
+                    </div>
+                    <div class="campo-admin">
+                        <label>Preço (R$) *</label>
+                        <input type="number" id="prodPreco" step="0.01" min="0.01" required placeholder="0,00">
+                    </div>
+                    <div class="campo-admin">
+                        <label>Estoque *</label>
+                        <input type="number" id="prodEstoque" min="0" required placeholder="Qtd.">
+                    </div>
+                    <div class="campo-admin span-2">
+                        <label>Descrição</label>
+                        <textarea id="prodDescricao" rows="3" placeholder="Descrição do produto..."></textarea>
+                    </div>
+                    <div class="campo-admin span-2">
+                        <label>URL da Imagem</label>
+                        <input type="text" id="prodImagem" placeholder="https://... ou deixe em branco para usar emoji">
+                    </div>
+                </div>
+                <div class="acoes-modal">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="rodape">
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">Distribuidora de bebidas<br>&copy; 2026 DrinkUp. Projeto acadêmico.</p>
+        </div>
+        <nav class="links-rodape">
+            <a href="index.html">Início</a>
+            <a href="listaProdutos.html">Loja</a>
+        </nav>
+    </footer>
+
+<script>
+    /* ── Guard: apenas admins ── */
+    if (!Auth.isAdmin()) window.location.href = 'paginaLogin.html';
+    document.addEventListener('DOMContentLoaded', function () { renderHeader(); init(); });
+
+    /* ── Mock data ── */
+    let produtos = [
+        { id:1, nome:'Cerveja Heineken Long Neck 330ml', categoria:'Cervejas',    preco:9.90,  estoque:142 },
+        { id:2, nome:'Coca-Cola Original Lata 350ml',    categoria:'Refrigerantes',preco:4.50, estoque:310 },
+        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml',  categoria:'Cervejas',    preco:3.80,  estoque:256 },
+        { id:4, nome:'Red Bull Energy Drink 250ml',      categoria:'Energéticos', preco:11.90, estoque:88  },
+        { id:5, nome:'Suco Del Valle Uva 1L',            categoria:'Sucos',       preco:7.90,  estoque:67  },
+        { id:6, nome:'Água Mineral Crystal 500ml',       categoria:'Águas',       preco:2.50,  estoque:500 },
+        { id:7, nome:'Vinho Tinto Seco Reserva 750ml',   categoria:'Vinhos',      preco:45.90, estoque:34  },
+        { id:8, nome:'Whisky Escocês 12 Anos 1L',        categoria:'Destilados',  preco:149.90,estoque:12  },
+    ];
+
+    const usuarios = [];
+
+    let pedidos = [
+        { id:'#1001', cliente:'João Silva',   data:'20/06/2025', total:'R$ 33,30', status:'enviado'  },
+        { id:'#1002', cliente:'Maria Santos', data:'14/07/2025', total:'R$ 47,60', status:'pago'     },
+        { id:'#1003', cliente:'João Silva',   data:'27/10/2026', total:'R$ 149,90',status:'pendente' },
+    ];
+
+    function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+
+    function init() {
+        renderProdutos();
+        renderUsuarios();
+        renderPedidos();
+
+        document.querySelectorAll('.item-admin').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.item-admin').forEach(l => l.classList.remove('ativo'));
+                document.querySelectorAll('.aba-admin').forEach(s => s.classList.remove('ativo'));
+                this.classList.add('ativo');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('ativo');
+            });
+        });
+    }
+
+    /* ── PRODUTOS ── */
+    function renderProdutos() {
+        document.getElementById('tabelaProdutos').innerHTML = produtos.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td class="nome-td">${p.nome}</td>
+                <td><span class="chip-cat">${p.categoria}</span></td>
+                <td>${fmt(p.preco)}</td>
+                <td class="${p.estoque < 20 ? 'estoque-baixo' : ''}">${p.estoque}</td>
+                <td>
+                    <button class="btn-acao editar" onclick="editarProduto(${p.id})">✏ Editar</button>
+                    <button class="btn-acao excluir" onclick="excluirProduto(${p.id})">🗑 Excluir</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    /* ── USUÁRIOS ── */
+    function renderUsuarios() {
+        fetch("/listarUsuarios").then(response => response.json()).then(lista => {
+            document.getElementById('tabelaUsuarios').innerHTML = lista.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nome} ${u.sobrenome}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge-role-admin ${u.tipo.toLowerCase()}">${u.tipo}</span></td>
+                    <td>
+                        <button class="btn-acao editar" onclick="alterarPermissao(${u.id})">
+                            🔑 Alterar Perfil
+                        </button>
+                    </td>
+                </tr>`).join('');
+        })
+        .catch(() => {
+            document.getElementById('tabelaUsuarios').innerHTML =
+                '<tr><td colspan="5">Erro ao carregar usuários.</td></tr>';
+        });
+}
+
+    /* ── PEDIDOS ── */
+    const STATUS_OPTS = ['pendente','pago','enviado','cancelado'];
+    function renderPedidos() {
+        document.getElementById('tabelaPedidos').innerHTML = pedidos.map((p, i) => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.cliente}</td>
+                <td>${p.data}</td>
+                <td>${p.total}</td>
+                <td><span class="badge-status ${p.status}">${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span></td>
+                <td>
+                    <select class="seletor-status" onchange="alterarStatus(${i}, this.value)">
+                        ${STATUS_OPTS.map(s => `<option value="${s}" ${s===p.status?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+                    </select>
+                </td>
+            </tr>`).join('');
+    }
+
+    function alterarStatus(idx, novoStatus) {
+        pedidos[idx].status = novoStatus;
+        renderPedidos();
+    }
+
+    /* ── MODAL ── */
+    let editandoId = null;
+
+    function abrirModal(tipo, id) {
+        editandoId = id || null;
+        document.getElementById('tituloModal').textContent = id ? 'Editar Produto' : 'Novo Produto';
+
+        if (id) {
+            const p = produtos.find(x => x.id === id);
+            document.getElementById('prodNome').value      = p.nome;
+            document.getElementById('prodCategoria').value = p.categoria;
+            document.getElementById('prodPreco').value     = p.preco;
+            document.getElementById('prodEstoque').value   = p.estoque;
+        } else {
+            document.getElementById('prodNome').value      = '';
+            document.getElementById('prodCategoria').value = '';
+            document.getElementById('prodPreco').value     = '';
+            document.getElementById('prodEstoque').value   = '';
+            document.getElementById('prodDescricao').value = '';
+            document.getElementById('prodImagem').value    = '';
+        }
+
+        document.getElementById('overlayModal').classList.add('ativo');
+    }
+
+    function fecharModal() {
+        document.getElementById('overlayModal').classList.remove('ativo');
+        editandoId = null;
+    }
+
+    function salvarProduto(e) {
+        e.preventDefault();
+        const nome      = document.getElementById('prodNome').value;
+        const categoria = document.getElementById('prodCategoria').value;
+        const preco     = parseFloat(document.getElementById('prodPreco').value);
+        const estoque   = parseInt(document.getElementById('prodEstoque').value);
+
+        if (editandoId) {
+            const p = produtos.find(x => x.id === editandoId);
+            Object.assign(p, { nome, categoria, preco, estoque });
+        } else {
+            const novoId = produtos.length ? Math.max(...produtos.map(x => x.id)) + 1 : 1;
+            produtos.push({ id: novoId, nome, categoria, preco, estoque });
+        }
+
+        renderProdutos();
+        fecharModal();
+    }
+
+    function editarProduto(id) { abrirModal('produto', id); }
+
+    function excluirProduto(id) {
+        if (!confirm('Excluir este produto?')) return;
+        produtos = produtos.filter(p => p.id !== id);
+        renderProdutos();
+    }
+
+    function alterarPermissao(id) {
+        const u = usuarios.find(x => x.id === id);
+        const novo = u.role === 'admin' ? 'cliente' : 'admin';
+        if (confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) {
+            u.role = novo;
+            renderUsuarios();
+        }
+    }
+
+    document.getElementById('overlayModal').addEventListener('click', function(e) {
+        if (e.target === this) fecharModal();
+    });
+</script>
+</body>
+</html>
