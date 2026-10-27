@@ -24,7 +24,7 @@ public class CreateProdutoServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        String idStr = request.getParameter("id"); // Pega o ID oculto (se vier da edição)
+        String idStr = request.getParameter("id"); 
 
         Produto produto = new Produto();
         produto.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
