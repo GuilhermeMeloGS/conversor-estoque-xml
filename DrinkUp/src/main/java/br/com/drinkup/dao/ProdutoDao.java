@@ -13,9 +13,7 @@ import java.util.List;
 public class ProdutoDao {
 
     public void criarProduto(Produto produto) throws SQLException {
-        String SQL = "INSERT INTO PRODUTO " +
-                "(IDCATEGORIA, NOME, CODIGODEBARRAS, DESCRICAO, PRECO, QUANTIDADEESTOQUE, VOLUMEML) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String SQL = "INSERT INTO PRODUTO (IDCATEGORIA, NOME, CODIGODEBARRAS, DESCRICAO, PRECO, QUANTIDADEESTOQUE, VOLUMEML) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             Connection connection = ConnectionPoolConfig.getConnection();
@@ -29,8 +27,7 @@ public class ProdutoDao {
             preparedStatement.setInt(6, produto.getQuantidadeEstoque());
             preparedStatement.setInt(7, produto.getVolumeML());
 
-            preparedStatement.execute(); // Ou executeUpdate()
-
+            preparedStatement.execute();
             System.out.println("Produto criado com sucesso!");
             connection.close();
 
@@ -39,19 +36,18 @@ public class ProdutoDao {
         }
     }
 
-    public List<Produto> listarProdutos() throws SQLException {
-        // Usamos IDPRODUTO aqui para coincidir com o que você já usou no delete/update
+    public List<Produto> listarProdutos() {
         String SQL = "SELECT IDPRODUTO, IDCATEGORIA, NOME, CODIGODEBARRAS, DESCRICAO, PRECO, QUANTIDADEESTOQUE, VOLUMEML FROM PRODUTO";
-        List<Produto> produtos = new ArrayList<>();
 
         try {
             Connection connection = ConnectionPoolConfig.getConnection();
             PreparedStatement ps = connection.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
 
+            List<Produto> produtos = new ArrayList<>();
             while (rs.next()) {
                 Produto p = new Produto();
-                p.setIdProduto(rs.getInt("IDPRODUTO")); // E buscamos IDPRODUTO aqui também
+                p.setIdProduto(rs.getInt("IDPRODUTO"));
                 p.setIdCategoria(rs.getInt("IDCATEGORIA"));
                 p.setNomeDoProduto(rs.getString("NOME"));
                 p.setCodigoDeBarras(rs.getString("CODIGODEBARRAS"));
@@ -63,26 +59,11 @@ public class ProdutoDao {
             }
 
             connection.close();
+            return produtos;
 
         } catch (Exception e) {
             System.out.println("Erro ao listar produtos: " + e.getMessage());
-        }
-
-        return produtos;
-    }
-
-    public void deletarProduto(int id) throws SQLException {
-        String SQL = "DELETE FROM PRODUTO WHERE IDPRODUTO = ?";
-
-        try {
-            Connection connection = ConnectionPoolConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL);
-            ps.setInt(1, id);
-            ps.execute();
-            System.out.println("Produto deletado com sucesso!");
-            connection.close();
-        } catch (Exception e) {
-            System.out.println("Erro ao deletar produto: " + e.getMessage());
+            return null;
         }
     }
 
@@ -100,13 +81,31 @@ public class ProdutoDao {
             ps.setDouble(5, produto.getPreco());
             ps.setInt(6, produto.getQuantidadeEstoque());
             ps.setInt(7, produto.getVolumeML());
-            ps.setInt(8, produto.getIdProduto()); // ID que vai no WHERE
+            ps.setInt(8, produto.getIdProduto());
 
             ps.execute();
             System.out.println("Produto atualizado com sucesso!");
             connection.close();
+
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Erro ao atualizar produto: " + e.getMessage());
+        }
+    }
+
+    public void deletarProduto(int id) throws SQLException {
+        String SQL = "DELETE FROM PRODUTO WHERE IDPRODUTO = ?";
+
+        try {
+            Connection connection = ConnectionPoolConfig.getConnection();
+            PreparedStatement ps = connection.prepareStatement(SQL);
+            ps.setInt(1, id);
+            ps.execute();
+
+            System.out.println("Produto deletado com sucesso!");
+            connection.close();
+
+        } catch (Exception e) {
+            System.out.println("Erro ao deletar produto: " + e.getMessage());
         }
     }
 }
