@@ -130,14 +130,14 @@
                         <label>Categoria *</label>
                         <select id="prodCategoria" required>
                             <option value="">Selecione...</option>
-                            <option>Cervejas</option>
-                            <option>Refrigerantes</option>
-                            <option>Sucos</option>
-                            <option>Energéticos</option>
-                            <option>Vinhos</option>
-                            <option>Destilados</option>
-                            <option>Águas</option>
+                            <option value="1">Cervejas</option>
+                            <option value="2">Refrigerantes</option>
+                            <option value="3">Combos</option>
                         </select>
+                    </div>
+                    <div class="campo-admin">
+                        <label>Código de barras *</label>
+                        <input type="text" id="prodCodigoDeBarras" required>
                     </div>
                     <div class="campo-admin">
                         <label>Preço (R$) *</label>
@@ -147,13 +147,13 @@
                         <label>Estoque *</label>
                         <input type="number" id="prodEstoque" min="0" required placeholder="Qtd.">
                     </div>
+                    <div class="campo-admin">
+                        <label>Volume (ml) *</label>
+                        <input type="number" id="prodVolume" min="1" required placeholder="Ex.: 350">
+                    </div>
                     <div class="campo-admin span-2">
                         <label>Descrição</label>
                         <textarea id="prodDescricao" rows="3" placeholder="Descrição do produto..."></textarea>
-                    </div>
-                    <div class="campo-admin span-2">
-                        <label>URL da Imagem</label>
-                        <input type="text" id="prodImagem" placeholder="https://... ou deixe em branco para usar emoji">
                     </div>
                 </div>
                 <div class="acoes-modal">
@@ -180,17 +180,8 @@
     if (!Auth.isAdmin()) window.location.href = 'paginaLogin.html';
     document.addEventListener('DOMContentLoaded', function () { renderHeader(); init(); });
 
-    /* ── Mock data ── */
-    let produtos = [
-        { id:1, nome:'Cerveja Heineken Long Neck 330ml', categoria:'Cervejas',    preco:9.90,  estoque:142 },
-        { id:2, nome:'Coca-Cola Original Lata 350ml',    categoria:'Refrigerantes',preco:4.50, estoque:310 },
-        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml',  categoria:'Cervejas',    preco:3.80,  estoque:256 },
-        { id:4, nome:'Red Bull Energy Drink 250ml',      categoria:'Energéticos', preco:11.90, estoque:88  },
-        { id:5, nome:'Suco Del Valle Uva 1L',            categoria:'Sucos',       preco:7.90,  estoque:67  },
-        { id:6, nome:'Água Mineral Crystal 500ml',       categoria:'Águas',       preco:2.50,  estoque:500 },
-        { id:7, nome:'Vinho Tinto Seco Reserva 750ml',   categoria:'Vinhos',      preco:45.90, estoque:34  },
-        { id:8, nome:'Whisky Escocês 12 Anos 1L',        categoria:'Destilados',  preco:149.90,estoque:12  },
-    ];
+    let produtos = [];
+    const CATEGORIAS = { 1: 'Cervejas', 2: 'Refrigerantes', 3: 'Combos' };
 
     const usuarios = [];
 
@@ -201,8 +192,14 @@
     ];
 
     function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+    function escaparHtml(valor) {
+        return String(valor == null ? '' : valor).replace(/[&<>"']/g, caractere => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[caractere]);
+    }
 
     function init() {
+        carregarProdutos();
         renderProdutos();
         renderUsuarios();
         renderPedidos();
@@ -219,14 +216,26 @@
     }
 
     /* ── PRODUTOS ── */
+    async function carregarProdutos() {
+        try {
+            const resposta = await fetch('api/produtos');
+            if (!resposta.ok) throw new Error('Não foi possível carregar os produtos.');
+            produtos = await resposta.json();
+            renderProdutos();
+        } catch (erro) {
+            document.getElementById('tabelaProdutos').innerHTML =
+                '<tr><td colspan="6">Erro ao carregar produtos.</td></tr>';
+        }
+    }
+
     function renderProdutos() {
         document.getElementById('tabelaProdutos').innerHTML = produtos.map(p => `
             <tr>
                 <td>${p.id}</td>
-                <td class="nome-td">${p.nome}</td>
-                <td><span class="chip-cat">${p.categoria}</span></td>
+                <td class="nome-td">${escaparHtml(p.nome)}</td>
+                <td><span class="chip-cat">${escaparHtml(CATEGORIAS[p.idCategoria] || p.idCategoria)}</span></td>
                 <td>${fmt(p.preco)}</td>
-                <td class="${p.estoque < 20 ? 'estoque-baixo' : ''}">${p.estoque}</td>
+                <td class="${p.quantidadeEstoque < 20 ? 'estoque-baixo' : ''}">${p.quantidadeEstoque}</td>
                 <td>
                     <button class="btn-acao editar" onclick="editarProduto(${p.id})">✏ Editar</button>
                     <button class="btn-acao excluir" onclick="excluirProduto(${p.id})">🗑 Excluir</button>
@@ -288,17 +297,22 @@
 
         if (id) {
             const p = produtos.find(x => x.id === id);
+            if (!p) return;
             document.getElementById('prodNome').value      = p.nome;
-            document.getElementById('prodCategoria').value = p.categoria;
+            document.getElementById('prodCategoria').value = p.idCategoria;
+            document.getElementById('prodCodigoDeBarras').value = p.codigoDeBarras;
             document.getElementById('prodPreco').value     = p.preco;
-            document.getElementById('prodEstoque').value   = p.estoque;
+            document.getElementById('prodEstoque').value   = p.quantidadeEstoque;
+            document.getElementById('prodVolume').value    = p.volumeML;
+            document.getElementById('prodDescricao').value = p.descricao;
         } else {
             document.getElementById('prodNome').value      = '';
             document.getElementById('prodCategoria').value = '';
+            document.getElementById('prodCodigoDeBarras').value = '';
             document.getElementById('prodPreco').value     = '';
             document.getElementById('prodEstoque').value   = '';
+            document.getElementById('prodVolume').value    = '';
             document.getElementById('prodDescricao').value = '';
-            document.getElementById('prodImagem').value    = '';
         }
 
         document.getElementById('overlayModal').classList.add('ativo');
@@ -309,31 +323,51 @@
         editandoId = null;
     }
 
-    function salvarProduto(e) {
+    async function salvarProduto(e) {
         e.preventDefault();
         const nome      = document.getElementById('prodNome').value;
-        const categoria = document.getElementById('prodCategoria').value;
+        const idCategoria = document.getElementById('prodCategoria').value;
+        const codigoDeBarras = document.getElementById('prodCodigoDeBarras').value;
         const preco     = parseFloat(document.getElementById('prodPreco').value);
-        const estoque   = parseInt(document.getElementById('prodEstoque').value);
+        const quantidadeEstoque = document.getElementById('prodEstoque').value;
+        const volumeML = document.getElementById('prodVolume').value;
+        const descricao = document.getElementById('prodDescricao').value;
+        const dados = new URLSearchParams({
+            idCategoria, nome, codigoDeBarras, descricao,
+            preco: String(preco), quantidadeEstoque, volumeML
+        });
+        const endpoint = editandoId ? 'atualiza-produto' : 'cadastra-produto';
+        if (editandoId) dados.set('id', String(editandoId));
 
-        if (editandoId) {
-            const p = produtos.find(x => x.id === editandoId);
-            Object.assign(p, { nome, categoria, preco, estoque });
-        } else {
-            const novoId = produtos.length ? Math.max(...produtos.map(x => x.id)) + 1 : 1;
-            produtos.push({ id: novoId, nome, categoria, preco, estoque });
+        try {
+            const resposta = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: dados
+            });
+            if (!resposta.ok) throw new Error('Não foi possível salvar o produto.');
+            await carregarProdutos();
+            fecharModal();
+        } catch (erro) {
+            alert(erro.message);
         }
-
-        renderProdutos();
-        fecharModal();
     }
 
     function editarProduto(id) { abrirModal('produto', id); }
 
-    function excluirProduto(id) {
+    async function excluirProduto(id) {
         if (!confirm('Excluir este produto?')) return;
-        produtos = produtos.filter(p => p.id !== id);
-        renderProdutos();
+        try {
+            const resposta = await fetch('delete-produto', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: new URLSearchParams({ id: String(id) })
+            });
+            if (!resposta.ok) throw new Error('Não foi possível excluir o produto.');
+            await carregarProdutos();
+        } catch (erro) {
+            alert(erro.message);
+        }
     }
 
     function alterarPermissao(id) {
