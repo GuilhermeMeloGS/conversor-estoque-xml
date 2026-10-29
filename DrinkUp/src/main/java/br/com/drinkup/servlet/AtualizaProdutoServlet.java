@@ -21,45 +21,24 @@ public class AtualizaProdutoServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        Produto produto;
-        try {
-            produto = new Produto();
-            produto.setIdProduto(Integer.parseInt(request.getParameter("id")));
-            produto.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
-            produto.setNomeDoProduto(request.getParameter("nome"));
-            produto.setCodigoDeBarras(request.getParameter("codigoDeBarras"));
-            produto.setDescricao(request.getParameter("descricao"));
-            produto.setPreco(Double.parseDouble(request.getParameter("preco")));
-            produto.setQuantidadeEstoque(Integer.parseInt(request.getParameter("quantidadeEstoque")));
-            produto.setVolumeML(Integer.parseInt(request.getParameter("volumeML")));
-            validarProduto(produto);
-        } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Dados do produto inválidos.");
-            return;
-        }
+        String idStr = request.getParameter("id");
+
+        Produto produto = new Produto();
+        produto.setIdProduto(Integer.parseInt(idStr));
+        produto.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
+        produto.setNomeDoProduto(request.getParameter("nome"));
+        produto.setCodigoDeBarras(request.getParameter("codigoDeBarras"));
+        produto.setDescricao(request.getParameter("descricao"));
+        produto.setPreco(Double.parseDouble(request.getParameter("preco")));
+        produto.setQuantidadeEstoque(Integer.parseInt(request.getParameter("quantidadeEstoque")));
+        produto.setVolumeML(Integer.parseInt(request.getParameter("volumeML")));
 
         try {
-            if (new ProdutoDao().atualizarProduto(produto) == 0) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Produto não encontrado.");
-                return;
-            }
+            new ProdutoDao().atualizarProduto(produto);
         } catch (Exception e) {
-            throw new ServletException("Erro ao atualizar produto.", e);
+            throw new ServletException(e);
         }
 
-        if ("application/json".equalsIgnoreCase(request.getHeader("Accept"))) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } else {
-            response.sendRedirect("produtos");
-        }
-    }
-
-    private void validarProduto(Produto produto) {
-        if (produto.getIdProduto() <= 0 || produto.getIdCategoria() <= 0 || produto.getNomeDoProduto() == null
-                || produto.getNomeDoProduto().trim().isEmpty() || produto.getCodigoDeBarras() == null
-                || produto.getCodigoDeBarras().trim().isEmpty() || produto.getPreco() < 0
-                || produto.getQuantidadeEstoque() < 0 || produto.getVolumeML() <= 0) {
-            throw new IllegalArgumentException("Dados do produto inválidos.");
-        }
+        response.sendRedirect("produtos");
     }
 }
