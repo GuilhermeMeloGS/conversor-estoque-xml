@@ -235,17 +235,29 @@
     }
 
     /* ── USUÁRIOS ── */
+    function esc(texto) {
+        const div = document.createElement('div');
+        div.textContent = texto;
+        return div.innerHTML;
+    }
+
     function renderUsuarios() {
-        fetch("/listarUsuarios").then(response => response.json()).then(lista => {
+        fetch("/listarUsuarios").then(response => {
+            if (!response.ok) throw new Error();
+            return response.json();
+        }).then(lista => {
             document.getElementById('tabelaUsuarios').innerHTML = lista.map(u => `
                 <tr>
                     <td>${u.id}</td>
-                    <td>${u.nome} ${u.sobrenome}</td>
-                    <td>${u.email}</td>
+                    <td>${esc(u.nome)} ${esc(u.sobrenome)}</td>
+                    <td>${esc(u.email)}</td>
                     <td><span class="badge-role-admin ${u.tipo.toLowerCase()}">${u.tipo}</span></td>
                     <td>
-                        <button class="btn-acao editar" onclick="alterarPermissao(${u.id})">
+                        <button class="btn-acao editar" onclick="alterarPermissao(${u.id}, '${u.tipo}')">
                             🔑 Alterar Perfil
+                        </button>
+                        <button class="btn-acao excluir" onclick="excluirUsuario(${u.id})">
+                            🗑 Excluir
                         </button>
                     </td>
                 </tr>`).join('');
@@ -336,13 +348,35 @@
         renderProdutos();
     }
 
-    function alterarPermissao(id) {
-        const u = usuarios.find(x => x.id === id);
-        const novo = u.role === 'admin' ? 'cliente' : 'admin';
-        if (confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) {
-            u.role = novo;
-            renderUsuarios();
+    async function alterarPermissao(id, tipoAtual) {
+        const novo = tipoAtual === 'Admin' ? 'Cliente' : 'Admin';
+        if (!confirm(`Alterar perfil para ${novo}?`)) return;
+
+        const resp = await fetch('alterarTipoUsuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id, tipo: novo })
+        });
+        if (resp.ok) renderUsuarios();
+        else alert('Não foi possível alterar o perfil.');
+    }
+
+    async function excluirUsuario(id) {
+        if (!confirm('Excluir este usuário?')) return;
+
+        const resp = await fetch('deletarUsuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id })
+        });
+        if (!resp.ok) { alert('Não foi possível excluir o usuário.'); return; }
+
+        if (id === Auth.getUser().id) {   // o admin apagou a própria conta
+            Auth.logout();
+            window.location.href = 'index.html';
+            return;
         }
+        renderUsuarios();
     }
 
     document.getElementById('overlayModal').addEventListener('click', function(e) {

@@ -1,14 +1,14 @@
 package br.com.drinkup.dao;
 
-import br.com.drinkup.model.Produto;
-import br.com.drinkup.servlet.config.ConnectionPoolConfig;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.drinkup.model.Produto;
+import br.com.drinkup.servlet.config.ConnectionPoolConfig;
 
 public class ProdutoDao {
 

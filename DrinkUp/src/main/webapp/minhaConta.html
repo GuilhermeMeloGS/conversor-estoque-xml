@@ -86,24 +86,31 @@
             <section class="aba-conta" id="tab-perfil">
                 <h2 class="titulo-aba">Meu Perfil</h2>
 
-                <form class="form-perfil" onsubmit="return false;">
+                <form class="form-perfil" id="formPerfil">
                     <div class="campo-form-conta">
-                        <label>Nome completo</label>
-                        <input type="text" id="perfilNome" placeholder="Seu nome">
+                        <label for="perfilNome">Nome</label>
+                        <input type="text" id="perfilNome" name="nome" maxlength="100" required>
                     </div>
                     <div class="campo-form-conta">
-                        <label>E-mail</label>
-                        <input type="email" id="perfilEmail" placeholder="seu@email.com" readonly>
+                        <label for="perfilSobrenome">Sobrenome</label>
+                        <input type="text" id="perfilSobrenome" name="sobrenome" maxlength="100" required>
                     </div>
                     <div class="campo-form-conta">
-                        <label>Nova senha</label>
-                        <input type="password" placeholder="Deixe em branco para manter" minlength="8">
+                        <label for="perfilEmail">E-mail</label>
+                        <input type="email" id="perfilEmail" name="email" maxlength="100" required>
                     </div>
-                    <button type="submit" class="botao-salvar-perfil"
-                            onclick="alert('Salvamento simulado — backend não implementado.')">
-                        Salvar alterações
-                    </button>
+                    <div class="campo-form-conta">
+                        <label for="perfilSenha">Senha</label>
+                        <input type="password" id="perfilSenha" name="senha" maxlength="50" required>
+                    </div>
+                    <button type="submit" class="botao-salvar-perfil">Salvar alterações</button>
+                    <p id="msgPerfil"></p>
                 </form>
+
+                <button type="button" id="btnExcluirConta" class="botao-salvar-perfil"
+                        style="background:#c0392b; margin-top:16px;">
+                    Excluir minha conta
+                </button>
             </section>
 
         </div>
@@ -126,10 +133,64 @@
         renderHeader();
 
         const user = Auth.getUser();
-        document.getElementById('nomeUsuario').textContent  = user.nome;
-        document.getElementById('emailUsuario').textContent = user.email;
-        document.getElementById('perfilNome').value         = user.nome;
-        document.getElementById('perfilEmail').value        = user.email;
+
+        // R: carrega os dados reais do banco
+        fetch('perfilUsuario')
+            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+            .then(u => {
+                document.getElementById('nomeUsuario').textContent  = u.nome + ' ' + u.sobrenome;
+                document.getElementById('emailUsuario').textContent = u.email;
+                document.getElementById('perfilNome').value         = u.nome;
+                document.getElementById('perfilSobrenome').value    = u.sobrenome;
+                document.getElementById('perfilEmail').value        = u.email;
+            })
+            .catch(() => {
+                // sessão do servidor expirou (401) ou servidor fora do ar
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+            });
+
+        // U: salvar nome e sobrenome
+        document.getElementById('formPerfil').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const msg = document.getElementById('msgPerfil');
+            try {
+                const resp = await fetch('atualizarUsuario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        nome: document.getElementById('perfilNome').value,
+                        sobrenome: document.getElementById('perfilSobrenome').value,
+                        email: document.getElementById('perfilEmail').value,
+                        senha: document.getElementById('perfilSenha').value
+                    })
+                });
+                if (!resp.ok) throw new Error();
+                const u = await resp.json();
+                Auth.setUser({ id: u.id, nome: u.nome, role: u.role });
+                document.getElementById('nomeUsuario').textContent = u.nome + ' ' + u.sobrenome;
+                renderHeader();
+                msg.textContent = 'Dados atualizados.';
+            } catch {
+                msg.textContent = 'Não foi possível salvar. Tente novamente.';
+            }
+        });
+
+        // D: excluir a própria conta
+        document.getElementById('btnExcluirConta').addEventListener('click', async function () {
+            if (!confirm('Excluir sua conta? Esta ação não pode ser desfeita.')) return;
+            const resp = await fetch('deletarUsuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id: user.id })
+            });
+            if (resp.ok) {
+                Auth.logout();
+                window.location.href = 'index.html';
+            } else {
+                alert('Não foi possível excluir a conta.');
+            }
+        });
 
         const badge = document.getElementById('badgeRole');
         if (user.role === 'admin') { badge.textContent = 'Administrador'; badge.classList.add('admin'); }
