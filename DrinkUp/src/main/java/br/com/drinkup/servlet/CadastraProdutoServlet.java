@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/cadastra-produto")
+@WebServlet("/produtos/cadastrar")
 @MultipartConfig
 public class CadastraProdutoServlet extends HttpServlet {
 
@@ -36,6 +36,6 @@ public class CadastraProdutoServlet extends HttpServlet {
             throw new ServletException(e);
         }
 
-        response.sendRedirect("produtos");
+        response.sendRedirect(request.getContextPath() + "/produtos");
     }
 }

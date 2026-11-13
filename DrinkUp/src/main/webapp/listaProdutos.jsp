@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<c:url var="excluirProdutoUrl" value="/produtos/excluir"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -27,14 +28,14 @@
 
         <nav class="navegacao" aria-label="Menu principal">
             <a href="index.html">Início</a>
-            <a href="listaProdutos.jsp" class="ativo">Produtos</a>
+            <a href="produtos" class="ativo">Produtos</a>
             <a href="index.html#categorias">Categorias</a>
             <a href="index.html#ofertas" class="destaque">Ofertas</a>
         </nav>
 
         <div class="acoes-cabecalho">
             <a href="paginaLogin.html" class="botao-cabecalho botao-login-cabecalho">Entrar</a>
-            <a href="#carrinho" class="botao-cabecalho" id="btnCarrinho">
+            <a href="carrinho.html" class="botao-cabecalho" id="btnCarrinho">
                 🛒 Carrinho <span class="contador-carrinho" id="contadorCarrinho">0</span>
             </a>
         </div>
@@ -69,6 +70,7 @@
                     <option value="">Todas as Categorias</option>
                     <option value="Cervejas">Cervejas</option>
                     <option value="Refrigerantes">Refrigerantes</option>
+                    <option value="Combos">Combos</option>
                     <option value="Sucos">Sucos</option>
                     <option value="Energéticos">Energéticos</option>
                     <option value="Águas">Águas</option>
@@ -95,6 +97,7 @@
             <button class="chip-btn ativo" data-cat="">Todos</button>
             <button class="chip-btn" data-cat="Cervejas">🍺 Cervejas</button>
             <button class="chip-btn" data-cat="Refrigerantes">🥤 Refrigerantes</button>
+            <button class="chip-btn" data-cat="Combos">🎁 Combos</button>
             <button class="chip-btn" data-cat="Sucos">🧃 Sucos</button>
             <button class="chip-btn" data-cat="Energéticos">⚡ Energéticos</button>
             <button class="chip-btn" data-cat="Vinhos">🍷 Vinhos</button>
@@ -109,16 +112,30 @@
                 <%-- ITERAÇÃO DINÂMICA COM OS PRODUTOS DO BANCO DE DADOS H2 --%>
                 <c:when test="${not empty produtos}">
                     <c:forEach var="produto" items="${produtos}">
-                        <article class="card-produto" data-id="${produto.id}" data-categoria="${produto.nome}" data-nome="${produto.nome}" data-preco="${produto.preco}">
+                        <c:choose>
+                            <c:when test="${produto.idCategoria == 1}">
+                                <c:set var="categoriaNome" value="Cervejas"/>
+                            </c:when>
+                            <c:when test="${produto.idCategoria == 2}">
+                                <c:set var="categoriaNome" value="Refrigerantes"/>
+                            </c:when>
+                            <c:when test="${produto.idCategoria == 3}">
+                                <c:set var="categoriaNome" value="Combos"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="categoriaNome" value="Outros"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <article class="card-produto" data-id="${produto.idProduto}" data-categoria="${categoriaNome}" data-nome="<c:out value='${produto.nomeDoProduto}'/>" data-preco="${produto.preco}">
                             <div class="imagem-container">
                                 <span class="tag-frete-gratis">🚚 Grátis</span>
                                 <div class="icone-imagem-fallback">🍺</div>
                             </div>
 
                             <div class="detalhes-produto">
-                                <span class="categoria-tag">Bebidas</span>
-                                <h2 class="titulo-produto">${produto.nome}</h2>
-                                <p class="descricao-produto">${produto.discricao}</p>
+                                <span class="categoria-tag"><c:out value="${categoriaNome}"/></span>
+                                <h2 class="titulo-produto"><c:out value="${produto.nomeDoProduto}"/></h2>
+                                <p class="descricao-produto"><c:out value="${produto.descricao}"/></p>
 
                                 <div class="bloco-precos">
                                     <div class="linha-preco">
@@ -133,9 +150,30 @@
                                     <span>●</span> Disponível para compra
                                 </div>
 
-                                <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('${produto.nome}')">
+                                <button type="button" class="botao-comprar"
+                                        data-id="${produto.idProduto}"
+                                        data-nome="<c:out value='${produto.nomeDoProduto}'/>"
+                                        data-preco="${produto.preco}"
+                                        onclick="adicionarAoCarrinho(this)">
                                     🛒 Comprar
                                 </button>
+                                <div class="acoes-produto">
+                                    <c:url var="editarProdutoUrl" value="/cadastroBebida.html">
+                                        <c:param name="id" value="${produto.idProduto}"/>
+                                        <c:param name="idCategoria" value="${produto.idCategoria}"/>
+                                        <c:param name="nome" value="${produto.nomeDoProduto}"/>
+                                        <c:param name="codigo" value="${produto.codigoDeBarras}"/>
+                                        <c:param name="descricao" value="${produto.descricao}"/>
+                                        <c:param name="preco" value="${produto.preco}"/>
+                                        <c:param name="estoque" value="${produto.quantidadeEstoque}"/>
+                                        <c:param name="volume" value="${produto.volumeML}"/>
+                                    </c:url>
+                                    <a href="${editarProdutoUrl}" class="botao-detalhe">Editar</a>
+                                    <form action="${excluirProdutoUrl}" method="post">
+                                        <input type="hidden" name="id" value="${produto.idProduto}">
+                                        <button type="submit" class="botao-detalhe">Excluir</button>
+                                    </form>
+                                </div>
                             </div>
                         </article>
                     </c:forEach>
@@ -168,7 +206,7 @@
                                 <span>●</span> Em estoque
                             </div>
 
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Cerveja Heineken 330ml')">
+                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
                                 🛒 Comprar
                             </button>
                         </div>
@@ -198,7 +236,7 @@
                                 <span>●</span> Em estoque
                             </div>
 
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Coca-Cola Lata 350ml')">
+                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
                                 🛒 Comprar
                             </button>
                         </div>
@@ -228,7 +266,7 @@
                                 <span>●</span> Em estoque
                             </div>
 
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Cerveja Brahma Chopp')">
+                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
                                 🛒 Comprar
                             </button>
                         </div>
@@ -258,7 +296,7 @@
                                 <span>●</span> Em estoque
                             </div>
 
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho('Red Bull 250ml')">
+                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
                                 🛒 Comprar
                             </button>
                         </div>
@@ -296,28 +334,31 @@
 
         <nav class="links-rodape" aria-label="Links do rodapé">
             <a href="index.html">Início</a>
-            <a href="listaProdutos.jsp">Produtos</a>
+            <a href="produtos">Produtos</a>
             <a href="index.html#categorias">Categorias</a>
             <a href="paginaLogin.html">Entrar</a>
         </nav>
 
     </footer>
 
+    <script src="shared/auth.js"></script>
     <!-- SCRIPT DE FILTROS, BUSCA E CARRINHO -->
     <script>
-        let carrinhoCount = 0;
+        renderHeader();
 
-        function adicionarAoCarrinho(nome) {
-            carrinhoCount++;
-            document.getElementById('contadorCarrinho').textContent = carrinhoCount;
-
-            const toast = document.getElementById('toastCarrinho');
+        function adicionarAoCarrinho(botao) {
+            const card = botao.closest('.card-produto');
+            const nome = card.dataset.nome;
+            Carrinho.adicionar({
+                id: Number(card.dataset.id),
+                nome,
+                preco: Number(card.dataset.preco),
+                icone: card.querySelector('.icone-imagem-fallback').textContent.trim()
+            });
             document.getElementById('toastMensagem').textContent = `"${nome}" adicionado ao carrinho!`;
+            const toast = document.getElementById('toastCarrinho');
             toast.classList.add('visivel');
-
-            setTimeout(() => {
-                toast.classList.remove('visivel');
-            }, 2500);
+            setTimeout(() => toast.classList.remove('visivel'), 2500);
         }
 
         document.addEventListener('DOMContentLoaded', function () {

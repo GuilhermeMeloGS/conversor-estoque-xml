@@ -37,8 +37,8 @@
         </div>
     </div>
 
-    <!-- Envia os dados para o servlet /produtos via POST -->
-    <form class="formulario-cadastro" action="produtos" method="post" enctype="multipart/form-data">
+    <!-- A rota muda para /produtos/atualizar ao editar um produto. -->
+    <form class="formulario-cadastro" action="produtos/cadastrar" method="post" enctype="multipart/form-data">
 
         <!-- Campo oculto para carregar o ID caso seja edição -->
         <input type="hidden" name="id" id="id">
@@ -118,8 +118,10 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
+    const formulario = document.querySelector('.formulario-cadastro');
 
     if (id) {
+        formulario.action = 'produtos/atualizar';
         // Altera os textos da página para modo Edição
         document.getElementById('titulo-pagina').innerText = "Editar bebida";
         document.getElementById('subtitulo-pagina').innerText = "Altere os dados do produto no catálogo.";

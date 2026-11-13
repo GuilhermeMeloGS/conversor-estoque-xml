@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.drinkup.dao.UsuarioDao;
 import br.com.drinkup.model.Usuario;
 
-@WebServlet ("/listarUsuarios")
+@WebServlet("/usuarios")
 public class ListUsuariosServlet extends HttpServlet {
 
 @Override

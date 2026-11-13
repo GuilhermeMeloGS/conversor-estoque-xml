@@ -2,7 +2,6 @@ package br.com.drinkup.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.drinkup.dao.UsuarioDao;
 import br.com.drinkup.model.Usuario;
 
-@WebServlet ("/criarUsuario")
+@WebServlet("/usuarios/cadastrar")
 public class CreateUsuarioServlet extends HttpServlet {
     
     @Override 
@@ -34,6 +33,6 @@ public class CreateUsuarioServlet extends HttpServlet {
             throw new ServletException("Erro ao criar usuário", ex);
         }
 
-        request.getRequestDispatcher("cadastroPessoa.html").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/paginaLogin.html?cadastro=sucesso");
     }
 }

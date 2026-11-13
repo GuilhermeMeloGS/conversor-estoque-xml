@@ -7,6 +7,15 @@ de retirar itens e verificar o estoque das bebidas.
 
 # Funcionalidades
 
+### Rotas do backend
+
+- `GET /produtos`: lista os produtos cadastrados.
+- `POST /produtos/cadastrar`: cadastra um produto.
+- `POST /produtos/atualizar`: atualiza um produto.
+- `POST /produtos/excluir`: exclui um produto.
+- `GET /usuarios`: lista usuários em JSON.
+- `POST /usuarios/cadastrar`: cadastra um usuário.
+
 ### Login
 
 ![Tela de Login](imagensSite/TelaDeLogin.jpeg)
@@ -38,4 +47,3 @@ de retirar itens e verificar o estoque das bebidas.
 - intelij
 - vscode
 - git
-

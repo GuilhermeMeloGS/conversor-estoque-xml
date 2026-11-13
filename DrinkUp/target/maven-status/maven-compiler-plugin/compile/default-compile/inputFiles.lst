@@ -1,5 +1,12 @@
-/Users/guilhermemelo/Documents/conversor-estoque-xml/DrinkUp/src/main/java/br/com/drinkup/dao/UsuarioDao.java
-/Users/guilhermemelo/Documents/conversor-estoque-xml/DrinkUp/src/main/java/br/com/drinkup/model/TipoUsuario.java
-/Users/guilhermemelo/Documents/conversor-estoque-xml/DrinkUp/src/main/java/br/com/drinkup/model/Usuario.java
-/Users/guilhermemelo/Documents/conversor-estoque-xml/DrinkUp/src/main/java/br/com/drinkup/servlet/CreateUsuarioServlet.java
-/Users/guilhermemelo/Documents/conversor-estoque-xml/DrinkUp/src/main/java/br/com/drinkup/servlet/config/ConnectionPoolConfig.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\dao\ProdutoDao.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\dao\UsuarioDao.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\model\Produto.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\model\TipoUsuario.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\model\Usuario.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\AtualizaProdutoServlet.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\CadastraProdutoServlet.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\config\ConnectionPoolConfig.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\CreateUsuarioServlet.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\DeleteProdutoServlet.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\ListaProdutosServlet.java
+C:\Users\helio\Git\conversor-estoque-xml\DrinkUp\src\main\java\br\com\drinkup\servlet\ListUsuariosServlet.java

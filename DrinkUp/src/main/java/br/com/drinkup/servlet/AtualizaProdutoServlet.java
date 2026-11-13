@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/atualiza-produto")
+@WebServlet("/produtos/atualizar")
 @MultipartConfig
 public class AtualizaProdutoServlet extends HttpServlet {
 
@@ -39,6 +39,6 @@ public class AtualizaProdutoServlet extends HttpServlet {
             throw new ServletException(e);
         }
 
-        response.sendRedirect("produtos");
+        response.sendRedirect(request.getContextPath() + "/produtos");
     }
 }

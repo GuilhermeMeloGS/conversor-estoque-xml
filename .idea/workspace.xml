@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/AtualizaProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/AtualizaProdutoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CreateUsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CreateUsuarioServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/DeleteProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/DeleteProdutoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListUsuariosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListUsuariosServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListaProdutosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListaProdutosServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroPessoa.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroPessoa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/carrinho.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/carrinho.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheProduto.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheProduto.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/minhaConta.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/minhaConta.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/dao/UsuarioDao.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/dao/UsuarioDao.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/model/Usuario.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/model/Usuario.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/CreateUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/CreateUsuarioServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/ListUsuariosServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/ListUsuariosServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="36" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;LorenzoRighii&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/GuilhermeMeloGS/conversor-estoque-xml.git&quot;,
+    &quot;accountId&quot;: &quot;75c45c59-bc31-430b-9569-f36d9a0295c2&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4230274009554482" />
+      <entry key="MS500" value="3.8854383214593207" />
+      <entry key="S2" value="9.614162920531589" />
+      <entry key="S5" value="18.32285280606767" />
+      <entry key="S10" value="31.212343059575105" />
+      <entry key="S30" value="61.000612791811356" />
+      <entry key="S60" value="76.38235896866252" />
+      <entry key="M2" value="87.01120798581823" />
+      <entry key="M5" value="116.37694693859963" />
+      <entry key="M10" value="176.18222945246984" />
+      <entry key="M15" value="219.9657361120834" />
+      <entry key="M30" value="287.8576833653618" />
+      <entry key="H1" value="334.97802681904443" />
+      <entry key="H2" value="362.8229345191324" />
+      <entry key="H4" value="377.97025578148055" />
+      <entry key="D1" value="391.2648786547106" />
+      <entry key="W1" value="393.60768355957686" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.360809003243668" />
+      <entry key="MS500" value="3.8536359208311666" />
+      <entry key="S2" value="9.59492229353952" />
+      <entry key="S5" value="18.30816651892788" />
+      <entry key="S10" value="31.199716813065667" />
+      <entry key="S30" value="60.99224400672161" />
+      <entry key="S60" value="76.37708768446383" />
+      <entry key="M2" value="87.00809631740051" />
+      <entry key="M5" value="116.37428245712762" />
+      <entry key="M10" value="176.17942361142954" />
+      <entry key="M15" value="219.96318902203768" />
+      <entry key="M30" value="287.855907396761" />
+      <entry key="H1" value="334.9769701409956" />
+      <entry key="H2" value="362.82235719032786" />
+      <entry key="H4" value="377.9699539089782" />
+      <entry key="D1" value="391.26482642103" />
+      <entry key="W1" value="393.60767604938695" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3LL2I5ZbqP1GbNePfsa98h5TTuU" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.DrinkUp [org.apache.tomcat.maven:tomcat7-maven-plugin:2.1:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="" />
+      <created>1793218944960</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1793218944960</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
