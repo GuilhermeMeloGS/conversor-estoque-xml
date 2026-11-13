@@ -16,7 +16,7 @@
         </a>
         <nav class="navegacao" aria-label="Menu principal">
             <a href="index.html">Início</a>
-            <a href="produtos">Loja</a>
+            <a href="listaProdutos.html">Loja</a>
             <a href="admin.html" class="ativo destaque">⚙ Admin</a>
         </nav>
         <div class="acoes-cabecalho"></div>
@@ -42,7 +42,7 @@
 
                 <div class="cabecalho-painel">
                     <h2>Gerenciar Produtos</h2>
-                    <a class="btn-novo" href="cadastroBebida.html">+ Novo Produto</a>
+                    <button class="btn-novo" onclick="abrirModal('produto')">+ Novo Produto</button>
                 </div>
 
                 <table class="tabela-admin">
@@ -171,7 +171,7 @@
         </div>
         <nav class="links-rodape">
             <a href="index.html">Início</a>
-            <a href="produtos">Loja</a>
+            <a href="listaProdutos.html">Loja</a>
         </nav>
     </footer>
 
@@ -236,7 +236,7 @@
 
     /* ── USUÁRIOS ── */
     function renderUsuarios() {
-        fetch("usuarios").then(response => response.json()).then(lista => {
+        fetch("/listarUsuarios").then(response => response.json()).then(lista => {
             document.getElementById('tabelaUsuarios').innerHTML = lista.map(u => `
                 <tr>
                     <td>${u.id}</td>

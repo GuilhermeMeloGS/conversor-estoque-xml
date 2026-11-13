@@ -69,4 +69,117 @@ public class UsuarioDao {
         }
 
     }
+
+    public Usuario logarUsuario(String email, String senha){
+        String SQL = "SELECT * FROM USUARIO WHERE EMAIL = ? AND SENHA = ?";
+
+        try{
+            Connection connection = ConnectionPoolConfig.getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, senha);
+
+            try(ResultSet resultSet = preparedStatement.executeQuery()){;
+                if(resultSet.next()){
+                    return new Usuario(
+
+                        resultSet.getInt("IDUSUARIO"),
+                        resultSet.getString("NOME"),
+                        resultSet.getString("SOBRENOME"),
+                        resultSet.getString("EMAIL"),
+                        resultSet.getString("SENHA"),
+                        TipoUsuario.valueOf(resultSet.getString("TIPO")),
+                        resultSet.getObject("CRIADOEM", LocalDateTime.class)
+                    );
+                }
+                return null;
+        }
+
+        } catch (Exception e) {
+            System.out.println("Erro ao logar usuário: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Usuario buscarPorId(int id){
+        String SQL = "SELECT * FROM USUARIO WHERE IDUSUARIO = ?";
+
+        try(Connection connection = ConnectionPoolConfig.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL)){
+
+            preparedStatement.setInt(1, id);
+
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if(resultSet.next()){
+                    return new Usuario(
+                        resultSet.getInt("IDUSUARIO"),
+                        resultSet.getString("NOME"),
+                        resultSet.getString("SOBRENOME"),
+                        resultSet.getString("EMAIL"),
+                        resultSet.getString("SENHA"),
+                        TipoUsuario.valueOf(resultSet.getString("TIPO")),
+                        resultSet.getObject("CRIADOEM", LocalDateTime.class)
+                    );
+                }
+                return null;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar usuário por ID: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean atualizarUsuario(int id, String nome, String sobrenome, String email, String senha){
+        String SQL = "UPDATE USUARIO SET NOME = ?, SOBRENOME = ?, EMAIL = ?, SENHA = ? WHERE IDUSUARIO = ?";
+
+        try(Connection connection = ConnectionPoolConfig.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL)){
+
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, sobrenome);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, senha);
+            preparedStatement.setInt(5, id);
+
+            return preparedStatement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            System.out.println("Erro ao atualizar usuário: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deletarUsuario(int id){
+        String SQL = "DELETE FROM USUARIO WHERE IDUSUARIO = ?";
+
+        try(Connection connection = ConnectionPoolConfig.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL)){
+
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            System.out.println("Erro ao deletar usuário: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean atualizarTipo(int id, TipoUsuario tipo) {
+    String SQL = "UPDATE USUARIO SET TIPO = ? WHERE IDUSUARIO = ?";
+
+    try (Connection connection = ConnectionPoolConfig.getConnection();
+    PreparedStatement ps = connection.prepareStatement(SQL)) {
+
+        ps.setString(1, tipo.name());
+        ps.setInt(2, id);
+
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        System.out.println("Erro ao atualizar tipo do usuário: " + e.getMessage());
+        return false;
+    }
+}
 }

@@ -4,33 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/AtualizaProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/AtualizaProdutoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CreateUsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CreateUsuarioServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/DeleteProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/DeleteProdutoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListUsuariosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListUsuariosServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListaProdutosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ListaProdutosServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroPessoa.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroPessoa.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/carrinho.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/carrinho.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheProduto.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheProduto.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/listaProdutos.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/minhaConta.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/minhaConta.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/dao/UsuarioDao.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/dao/UsuarioDao.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/model/Usuario.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/model/Usuario.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/CreateUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/CreateUsuarioServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/ListUsuariosServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/classes/br/com/drinkup/servlet/ListUsuariosServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-    </list>
+    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="Padronizaçao dos endpoints utilizando href" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,6 +14,7 @@
     <option name="cachedIndexableFilesCount" value="36" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="PUSH_TAGS">
       <GitPushTagMode>
         <option name="argument" value="--tags" />
@@ -66,23 +41,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.4230274009554482" />
-      <entry key="MS500" value="3.8854383214593207" />
-      <entry key="S2" value="9.614162920531589" />
-      <entry key="S5" value="18.32285280606767" />
-      <entry key="S10" value="31.212343059575105" />
-      <entry key="S30" value="61.000612791811356" />
-      <entry key="S60" value="76.38235896866252" />
-      <entry key="M2" value="87.01120798581823" />
-      <entry key="M5" value="116.37694693859963" />
-      <entry key="M10" value="176.18222945246984" />
-      <entry key="M15" value="219.9657361120834" />
-      <entry key="M30" value="287.8576833653618" />
-      <entry key="H1" value="334.97802681904443" />
-      <entry key="H2" value="362.8229345191324" />
-      <entry key="H4" value="377.97025578148055" />
-      <entry key="D1" value="391.2648786547106" />
-      <entry key="W1" value="393.60768355957686" />
+      <entry key="MS100" value="1.7241362960019049" />
+      <entry key="MS500" value="4.294538515813249" />
+      <entry key="S2" value="7.110805826249139" />
+      <entry key="S5" value="8.151830099378909" />
+      <entry key="S10" value="8.563249571173813" />
+      <entry key="S30" value="9.65901423647788" />
+      <entry key="S60" value="12.146659465787225" />
+      <entry key="M2" value="16.786356885978638" />
+      <entry key="M5" value="39.918267470983324" />
+      <entry key="M10" value="94.97541249104827" />
+      <entry key="M15" value="144.97929976129745" />
+      <entry key="M30" value="238.05319735136692" />
+      <entry key="H1" value="312.99571303373415" />
+      <entry key="H2" value="361.0344079284217" />
+      <entry key="H4" value="388.2980896664474" />
+      <entry key="D1" value="412.8707891089385" />
+      <entry key="W1" value="417.26274389243144" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -104,23 +79,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.360809003243668" />
-      <entry key="MS500" value="3.8536359208311666" />
-      <entry key="S2" value="9.59492229353952" />
-      <entry key="S5" value="18.30816651892788" />
-      <entry key="S10" value="31.199716813065667" />
-      <entry key="S30" value="60.99224400672161" />
-      <entry key="S60" value="76.37708768446383" />
-      <entry key="M2" value="87.00809631740051" />
-      <entry key="M5" value="116.37428245712762" />
-      <entry key="M10" value="176.17942361142954" />
-      <entry key="M15" value="219.96318902203768" />
-      <entry key="M30" value="287.855907396761" />
-      <entry key="H1" value="334.9769701409956" />
-      <entry key="H2" value="362.82235719032786" />
-      <entry key="H4" value="377.9699539089782" />
-      <entry key="D1" value="391.26482642103" />
-      <entry key="W1" value="393.60767604938695" />
+      <entry key="MS100" value="1.695237842567097" />
+      <entry key="MS500" value="4.2429310409158845" />
+      <entry key="S2" value="7.078101886886664" />
+      <entry key="S5" value="8.135788440832615" />
+      <entry key="S10" value="8.554644852099276" />
+      <entry key="S30" value="9.655587944532261" />
+      <entry key="S60" value="12.144355676493518" />
+      <entry key="M2" value="16.78477261550584" />
+      <entry key="M5" value="39.91701745690585" />
+      <entry key="M10" value="94.97381209926166" />
+      <entry key="M15" value="144.9775819891572" />
+      <entry key="M30" value="238.0517172982267" />
+      <entry key="H1" value="312.99472156697567" />
+      <entry key="H2" value="361.033831695927" />
+      <entry key="H4" value="388.2977787403794" />
+      <entry key="D1" value="412.87073386559223" />
+      <entry key="W1" value="417.26273591320285" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -186,6 +161,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Padronização dos endpoints utilizando href" />
+    <MESSAGE value="Padronizaçao dos endpoints utilizando href" />
+    <option name="LAST_COMMIT_MESSAGE" value="Padronizaçao dos endpoints utilizando href" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

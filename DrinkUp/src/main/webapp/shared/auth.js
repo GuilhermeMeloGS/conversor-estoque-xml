@@ -1,16 +1,5 @@
-/**
- * DrinkUp — Gerenciador de Estado de Autenticação (MOCK / Front-end)
- * Simula 3 perfis: visitante, cliente logado e administrador.
- * Futuramente substituir por chamada real ao backend Java/Servlet.
- */
-
 const Auth = (() => {
     const STORAGE_KEY = 'drinkup_session';
-
-    const MOCK_USERS = [
-        { id: 1, nome: 'João Silva',    email: 'joao@email.com',  senha: '12345678', role: 'cliente' },
-        { id: 2, nome: 'Admin DrinkUp', email: 'admin@drinkup.com', senha: 'admin123', role: 'admin'   },
-    ];
 
     function getSession() {
         try {
@@ -28,14 +17,20 @@ const Auth = (() => {
         sessionStorage.removeItem(STORAGE_KEY);
     }
 
-    function login(email, senha) {
-        const user = MOCK_USERS.find(u => u.email === email && u.senha === senha);
-        if (!user) return false;
-        const { senha: _, ...safeUser } = user;
-        setSession(safeUser);
-        return true;
+    async function login(email, senha) {
+        try {
+            const response = await fetch('logarUsuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ email, senha })
+            });
+            if (!response.ok) return false;
+            setSession(await response.json());
+            return true;
+        } catch {
+            return false;
+        }
     }
-
     function logout() {
         clearSession();
     }
@@ -53,14 +48,9 @@ const Auth = (() => {
         return s && s.role === 'admin';
     }
 
-    return { login, logout, getUser, isLoggedIn, isAdmin };
+    return { login, logout, getUser, setUser: setSession, isLoggedIn, isAdmin };
 })();
 
-/* ──────────────────────────────────────────────────────────────
-   renderHeader()
-   Injeta o HTML correto nas .acoes-cabecalho de qualquer página
-   com base no estado de sessão atual.
-────────────────────────────────────────────────────────────── */
 function renderHeader() {
     const container = document.querySelector('.acoes-cabecalho');
     if (!container) return;
@@ -90,7 +80,8 @@ function renderHeader() {
         <button onclick="fazerLogout()" class="botao-cabecalho botao-sair">Sair</button>`;
 }
 
-function fazerLogout() {
+async function fazerLogout() {
+    await fetch('logoutUsuario', { method: 'POST' }).catch(() => {});
     Auth.logout();
     window.location.href = 'index.html';
 }
@@ -124,5 +115,5 @@ const Carrinho = (() => {
 
     function limpar() { save([]); renderHeader(); }
 
-    return { get, adicionar, remover, atualizar, limpar };
+return { login, logout, getUser, setUser: setSession, isLoggedIn, isAdmin };
 })();
