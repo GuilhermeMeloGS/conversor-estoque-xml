@@ -77,11 +77,11 @@
     if (Auth.isLoggedIn()) window.location.href = 'index.html';
     renderHeader();
 
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.querySelector('form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
-        const ok = Auth.login(email, senha);
+        const ok = await Auth.login(email, senha);
         if (ok) {
             window.location.href = Auth.isAdmin() ? 'admin.html' : 'index.html';
         } else {

@@ -1,9 +1,5 @@
 package br.com.drinkup.model;
 
-
-
-
-
 public class Produto {
 
     private int idProduto;

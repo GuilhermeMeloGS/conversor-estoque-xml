@@ -1,6 +1,0 @@
-br\com\drinkup\servlet\ListaProdutosServlet.class
-br\com\drinkup\servlet\CadastraProdutoServlet.class
-br\com\drinkup\model\Produto.class
-br\com\drinkup\dao\ProdutoDao.class
-br\com\drinkup\servlet\AtualizaProdutoServlet.class
-br\com\drinkup\servlet\DeleteProdutoServlet.class
