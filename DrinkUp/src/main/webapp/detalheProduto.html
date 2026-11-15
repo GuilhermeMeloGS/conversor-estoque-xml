@@ -24,12 +24,7 @@
     </header>
 
     <main class="pagina-detalhe">
-
-        <nav class="breadcrumb">
-            <a href="index.html">Início</a> /
-            <a href="produtos">Produtos</a> /
-            <span id="bcNome">Produto</span>
-        </nav>
+        <nav class="navegacao" aria-label="Menu principal"></nav>
 
         <div class="layout-detalhe">
 
@@ -168,5 +163,6 @@
         document.querySelectorAll('.miniatura').forEach(m => m.textContent = produtoAtual.icone);
     });
 </script>
+    <script src="shared/menu.js"></script>
 </body>
 </html>
