@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="Padronizaçao dos endpoints utilizando href" />
+    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="Padronizaçao dos endpoints utilizando href">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,7 +41,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/GuilhermeMeloGS/conversor-estoque-xml.git&quot;,
-    &quot;accountId&quot;: &quot;75c45c59-bc31-430b-9569-f36d9a0295c2&quot;
+    &quot;accountId&quot;: &quot;8c107cbd-f87d-4ede-a420-4223604b6e08&quot;
   }
 }</component>
   <component name="McpProjectServerCommands">
@@ -103,6 +112,9 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3LL2I5ZbqP1GbNePfsa98h5TTuU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -127,14 +139,15 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
-        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.33813.55" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.33813.55" />
       </set>
     </attachedChunks>
   </component>
@@ -145,6 +158,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1793218944960</updated>
+      <workItem from="1795094249847" duration="148000" />
+      <workItem from="1795094419589" duration="61000" />
     </task>
     <servers />
   </component>
