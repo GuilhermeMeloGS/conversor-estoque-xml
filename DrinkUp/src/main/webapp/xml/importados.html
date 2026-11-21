@@ -1,10 +1,133 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pré-visualização XML | DrinkUp</title>
+
+    <link rel="stylesheet" href="conversorXML.css">
 </head>
+
 <body>
+
+<header class="cabecalho">
+    <div class="logo">
+        <img src="../imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+    </div>
+
+    <nav>
+        <a href="conversorXML.html">Voltar ao conversor</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="titulo-pagina">
+        <h1>Pré-visualização da importação</h1>
+
+        <p>
+            Confira os produtos encontrados no arquivo XML
+            antes de confirmar a importação.
+        </p>
+    </section>
+
+    <div id="mensagem" class="mensagem">
+        Carregando produtos...
+    </div>
+
+    <section class="tabela-container">
+
+        <table class="tabela-produtos">
+            <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Produto</th>
+                <th>Código de barras</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Volume (ml)</th>
+            </tr>
+            </thead>
+
+            <tbody id="listaProdutos">
+            <!-- Produtos carregados pelo JavaScript -->
+            </tbody>
+        </table>
+
+    </section>
+
+    <section class="acoes">
+
+        <a href="conversorXML.html" class="botao cancelar">
+            Cancelar
+        </a>
+
+        <form action="../estoque/xml/confirmar" method="POST">
+            <button type="submit" class="botao importar">
+                Confirmar importação
+            </button>
+        </form>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>DrinkUp &copy; 2026 - Sistema de Gerenciamento</p>
+</footer>
+
+<script>
+    const listaProdutos = document.getElementById("listaProdutos");
+    const mensagem = document.getElementById("mensagem");
+
+    async function carregarProdutos() {
+        try {
+            const resposta = await fetch("../estoque/xml/preview");
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível carregar os produtos.");
+            }
+
+            const produtos = await resposta.json();
+
+            if (!produtos || produtos.length === 0) {
+                mensagem.textContent = "Nenhum produto encontrado no arquivo XML.";
+                return;
+            }
+
+            mensagem.textContent =
+                produtos.length + " produto(s) encontrado(s). Confira antes de confirmar.";
+
+            produtos.forEach(produto => {
+                const linha = document.createElement("tr");
+
+                const valores = [
+                    produto.idCategoria,
+                    produto.nomeDoProduto,
+                    produto.codigoDeBarras,
+                    Number(produto.preco).toFixed(2),
+                    produto.quantidadeEstoque,
+                    produto.volumeML
+                ];
+
+                valores.forEach(valor => {
+                    const coluna = document.createElement("td");
+                    coluna.textContent = valor ?? "";
+                    linha.appendChild(coluna);
+                });
+
+                listaProdutos.appendChild(linha);
+            });
+
+        } catch (erro) {
+            mensagem.textContent = erro.message;
+        }
+    }
+
+    carregarProdutos();
+</script>
 
 </body>
 </html>
