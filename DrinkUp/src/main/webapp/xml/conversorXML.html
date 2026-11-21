@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor XML | DrinkUp</title>
+
+    <link rel="stylesheet" href="conversorXML.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<header class="cabecalho">
+    <div class="logo">
+        <img src="../imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+    </div>
+
+    <nav>
+        <a href="../admin.html">Voltar ao painel</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="titulo-pagina">
+        <h1>Conversor de Estoque XML</h1>
+        <p>
+            Gerencie a exportação e importação dos produtos do estoque.
+        </p>
+    </section>
+
+    <section class="opcoes">
+
+        <!-- EXPORTAÇÃO -->
+        <div class="card">
+            <div class="icone">
+                <i class="fa-solid fa-file-export"></i>
+            </div>
+
+            <h2>Exportar estoque</h2>
+
+            <p>
+                Gere um arquivo XML com todos os produtos
+                cadastrados no estoque.
+            </p>
+
+            <a href="../estoque/xml/exportar" class="botao">
+                <i class="fa-solid fa-download"></i>
+                Baixar XML
+            </a>
+        </div>
+
+        <!-- IMPORTAÇÃO -->
+        <div class="card">
+            <div class="icone">
+                <i class="fa-solid fa-file-import"></i>
+            </div>
+
+            <h2>Importar estoque</h2>
+
+            <p>
+                Selecione um arquivo XML para visualizar
+                e validar os produtos antes de importar.
+            </p>
+
+            <form action="../estoque/xml/importar"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <label for="arquivoXML" class="botao">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Selecionar arquivo XML
+                </label>
+
+                <input type="file"
+                       id="arquivoXML"
+                       name="arquivoXML"
+                       accept=".xml,application/xml,text/xml"
+                       required>
+
+                <span id="nomeArquivo">
+                    Nenhum arquivo selecionado
+                </span>
+
+                <button type="submit" class="botao importar">
+                    <i class="fa-solid fa-upload"></i>
+                    Enviar arquivo
+                </button>
+
+            </form>
+        </div>
+
+    </section>
+
+    <section class="informacoes">
+        <h2>Como funciona?</h2>
+
+        <div class="etapas">
+
+            <div class="etapa">
+                <span>1</span>
+                <h3>Selecionar</h3>
+                <p>Escolha o arquivo XML que deseja importar.</p>
+            </div>
+
+            <div class="etapa">
+                <span>2</span>
+                <h3>Visualizar</h3>
+                <p>Confira os produtos encontrados no arquivo.</p>
+            </div>
+
+            <div class="etapa">
+                <span>3</span>
+                <h3>Confirmar</h3>
+                <p>Confirme a operação para salvar os produtos.</p>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>DrinkUp &copy; 2026 - Sistema de Gerenciamento</p>
+</footer>
+
+<script>
+    const arquivoXML = document.getElementById("arquivoXML");
+    const nomeArquivo = document.getElementById("nomeArquivo");
+
+    arquivoXML.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            nomeArquivo.textContent = this.files[0].name;
+        } else {
+            nomeArquivo.textContent = "Nenhum arquivo selecionado";
+        }
+    });
+</script>
+
+</body>
+</html>

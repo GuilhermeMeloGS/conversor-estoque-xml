@@ -4,17 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db591b47-fbf4-4121-b52a-30195f65a954" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/GeradorXML.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/exportados.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="2622fbc7-45e3-459e-9b24-ad10bafc3039" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/GeradorXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/GeradorXML.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/exportados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,18 +26,19 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="HTML File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
-  <component name="ProjectId" id="3MLRQWxxrFpb2RXTvFrJbPJCSpJ" />
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3MR2HFjsNGOssDJpWKSSG74U7JF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -43,21 +46,40 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/conversor-estoque-xml",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "feature/conversor-xml",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/julio.ssilva2/IdeaProjects/conversor-estoque-xml"
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="db591b47-fbf4-4121-b52a-30195f65a954" name="Changes" comment="" />
-      <created>1795127845899</created>
+      <changelist id="2622fbc7-45e3-459e-9b24-ad10bafc3039" name="Changes" comment="" />
+      <created>1795298972173</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1795127845899</updated>
+      <updated>1795298972173</updated>
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
