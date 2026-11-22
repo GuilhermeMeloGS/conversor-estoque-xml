@@ -1,8 +1,9 @@
-
 package xml;
 
 import br.com.drinkup.dao.ProdutoDao;
 import br.com.drinkup.model.Produto;
+import br.com.drinkup.model.Usuario;
+import br.com.drinkup.utilidades.UtilidadesSessao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +22,13 @@ public class ConfirmarImportacaoXMLServlet extends HttpServlet {
                           HttpServletResponse response)
             throws ServletException, IOException {
 
+        // 1. Garante que há um usuário logado na sessão
+        Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
+        if (usuarioLogado == null) {
+            response.sendRedirect(request.getContextPath() + "/paginaLogin.html");
+            return;
+        }
+
         List<Produto> produtos = (List<Produto>)
                 request.getSession().getAttribute("produtosImportacaoXML");
 
@@ -29,37 +37,29 @@ public class ConfirmarImportacaoXMLServlet extends HttpServlet {
                     "erroImportacao",
                     "Nenhum produto encontrado para importar."
             );
-
-            response.sendRedirect(
-                    request.getContextPath() + "/xml/importados.jsp"
-            );
+            response.sendRedirect(request.getContextPath() + "/produtos");
             return;
         }
 
         try {
+            // 2. Salva os produtos importados no estoque
             new ProdutoDao().importarProdutos(produtos);
 
             request.getSession().removeAttribute("produtosImportacaoXML");
-
             request.getSession().setAttribute(
                     "sucessoImportacao",
                     "Produtos importados com sucesso!"
             );
 
-            response.sendRedirect(
-                    request.getContextPath() + "/xml/importados.jsp"
-            );
+            // 3. Redireciona para a página de estoque/produtos após confirmar
+            response.sendRedirect(request.getContextPath() + "/produtos");
 
         } catch (SQLException e) {
-
             request.getSession().setAttribute(
                     "erroImportacao",
                     "Erro ao importar produtos: " + e.getMessage()
             );
-
-            response.sendRedirect(
-                    request.getContextPath() + "/xml/importados.jsp"
-            );
+            response.sendRedirect(request.getContextPath() + "/produtos");
         }
     }
 }
