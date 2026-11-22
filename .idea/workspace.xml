@@ -4,55 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2622fbc7-45e3-459e-9b24-ad10bafc3039" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" afterDir="false" />
+    <list default="true" id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/GeradorXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/GeradorXML.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/exportados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="HTML File" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="3MR2HFjsNGOssDJpWKSSG74U7JF" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="3MSwsOWblADldSAGT8DsvhPXS8G" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/conversor-xml",
-    "ignore.virus.scanning.warn.message": "true",
+    "git-widget-placeholder": "feature/nova-alteracao",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -71,11 +51,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2622fbc7-45e3-459e-9b24-ad10bafc3039" name="Changes" comment="" />
-      <created>1795298972173</created>
+      <changelist id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="" />
+      <created>1795357486167</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1795298972173</updated>
+      <updated>1795357486167</updated>
     </task>
     <servers />
   </component>

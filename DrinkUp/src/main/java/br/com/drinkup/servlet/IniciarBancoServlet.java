@@ -1,22 +1,20 @@
 package br.com.drinkup.servlet;
 
-
 import br.com.drinkup.servlet.config.ConnectionPoolConfig;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
 @WebListener
-public class IniciarBancoServlet implements ServletContextListener{
+public class IniciarBancoServlet implements ServletContextListener {
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent)  {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         List<String> scriptsCriacao = List.of(
                 """
@@ -72,7 +70,7 @@ public class IniciarBancoServlet implements ServletContextListener{
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS importacaoXML (
-                    idImportacoa INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                    idImportacao INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
                     idUsuarioAdmin INT NOT NULL,
                     nomeArquivo VARCHAR(255),
                     dataImportacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -82,18 +80,14 @@ public class IniciarBancoServlet implements ServletContextListener{
         );
 
         String sqlInserirAdmin = """
-            MERGE INTO usuario (nome, sobrenome, email, senha, tipo)
-            KEY (email)
-            VALUES (?, ?, ?, ?, ?)
-            """;
-
-        String inserirProdutosBase = """
-                
+                MERGE INTO usuario (nome, sobrenome, email, senha, tipo)
+                KEY (email)
+                VALUES (?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = ConnectionPoolConfig.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sqlInserirAdmin);
-             Statement stmt = connection.createStatement()) {
+             Statement stmt = connection.createStatement();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlInserirAdmin)) {
 
             for (String sql : scriptsCriacao) {
                 stmt.execute(sql);
@@ -102,19 +96,17 @@ public class IniciarBancoServlet implements ServletContextListener{
             preparedStatement.setString(1, "admin");
             preparedStatement.setString(2, "admin");
             preparedStatement.setString(3, "admin@admin.com");
-            preparedStatement.setString(4, "admin123"); // Ajuste ou aplique hash se o seu login usar criptografia
+            preparedStatement.setString(4, "admin123");
             preparedStatement.setString(5, "Admin");
             preparedStatement.executeUpdate();
 
-        }
-
-        catch (Exception e) {
-            System.out.println("Erro ao buscar usuários: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Erro ao inicializar banco de dados: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
     }
 }
