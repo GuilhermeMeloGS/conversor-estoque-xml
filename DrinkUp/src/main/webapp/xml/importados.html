@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -64,8 +63,8 @@
             Cancelar
         </a>
 
-        <form action="../estoque/xml/confirmar" method="POST">
-            <button type="submit" class="botao importar">
+        <form id="formConfirmar" action="../estoque/xml/confirmar" method="POST">
+            <button type="submit" id="btnConfirmar" class="botao importar">
                 Confirmar importação
             </button>
         </form>
@@ -81,8 +80,13 @@
 <script>
     const listaProdutos = document.getElementById("listaProdutos");
     const mensagem = document.getElementById("mensagem");
+    const formConfirmar = document.getElementById("formConfirmar");
+    const btnConfirmar = document.getElementById("btnConfirmar");
 
     async function carregarProdutos() {
+        listaProdutos.innerHTML = "";
+        btnConfirmar.disabled = true;
+
         try {
             const resposta = await fetch("../estoque/xml/preview");
 
@@ -92,7 +96,7 @@
 
             const produtos = await resposta.json();
 
-            if (!produtos || produtos.length === 0) {
+            if (!Array.isArray(produtos) || produtos.length === 0) {
                 mensagem.textContent = "Nenhum produto encontrado no arquivo XML.";
                 return;
             }
@@ -103,11 +107,15 @@
             produtos.forEach(produto => {
                 const linha = document.createElement("tr");
 
+                const precoFormatado = Number.isFinite(Number(produto.preco))
+                    ? Number(produto.preco).toFixed(2)
+                    : "";
+
                 const valores = [
                     produto.idCategoria,
                     produto.nomeDoProduto,
                     produto.codigoDeBarras,
-                    Number(produto.preco).toFixed(2),
+                    precoFormatado,
                     produto.quantidadeEstoque,
                     produto.volumeML
                 ];
@@ -121,10 +129,17 @@
                 listaProdutos.appendChild(linha);
             });
 
+            btnConfirmar.disabled = false;
+
         } catch (erro) {
-            mensagem.textContent = erro.message;
+            mensagem.textContent = erro.message || "Erro ao carregar a pré-visualização.";
         }
     }
+
+    formConfirmar.addEventListener("submit", () => {
+        btnConfirmar.disabled = true;
+        mensagem.textContent = "Confirmando importação...";
+    });
 
     carregarProdutos();
 </script>

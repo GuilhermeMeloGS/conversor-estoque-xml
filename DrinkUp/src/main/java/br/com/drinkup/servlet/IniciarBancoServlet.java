@@ -92,13 +92,13 @@ public class IniciarBancoServlet implements ServletContextListener{
                 """;
 
         try (Connection connection = ConnectionPoolConfig.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sqlInserirAdmin);
              Statement stmt = connection.createStatement()) {
 
             for (String sql : scriptsCriacao) {
                 stmt.execute(sql);
             }
 
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlInserirAdmin);
             preparedStatement.setString(1, "admin");
             preparedStatement.setString(2, "admin");
             preparedStatement.setString(3, "admin@admin.com");
