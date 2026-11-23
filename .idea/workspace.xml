@@ -4,25 +4,118 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="">
+    <list default="true" id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="Padronizaçao dos endpoints utilizando href">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/LeitorXML.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="36" />
+  </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
-  <component name="ProjectId" id="3MSwsOWblADldSAGT8DsvhPXS8G" />
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;LorenzoRighii&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/GuilhermeMeloGS/conversor-estoque-xml.git&quot;,
+    &quot;accountId&quot;: &quot;8c107cbd-f87d-4ede-a420-4223604b6e08&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4155765551403188" />
+      <entry key="MS500" value="4.195966313572747" />
+      <entry key="S2" value="11.72082752149733" />
+      <entry key="S5" value="16.350081061501967" />
+      <entry key="S10" value="18.47715053362299" />
+      <entry key="S30" value="20.14226340979408" />
+      <entry key="S60" value="22.114243334525867" />
+      <entry key="M2" value="32.23992211258296" />
+      <entry key="M5" value="68.0334621740882" />
+      <entry key="M10" value="127.52767582545475" />
+      <entry key="M15" value="180.8023191567055" />
+      <entry key="M30" value="284.7844355159709" />
+      <entry key="H1" value="372.9219409503693" />
+      <entry key="H2" value="431.22658037408473" />
+      <entry key="H4" value="464.887286337834" />
+      <entry key="D1" value="495.5590889152279" />
+      <entry key="W1" value="501.0733973210106" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.351531397777582" />
+      <entry key="MS500" value="4.1603853777882085" />
+      <entry key="S2" value="11.695975142203734" />
+      <entry key="S5" value="16.336182306720158" />
+      <entry key="S10" value="18.469290256886207" />
+      <entry key="S30" value="20.139403607753206" />
+      <entry key="S60" value="22.112617256692218" />
+      <entry key="M2" value="32.23853478016447" />
+      <entry key="M5" value="68.03204636553619" />
+      <entry key="M10" value="127.5260435102213" />
+      <entry key="M15" value="180.80059253614735" />
+      <entry key="M30" value="284.78291326150367" />
+      <entry key="H1" value="372.92089408158165" />
+      <entry key="H2" value="431.2259618318774" />
+      <entry key="H4" value="464.886949560992" />
+      <entry key="D1" value="495.5590286054337" />
+      <entry key="W1" value="501.0733885979307" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3LL2I5ZbqP1GbNePfsa98h5TTuU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -31,49 +124,67 @@
   "keyToString": {
     "Maven.DrinkUp [org.apache.tomcat.maven:tomcat7-maven-plugin:2.1:run].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/nova-alteracao",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm"
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
-        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.33813.55" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.33813.55" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="" />
-      <created>1795357486167</created>
+      <changelist id="44d0115c-bf63-47a6-9fc7-5d27efab3ac1" name="Changes" comment="" />
+      <created>1793218944960</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1795357486167</updated>
+      <updated>1793218944960</updated>
+      <workItem from="1795094249847" duration="148000" />
+      <workItem from="1795094419589" duration="61000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java</url>
-          <line>60</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Padronização dos endpoints utilizando href" />
+    <MESSAGE value="Padronizaçao dos endpoints utilizando href" />
+    <option name="LAST_COMMIT_MESSAGE" value="Padronizaçao dos endpoints utilizando href" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

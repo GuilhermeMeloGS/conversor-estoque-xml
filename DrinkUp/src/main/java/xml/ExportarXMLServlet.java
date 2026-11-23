@@ -1,6 +1,9 @@
 
 package xml;
 
+import br.com.drinkup.model.TipoUsuario;
+import br.com.drinkup.model.Usuario;
+import br.com.drinkup.utilidades.UtilidadesSessao;
 import xml.service.EstoqueXMLService;
 
 import javax.servlet.ServletException;
@@ -26,6 +29,12 @@ public class ExportarXMLServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+
+        Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
+        if (usuarioLogado == null || usuarioLogado.getTipo() != TipoUsuario.Admin) {
+            response.sendRedirect(request.getContextPath() + "/paginaLogin.html");
+            return;
+        }
 
         try {
 

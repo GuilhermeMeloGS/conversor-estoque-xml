@@ -67,6 +67,20 @@ body {
     font-size: 16px;
 }
 
+.mensagem {
+    max-width: 760px;
+    margin: -20px auto 30px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.mensagem-erro {
+    background: #fee;
+    color: #a12626;
+    border: 1px solid #e6bcbc;
+}
+
 /* CARDS */
 
 .opcoes {

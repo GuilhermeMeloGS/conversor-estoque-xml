@@ -2,6 +2,7 @@ package xml;
 
 import br.com.drinkup.dao.ProdutoDao;
 import br.com.drinkup.model.Produto;
+import br.com.drinkup.model.TipoUsuario;
 import br.com.drinkup.model.Usuario;
 import br.com.drinkup.utilidades.UtilidadesSessao;
 
@@ -24,7 +25,7 @@ public class ConfirmarImportacaoXMLServlet extends HttpServlet {
 
         // 1. Garante que há um usuário logado na sessão
         Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
-        if (usuarioLogado == null) {
+        if (usuarioLogado == null || usuarioLogado.getTipo() != TipoUsuario.Admin) {
             response.sendRedirect(request.getContextPath() + "/paginaLogin.html");
             return;
         }

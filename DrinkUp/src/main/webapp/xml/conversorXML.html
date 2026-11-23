@@ -32,6 +32,8 @@
         </p>
     </section>
 
+    <div id="mensagemErro" class="mensagem mensagem-erro" role="alert" hidden></div>
+
     <section class="opcoes">
 
         <!-- EXPORTAÇÃO -->
@@ -130,6 +132,14 @@
 <script>
     const arquivoXML = document.getElementById("arquivoXML");
     const nomeArquivo = document.getElementById("nomeArquivo");
+    const mensagemErro = document.getElementById("mensagemErro");
+
+    const parametros = new URLSearchParams(window.location.search);
+    const erro = parametros.get("erro");
+    if (erro) {
+        mensagemErro.textContent = erro;
+        mensagemErro.hidden = false;
+    }
 
     arquivoXML.addEventListener("change", function () {
         if (this.files.length > 0) {
