@@ -94,6 +94,7 @@
                             <th>Nº Pedido</th>
                             <th>Cliente</th>
                             <th>Data</th>
+                            <th>Itens</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Alterar Status</th>
@@ -126,14 +127,15 @@
                         <label>Categoria *</label>
                         <select id="prodCategoria" required>
                             <option value="">Selecione...</option>
-                            <option>Cervejas</option>
-                            <option>Refrigerantes</option>
-                            <option>Sucos</option>
-                            <option>Energéticos</option>
-                            <option>Vinhos</option>
-                            <option>Destilados</option>
-                            <option>Águas</option>
                         </select>
+                    </div>
+                    <div class="campo-admin">
+                        <label>Código de barras *</label>
+                        <input type="text" id="prodCodigo" required placeholder="Ex: 7891234567890">
+                    </div>
+                    <div class="campo-admin">
+                        <label>Volume (ml) *</label>
+                        <input type="number" id="prodVolume" min="1" step="1" required placeholder="Ex: 350">
                     </div>
                     <div class="campo-admin">
                         <label>Preço (R$) *</label>
@@ -144,12 +146,13 @@
                         <input type="number" id="prodEstoque" min="0" required placeholder="Qtd.">
                     </div>
                     <div class="campo-admin span-2">
-                        <label>Descrição</label>
-                        <textarea id="prodDescricao" rows="3" placeholder="Descrição do produto..."></textarea>
+                        <label>Imagem (PNG, JPG ou WebP, até 2 MB)</label>
+                        <input type="file" id="prodImagem" accept="image/png,image/jpeg,image/webp">
+                        <small id="prodImagemAviso"></small>
                     </div>
                     <div class="campo-admin span-2">
-                        <label>URL da Imagem</label>
-                        <input type="text" id="prodImagem" placeholder="https://... ou deixe em branco para usar emoji">
+                        <label>Descrição</label>
+                        <textarea id="prodDescricao" rows="3" placeholder="Descrição do produto..."></textarea>
                     </div>
                 </div>
                 <div class="acoes-modal">
@@ -176,32 +179,33 @@
     if (!Auth.isAdmin()) window.location.href = 'paginaLogin.html';
     document.addEventListener('DOMContentLoaded', function () { renderHeader(); init(); });
 
-    /* ── Mock data ── */
-    let produtos = [
-        { id:1, nome:'Cerveja Heineken Long Neck 330ml', categoria:'Cervejas',    preco:9.90,  estoque:142 },
-        { id:2, nome:'Coca-Cola Original Lata 350ml',    categoria:'Refrigerantes',preco:4.50, estoque:310 },
-        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml',  categoria:'Cervejas',    preco:3.80,  estoque:256 },
-        { id:4, nome:'Red Bull Energy Drink 250ml',      categoria:'Energéticos', preco:11.90, estoque:88  },
-        { id:5, nome:'Suco Del Valle Uva 1L',            categoria:'Sucos',       preco:7.90,  estoque:67  },
-        { id:6, nome:'Água Mineral Crystal 500ml',       categoria:'Águas',       preco:2.50,  estoque:500 },
-        { id:7, nome:'Vinho Tinto Seco Reserva 750ml',   categoria:'Vinhos',      preco:45.90, estoque:34  },
-        { id:8, nome:'Whisky Escocês 12 Anos 1L',        categoria:'Destilados',  preco:149.90,estoque:12  },
-    ];
+    /* Dados vindos do banco (via servlets) */
+    let produtos = [];
+    let categorias = [];
+    let usuarios = [];
+    let pedidos = [];
 
-    const usuarios = [];
-
-    let pedidos = [
-        { id:'#1001', cliente:'João Silva',   data:'20/06/2025', total:'R$ 33,30', status:'enviado'  },
-        { id:'#1002', cliente:'Maria Santos', data:'14/07/2025', total:'R$ 47,60', status:'pago'     },
-        { id:'#1003', cliente:'João Silva',   data:'27/10/2026', total:'R$ 149,90',status:'pendente' },
-    ];
+    const STATUS_CLASSE = { Pendente: 'pendente', Concluido: 'pago', Cancelado: 'cancelado' };
+    const STATUS_TEXTO  = { Pendente: 'Pendente', Concluido: 'Concluído', Cancelado: 'Cancelado' };
 
     function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
 
+    function esc(t) {
+        const d = document.createElement('div');
+        d.textContent = t == null ? '' : t;
+        return d.innerHTML;
+    }
+
+    async function buscarJson(url) {
+        const resposta = await fetch(url);
+        if (!resposta.ok) throw new Error(url);
+        return resposta.json();
+    }
+
     function init() {
-        renderProdutos();
-        renderUsuarios();
-        renderPedidos();
+        carregarCategorias().then(carregarProdutos);
+        carregarUsuarios();
+        carregarPedidos();
 
         document.querySelectorAll('.item-admin').forEach(link => {
             link.addEventListener('click', function (e) {
@@ -214,13 +218,31 @@
         });
     }
 
+    /* ── CATEGORIAS ── */
+    async function carregarCategorias() {
+        categorias = await buscarJson('api/categorias');
+        const select = document.getElementById('prodCategoria');
+        select.innerHTML = '<option value="">Selecione...</option>' +
+            categorias.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+    }
+
     /* ── PRODUTOS ── */
+    async function carregarProdutos() {
+        try {
+            produtos = await buscarJson('api/produtos');
+            renderProdutos();
+        } catch {
+            document.getElementById('tabelaProdutos').innerHTML =
+                '<tr><td colspan="6">Erro ao carregar produtos.</td></tr>';
+        }
+    }
+
     function renderProdutos() {
         document.getElementById('tabelaProdutos').innerHTML = produtos.map(p => `
             <tr>
                 <td>${p.id}</td>
-                <td class="nome-td">${p.nome}</td>
-                <td><span class="chip-cat">${p.categoria}</span></td>
+                <td class="nome-td">${p.imagem ? `<img class="mini-produto" src="${esc(p.imagem)}" alt="">` : ''}${esc(p.nome)}</td>
+                <td><span class="chip-cat">${esc(p.categoria)}</span></td>
                 <td>${fmt(p.preco)}</td>
                 <td class="${p.estoque < 20 ? 'estoque-baixo' : ''}">${p.estoque}</td>
                 <td>
@@ -231,48 +253,104 @@
     }
 
     /* ── USUÁRIOS ── */
-    function renderUsuarios() {
-        fetch("/listarUsuarios").then(response => response.json()).then(lista => {
-            document.getElementById('tabelaUsuarios').innerHTML = lista.map(u => `
-                <tr>
-                    <td>${u.id}</td>
-                    <td>${u.nome} ${u.sobrenome}</td>
-                    <td>${u.email}</td>
-                    <td><span class="badge-role-admin ${u.tipo.toLowerCase()}">${u.tipo}</span></td>
-                    <td>
-                        <button class="btn-acao editar" onclick="alterarPermissao(${u.id})">
-                            🔑 Alterar Perfil
-                        </button>
-                    </td>
-                </tr>`).join('');
-        })
-        .catch(() => {
+    async function carregarUsuarios() {
+        try {
+            usuarios = await buscarJson('usuarios');
+            renderUsuarios();
+        } catch {
             document.getElementById('tabelaUsuarios').innerHTML =
                 '<tr><td colspan="5">Erro ao carregar usuários.</td></tr>';
-        });
-}
+        }
+    }
 
-    /* ── PEDIDOS ── */
-    const STATUS_OPTS = ['pendente','pago','enviado','cancelado'];
-    function renderPedidos() {
-        document.getElementById('tabelaPedidos').innerHTML = pedidos.map((p, i) => `
+    function renderUsuarios() {
+        document.getElementById('tabelaUsuarios').innerHTML = usuarios.map(u => `
             <tr>
-                <td>${p.id}</td>
-                <td>${p.cliente}</td>
-                <td>${p.data}</td>
-                <td>${p.total}</td>
-                <td><span class="badge-status ${p.status}">${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span></td>
+                <td>${u.id}</td>
+                <td>${esc(u.nome)} ${esc(u.sobrenome)}</td>
+                <td>${esc(u.email)}</td>
+                <td><span class="badge-role-admin ${u.tipo.toLowerCase()}">${u.tipo}</span></td>
                 <td>
-                    <select class="seletor-status" onchange="alterarStatus(${i}, this.value)">
-                        ${STATUS_OPTS.map(s => `<option value="${s}" ${s===p.status?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+                    <button class="btn-acao editar" onclick="alterarPermissao(${u.id})">
+                        🔑 Alterar Perfil
+                    </button>
+                </td>
+            </tr>`).join('');
+    }
+
+    async function alterarPermissao(id) {
+        const u = usuarios.find(x => x.id === id);
+        const novo = u.tipo === 'Admin' ? 'Cliente' : 'Admin';
+        if (!confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) return;
+
+        const resposta = await fetch('alterarTipoUsuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id, tipo: novo })
+        });
+        if (!resposta.ok) {
+            const dados = await resposta.json().catch(() => ({}));
+            alert(dados.erro || 'Não foi possível alterar o perfil.');
+            return;
+        }
+        carregarUsuarios();
+    }
+
+    /* ── PEDIDOS (tabelas venda / itemVenda) ── */
+    const STATUS_OPTS = ['Pendente', 'Concluido', 'Cancelado'];
+
+    async function carregarPedidos() {
+        try {
+            pedidos = await buscarJson('api/vendas');
+            renderPedidos();
+        } catch {
+            document.getElementById('tabelaPedidos').innerHTML =
+                '<tr><td colspan="7">Erro ao carregar pedidos.</td></tr>';
+        }
+    }
+
+    function renderPedidos() {
+        if (pedidos.length === 0) {
+            document.getElementById('tabelaPedidos').innerHTML =
+                '<tr><td colspan="7">Nenhum pedido registrado.</td></tr>';
+            return;
+        }
+
+        document.getElementById('tabelaPedidos').innerHTML = pedidos.map(p => `
+            <tr>
+                <td>#${p.id}</td>
+                <td>${esc(p.cliente)}</td>
+                <td>${esc(p.data)}</td>
+                <td>${p.itens.map(i => esc(i.nome) + ' x' + i.quantidade).join(', ')}</td>
+                <td>${fmt(p.total)}</td>
+                <td><span class="badge-status ${STATUS_CLASSE[p.status]}">${STATUS_TEXTO[p.status]}</span></td>
+                <td>
+                    <select class="seletor-status" ${p.status === 'Cancelado' ? 'disabled' : ''}
+                            onchange="alterarStatus(${p.id}, this.value)">
+                        ${STATUS_OPTS.map(s => `<option value="${s}" ${s === p.status ? 'selected' : ''}>${STATUS_TEXTO[s]}</option>`).join('')}
                     </select>
                 </td>
             </tr>`).join('');
     }
 
-    function alterarStatus(idx, novoStatus) {
-        pedidos[idx].status = novoStatus;
-        renderPedidos();
+    async function alterarStatus(id, novoStatus) {
+        if (novoStatus === 'Cancelado' &&
+            !confirm('Cancelar o pedido devolve os itens ao estoque e não pode ser desfeito. Continuar?')) {
+            renderPedidos();
+            return;
+        }
+
+        const resposta = await fetch('api/vendas/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id, status: novoStatus })
+        });
+        if (!resposta.ok) {
+            const dados = await resposta.json().catch(() => ({}));
+            alert(dados.erro || 'Não foi possível atualizar o pedido.');
+        }
+        carregarPedidos();
+        carregarProdutos(); // o cancelamento devolve itens ao estoque
     }
 
     /* ── MODAL ── */
@@ -282,20 +360,17 @@
         editandoId = id || null;
         document.getElementById('tituloModal').textContent = id ? 'Editar Produto' : 'Novo Produto';
 
-        if (id) {
-            const p = produtos.find(x => x.id === id);
-            document.getElementById('prodNome').value      = p.nome;
-            document.getElementById('prodCategoria').value = p.categoria;
-            document.getElementById('prodPreco').value     = p.preco;
-            document.getElementById('prodEstoque').value   = p.estoque;
-        } else {
-            document.getElementById('prodNome').value      = '';
-            document.getElementById('prodCategoria').value = '';
-            document.getElementById('prodPreco').value     = '';
-            document.getElementById('prodEstoque').value   = '';
-            document.getElementById('prodDescricao').value = '';
-            document.getElementById('prodImagem').value    = '';
-        }
+        const p = id ? produtos.find(x => x.id === id) : null;
+        document.getElementById('prodNome').value      = p ? p.nome : '';
+        document.getElementById('prodCategoria').value = p ? p.idCategoria : '';
+        document.getElementById('prodCodigo').value    = p ? p.codigoDeBarras : '';
+        document.getElementById('prodVolume').value    = p ? p.volumeML : '';
+        document.getElementById('prodPreco').value     = p ? p.preco : '';
+        document.getElementById('prodEstoque').value   = p ? p.estoque : '';
+        document.getElementById('prodDescricao').value = p ? p.descricao : '';
+        document.getElementById('prodImagem').value = '';
+        document.getElementById('prodImagemAviso').textContent =
+            p && p.temFoto ? 'Imagem atual mantida, a menos que você escolha outra.' : '';
 
         document.getElementById('overlayModal').classList.add('ativo');
     }
@@ -305,40 +380,62 @@
         editandoId = null;
     }
 
-    function salvarProduto(e) {
+    async function salvarProduto(e) {
         e.preventDefault();
-        const nome      = document.getElementById('prodNome').value;
-        const categoria = document.getElementById('prodCategoria').value;
-        const preco     = parseFloat(document.getElementById('prodPreco').value);
-        const estoque   = parseInt(document.getElementById('prodEstoque').value);
 
-        if (editandoId) {
-            const p = produtos.find(x => x.id === editandoId);
-            Object.assign(p, { nome, categoria, preco, estoque });
-        } else {
-            const novoId = produtos.length ? Math.max(...produtos.map(x => x.id)) + 1 : 1;
-            produtos.push({ id: novoId, nome, categoria, preco, estoque });
+        // Mesmos campos esperados por CadastraProdutoServlet / AtualizaProdutoServlet.
+        const dados = new FormData();
+        dados.append('nome', document.getElementById('prodNome').value);
+        dados.append('idCategoria', document.getElementById('prodCategoria').value);
+        dados.append('codigoDeBarras', document.getElementById('prodCodigo').value);
+        dados.append('volumeML', document.getElementById('prodVolume').value);
+        dados.append('preco', document.getElementById('prodPreco').value);
+        dados.append('quantidadeEstoque', document.getElementById('prodEstoque').value);
+        dados.append('descricao', document.getElementById('prodDescricao').value);
+        if (editandoId) dados.append('id', editandoId);
+
+        const arquivo = document.getElementById('prodImagem').files[0];
+        if (arquivo) {
+            if (arquivo.size > 2 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 2 MB.');
+                return;
+            }
+            dados.append('imagem', arquivo);
         }
 
-        renderProdutos();
+        try {
+            const resposta = await fetch(editandoId ? 'produtos/atualizar' : 'produtos/cadastrar',
+                                         { method: 'POST', body: dados });
+            if (!resposta.ok) {
+                const erro = await resposta.json().catch(() => ({}));
+                throw new Error(erro.erro || '');
+            }
+        } catch (err) {
+            alert(err.message || 'Não foi possível salvar o produto. Verifique se o código de barras já existe.');
+            return;
+        }
+
         fecharModal();
+        carregarProdutos();
     }
 
     function editarProduto(id) { abrirModal('produto', id); }
 
-    function excluirProduto(id) {
+    async function excluirProduto(id) {
         if (!confirm('Excluir este produto?')) return;
-        produtos = produtos.filter(p => p.id !== id);
-        renderProdutos();
-    }
 
-    function alterarPermissao(id) {
-        const u = usuarios.find(x => x.id === id);
-        const novo = u.role === 'admin' ? 'cliente' : 'admin';
-        if (confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) {
-            u.role = novo;
-            renderUsuarios();
+        const resposta = await fetch('produtos/excluir', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id })
+        });
+        if (!resposta.ok) {
+            alert(resposta.status === 409
+                ? 'Este produto já foi vendido e não pode ser excluído.'
+                : 'Não foi possível excluir o produto.');
+            return;
         }
+        carregarProdutos();
     }
 
     document.getElementById('overlayModal').addEventListener('click', function(e) {

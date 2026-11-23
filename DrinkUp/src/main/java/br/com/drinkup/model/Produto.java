@@ -88,4 +88,45 @@ public class Produto {
     public void setVolumeML(int volumeML) {
         this.volumeML = volumeML;
     }
+
+    // Os bytes só são carregados por ProdutoDao.buscarImagem(); as listagens só preenchem temImagem.
+    private byte[] imagem;
+    private boolean temImagem;
+
+    public byte[] getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(byte[] imagem) {
+        this.imagem = imagem;
+    }
+
+    public boolean isTemImagem() {
+        return temImagem;
+    }
+
+    public void setTemImagem(boolean temImagem) {
+        this.temImagem = temImagem;
+    }
+
+    // Preenchidos apenas quando o produto é lido com JOIN na tabela categoria.
+    private String nomeCategoria;
+    private String iconeCategoria;
+
+    public String getNomeCategoria() {
+        return nomeCategoria;
+    }
+
+    public void setNomeCategoria(String nomeCategoria) {
+        this.nomeCategoria = nomeCategoria;
+    }
+
+    public String getIconeCategoria() {
+        return iconeCategoria;
+    }
+
+    public void setIconeCategoria(String iconeCategoria) {
+        this.iconeCategoria = iconeCategoria;
+    }
+
 }

@@ -1,5 +1,6 @@
 package br.com.drinkup.servlet;
 
+import br.com.drinkup.dao.CategoriaDao;
 import br.com.drinkup.dao.ProdutoDao;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,8 @@ public class ListaProdutosServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            request.setAttribute("produtos", new ProdutoDao().listarProdutos());
+            request.setAttribute("produtos", new ProdutoDao().listarComCategoria());
+            request.setAttribute("categorias", new CategoriaDao().listarCategorias());
             request.getRequestDispatcher("/listaProdutos.jsp").forward(request, response);
         } catch (Exception e) {
             throw new ServletException(e);

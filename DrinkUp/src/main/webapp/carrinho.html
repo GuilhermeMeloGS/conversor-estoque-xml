@@ -103,7 +103,7 @@
 
         container.innerHTML = items.map(item => `
             <div class="item-carrinho">
-                <div class="icone-item">${item.icone}</div>
+                <div class="icone-item">${item.imagem ? `<img class="foto-item" src="${item.imagem}" alt="">` : item.icone}</div>
                 <div class="info-item">
                     <p class="nome-item">${item.nome}</p>
                     <p class="preco-unit">${fmt(item.preco)} / un.</p>
@@ -140,14 +140,43 @@
         renderCarrinho();
     }
 
-    function finalizarCompra() {
+    async function finalizarCompra() {
         if (!Auth.isLoggedIn()) {
             window.location.href = 'paginaLogin.html';
             return;
         }
-        alert('✅ Pedido realizado com sucesso! (simulação — backend ainda não implementado)');
-        Carrinho.limpar();
-        renderCarrinho();
+
+        const itens = Carrinho.get().map(i => i.id + ':' + i.qty).join(',');
+        const btn = document.getElementById('btnFinalizar');
+        btn.disabled = true;
+
+        try {
+            const resposta = await fetch('api/vendas/finalizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ itens })
+            });
+
+            if (resposta.status === 401) {
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+                return;
+            }
+
+            const dados = await resposta.json();
+            if (!resposta.ok) {
+                alert('Não foi possível finalizar: ' + dados.erro);
+                return;
+            }
+
+            alert('Pedido #' + dados.idVenda + ' realizado com sucesso!');
+            Carrinho.limpar();
+            window.location.href = 'minhaConta.html';
+        } catch {
+            alert('Erro de comunicação com o servidor.');
+        } finally {
+            btn.disabled = false;
+        }
     }
 </script>
     <script src="shared/menu.js"></script>

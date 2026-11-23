@@ -51,28 +51,8 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#1001</td>
-                            <td>20/06/2025</td>
-                            <td>Heineken x2, Coca-Cola x3</td>
-                            <td>R$ 33,30</td>
-                            <td><span class="badge-status enviado">Enviado</span></td>
-                        </tr>
-                        <tr>
-                            <td>#1002</td>
-                            <td>14/07/2025</td>
-                            <td>Red Bull x4</td>
-                            <td>R$ 47,60</td>
-                            <td><span class="badge-status pago">Pago</span></td>
-                        </tr>
-                        <tr>
-                            <td>#1003</td>
-                            <td>27/10/2026</td>
-                            <td>Whisky Escocês x1</td>
-                            <td>R$ 149,90</td>
-                            <td><span class="badge-status pendente">Pendente</span></td>
-                        </tr>
+                    <tbody id="tabelaMeusPedidos">
+                        <tr><td colspan="5">Carregando...</td></tr>
                     </tbody>
                 </table>
             </section>
@@ -123,6 +103,42 @@
     </footer>
 
 <script>
+    const STATUS_CLASSE = { Pendente: 'pendente', Concluido: 'pago', Cancelado: 'cancelado' };
+    const STATUS_TEXTO  = { Pendente: 'Pendente', Concluido: 'Concluído', Cancelado: 'Cancelado' };
+
+    function esc(t) {
+        const d = document.createElement('div');
+        d.textContent = t == null ? '' : t;
+        return d.innerHTML;
+    }
+
+    function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+
+    async function carregarPedidos() {
+        const corpo = document.getElementById('tabelaMeusPedidos');
+        try {
+            const resposta = await fetch('api/minhasVendas');
+            if (!resposta.ok) throw new Error();
+            const pedidos = await resposta.json();
+
+            if (pedidos.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="5">Você ainda não fez nenhum pedido.</td></tr>';
+                return;
+            }
+
+            corpo.innerHTML = pedidos.map(p => `
+                <tr>
+                    <td>#${p.id}</td>
+                    <td>${esc(p.data)}</td>
+                    <td>${p.itens.map(i => esc(i.nome) + ' x' + i.quantidade).join(', ')}</td>
+                    <td>${fmt(p.total)}</td>
+                    <td><span class="badge-status ${STATUS_CLASSE[p.status]}">${STATUS_TEXTO[p.status]}</span></td>
+                </tr>`).join('');
+        } catch {
+            corpo.innerHTML = '<tr><td colspan="5">Erro ao carregar pedidos.</td></tr>';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         if (!Auth.isLoggedIn()) { window.location.href = 'paginaLogin.html'; return; }
         renderHeader();
@@ -186,6 +202,8 @@
                 alert('Não foi possível excluir a conta.');
             }
         });
+
+        carregarPedidos();
 
         const badge = document.getElementById('badgeRole');
         if (user.role === 'admin') { badge.textContent = 'Administrador'; badge.classList.add('admin'); }

@@ -8,6 +8,10 @@
   <name>DrinkUp Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <dependencies>
 
     <dependency>
@@ -46,6 +50,16 @@
 
   <build>
     <finalName>DrinkUp</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!-- Imagens dos produtos de exemplo: gravadas no banco pelo IniciarBancoServlet. -->
+      <resource>
+        <directory>src/main/imagensProdutos</directory>
+        <targetPath>seed-imagens</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>

@@ -115,5 +115,5 @@ const Carrinho = (() => {
 
     function limpar() { save([]); renderHeader(); }
 
-return { login, logout, getUser, setUser: setSession, isLoggedIn, isAdmin };
+    return { get, adicionar, remover, atualizar, limpar };
 })();

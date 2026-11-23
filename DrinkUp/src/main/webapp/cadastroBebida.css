@@ -276,3 +276,14 @@
         width: 100%;
     }
 }
+.previa-imagem {
+    max-width: 100%;
+    max-height: 220px;
+    margin-top: 16px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.previa-imagem[hidden] {
+    display: none;
+}

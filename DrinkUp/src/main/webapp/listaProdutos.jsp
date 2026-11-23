@@ -68,14 +68,9 @@
             <div class="opcoes-filtro-loja">
                 <select id="filtroCategoria" class="seletor-loja" aria-label="Filtrar por Categoria">
                     <option value="">Todas as Categorias</option>
-                    <option value="Cervejas">Cervejas</option>
-                    <option value="Refrigerantes">Refrigerantes</option>
-                    <option value="Combos">Combos</option>
-                    <option value="Sucos">Sucos</option>
-                    <option value="Energéticos">Energéticos</option>
-                    <option value="Águas">Águas</option>
-                    <option value="Vinhos">Vinhos</option>
-                    <option value="Destilados">Destilados</option>
+                    <c:forEach var="categoria" items="${categorias}">
+                        <option value="<c:out value='${categoria.nome}'/>"><c:out value="${categoria.nome}"/></option>
+                    </c:forEach>
                 </select>
 
                 <select id="filtroOrdenacao" class="seletor-loja" aria-label="Ordenar produtos">
@@ -95,214 +90,76 @@
         <!-- CHIPS DE ATALHO DE CATEGORIAS -->
         <div class="chips-categorias" id="chipsCategorias">
             <button class="chip-btn ativo" data-cat="">Todos</button>
-            <button class="chip-btn" data-cat="Cervejas">🍺 Cervejas</button>
-            <button class="chip-btn" data-cat="Refrigerantes">🥤 Refrigerantes</button>
-            <button class="chip-btn" data-cat="Combos">🎁 Combos</button>
-            <button class="chip-btn" data-cat="Sucos">🧃 Sucos</button>
-            <button class="chip-btn" data-cat="Energéticos">⚡ Energéticos</button>
-            <button class="chip-btn" data-cat="Vinhos">🍷 Vinhos</button>
-            <button class="chip-btn" data-cat="Destilados">🥃 Destilados</button>
-            <button class="chip-btn" data-cat="Águas">💧 Águas</button>
+            <c:forEach var="categoria" items="${categorias}">
+                <button class="chip-btn" data-cat="<c:out value='${categoria.nome}'/>"><c:out value="${categoria.icone}"/> <c:out value="${categoria.nome}"/></button>
+            </c:forEach>
         </div>
 
         <!-- GRADE DE PRODUTOS / VITRINE DA LOJA -->
         <section class="grade-produtos" id="gradeProdutos">
 
-            <c:choose>
-                <%-- ITERAÇÃO DINÂMICA COM OS PRODUTOS DO BANCO DE DADOS H2 --%>
-                <c:when test="${not empty produtos}">
-                    <c:forEach var="produto" items="${produtos}">
-                        <c:choose>
-                            <c:when test="${produto.idCategoria == 1}">
-                                <c:set var="categoriaNome" value="Cervejas"/>
-                            </c:when>
-                            <c:when test="${produto.idCategoria == 2}">
-                                <c:set var="categoriaNome" value="Refrigerantes"/>
-                            </c:when>
-                            <c:when test="${produto.idCategoria == 3}">
-                                <c:set var="categoriaNome" value="Combos"/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="categoriaNome" value="Outros"/>
-                            </c:otherwise>
-                        </c:choose>
-                        <article class="card-produto" data-id="${produto.idProduto}" data-categoria="${categoriaNome}" data-nome="<c:out value='${produto.nomeDoProduto}'/>" data-preco="${produto.preco}">
-                            <div class="imagem-container">
-                                <span class="tag-frete-gratis">🚚 Grátis</span>
-                                <div class="icone-imagem-fallback">🍺</div>
+            <%-- PRODUTOS E CATEGORIAS VINDOS DO BANCO (ProdutoDao / CategoriaDao via ListaProdutosServlet) --%>
+            <c:forEach var="produto" items="${produtos}">
+                <c:url var="imagemProdutoUrl" value="/imagem-produto">
+                    <c:param name="id" value="${produto.idProduto}"/>
+                </c:url>
+                <article class="card-produto" data-id="${produto.idProduto}" data-categoria="<c:out value='${produto.nomeCategoria}'/>" data-nome="<c:out value='${produto.nomeDoProduto}'/>" data-preco="${produto.preco}" data-imagem="${imagemProdutoUrl}" data-icone="<c:out value='${produto.iconeCategoria}'/>">
+                    <div class="imagem-container">
+                        <%-- Sem foto, o servlet /imagem-produto devolve o placeholder "SEM FOTO". --%>
+                        <img class="imagem-produto-foto" src="${imagemProdutoUrl}" alt="<c:out value='${produto.nomeDoProduto}'/>" loading="lazy">
+                    </div>
+
+                    <div class="detalhes-produto">
+                        <span class="categoria-tag"><c:out value="${produto.nomeCategoria}"/></span>
+                        <h2 class="titulo-produto"><c:out value="${produto.nomeDoProduto}"/></h2>
+                        <p class="descricao-produto"><c:out value="${produto.descricao}"/></p>
+
+                        <div class="bloco-precos">
+                            <div class="linha-preco">
+                                <span class="preco-atual">
+                                    R$ <fmt:formatNumber value="${produto.preco}" minFractionDigits="2" maxFractionDigits="2"/>
+                                </span>
                             </div>
+                            <div class="parcelamento">${produto.volumeML} ml • Em estoque: ${produto.quantidadeEstoque} unid.</div>
+                        </div>
 
-                            <div class="detalhes-produto">
-                                <span class="categoria-tag"><c:out value="${categoriaNome}"/></span>
-                                <h2 class="titulo-produto"><c:out value="${produto.nomeDoProduto}"/></h2>
-                                <p class="descricao-produto"><c:out value="${produto.descricao}"/></p>
-
-                                <div class="bloco-precos">
-                                    <div class="linha-preco">
-                                        <span class="preco-atual">
-                                            R$ <fmt:formatNumber value="${produto.preco}" minFractionDigits="2" maxFractionDigits="2"/>
-                                        </span>
-                                    </div>
-                                    <div class="parcelamento">Em estoque: ${produto.quantidadeEstoque} unid.</div>
-                                </div>
-
+                        <c:choose>
+                            <c:when test="${produto.quantidadeEstoque > 0}">
                                 <div class="info-estoque-disponivel">
                                     <span>●</span> Disponível para compra
                                 </div>
-
-                                <button type="button" class="botao-comprar"
-                                        data-id="${produto.idProduto}"
-                                        data-nome="<c:out value='${produto.nomeDoProduto}'/>"
-                                        data-preco="${produto.preco}"
-                                        onclick="adicionarAoCarrinho(this)">
+                                <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
                                     🛒 Comprar
                                 </button>
-                                <div class="acoes-produto">
-                                    <c:url var="editarProdutoUrl" value="/cadastroBebida.html">
-                                        <c:param name="id" value="${produto.idProduto}"/>
-                                        <c:param name="idCategoria" value="${produto.idCategoria}"/>
-                                        <c:param name="nome" value="${produto.nomeDoProduto}"/>
-                                        <c:param name="codigo" value="${produto.codigoDeBarras}"/>
-                                        <c:param name="descricao" value="${produto.descricao}"/>
-                                        <c:param name="preco" value="${produto.preco}"/>
-                                        <c:param name="estoque" value="${produto.quantidadeEstoque}"/>
-                                        <c:param name="volume" value="${produto.volumeML}"/>
-                                    </c:url>
-                                    <a href="${editarProdutoUrl}" class="botao-detalhe">Editar</a>
-                                    <form action="${excluirProdutoUrl}" method="post">
-                                        <input type="hidden" name="id" value="${produto.idProduto}">
-                                        <button type="submit" class="botao-detalhe">Excluir</button>
-                                    </form>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="info-estoque-disponivel">
+                                    <span>●</span> Esgotado
                                 </div>
-                            </div>
-                        </article>
-                    </c:forEach>
-                </c:when>
+                                <button type="button" class="botao-comprar" disabled>
+                                    Indisponível
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
 
-                <%-- CARDS MODELO DE DEMONSTRAÇÃO QUANDO A LISTA DO H2 ESTIVER VAZIA --%>
-                <c:otherwise>
-                    <article class="card-produto" data-id="1" data-categoria="Cervejas" data-nome="Cerveja Heineken Long Neck 330ml" data-preco="9.90">
-                        <div class="imagem-container">
-                            <span class="tag-frete-gratis">🚚 Grátis</span>
-                            <span class="tag-desconto">15% OFF</span>
-                            <div class="icone-imagem-fallback">🍺</div>
+                        <div class="acoes-produto">
+                            <a href="detalheProduto.html?id=${produto.idProduto}" class="botao-detalhe">Ver detalhes</a>
                         </div>
 
-                        <div class="detalhes-produto">
-                            <span class="categoria-tag">Cervejas</span>
-                            <h2 class="titulo-produto">Cerveja Heineken Long Neck 330ml</h2>
-                            <p class="descricao-produto">Garrafa 330 ml • Cerveja Premium Puro Malte</p>
-
-                            <div class="bloco-precos">
-                                <div class="preco-original">R$ 11,90</div>
-                                <div class="linha-preco">
-                                    <span class="preco-atual">R$ 9,90</span>
-                                    <span class="porcentagem-off">15% OFF</span>
-                                </div>
-                                <div class="parcelamento">Em até 3x de R$ 3,30 sem juros</div>
-                            </div>
-
-                            <div class="info-estoque-disponivel">
-                                <span>●</span> Em estoque
-                            </div>
-
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
-                                🛒 Comprar
-                            </button>
+                        <%-- Editar/Excluir: exibidos apenas para administradores (ver script no fim da página) --%>
+                        <div class="acoes-produto acoes-admin" style="display:none;">
+                            <c:url var="editarProdutoUrl" value="/cadastroBebida.html">
+                                <c:param name="id" value="${produto.idProduto}"/>
+                            </c:url>
+                            <a href="${editarProdutoUrl}" class="botao-detalhe">Editar</a>
+                            <form action="${excluirProdutoUrl}" method="post" onsubmit="return confirm('Excluir este produto?');">
+                                <input type="hidden" name="id" value="${produto.idProduto}">
+                                <button type="submit" class="botao-detalhe">Excluir</button>
+                            </form>
                         </div>
-                    </article>
-
-                    <article class="card-produto" data-id="2" data-categoria="Refrigerantes" data-nome="Coca-Cola Original Lata 350ml" data-preco="4.50">
-                        <div class="imagem-container">
-                            <span class="tag-frete-gratis">🚚 Grátis</span>
-                            <div class="icone-imagem-fallback">🥤</div>
-                        </div>
-
-                        <div class="detalhes-produto">
-                            <span class="categoria-tag">Refrigerantes</span>
-                            <h2 class="titulo-produto">Coca-Cola Original Lata 350ml</h2>
-                            <p class="descricao-produto">Lata 350 ml • Sabor Original gelado</p>
-
-                            <div class="bloco-precos">
-                                <div class="preco-original">R$ 5,20</div>
-                                <div class="linha-preco">
-                                    <span class="preco-atual">R$ 4,50</span>
-                                    <span class="porcentagem-off">13% OFF</span>
-                                </div>
-                                <div class="parcelamento">Preço especial de estoque</div>
-                            </div>
-
-                            <div class="info-estoque-disponivel">
-                                <span>●</span> Em estoque
-                            </div>
-
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
-                                🛒 Comprar
-                            </button>
-                        </div>
-                    </article>
-
-                    <article class="card-produto" data-id="3" data-categoria="Cervejas" data-nome="Cerveja Brahma Chopp Lata 350ml" data-preco="3.80">
-                        <div class="imagem-container">
-                            <span class="tag-desconto">10% OFF</span>
-                            <div class="icone-imagem-fallback">🍺</div>
-                        </div>
-
-                        <div class="detalhes-produto">
-                            <span class="categoria-tag">Cervejas</span>
-                            <h2 class="titulo-produto">Cerveja Brahma Chopp Lata 350ml</h2>
-                            <p class="descricao-produto">Lata 350 ml • Cerveja Pilsen leve e refrescante</p>
-
-                            <div class="bloco-precos">
-                                <div class="preco-original">R$ 4,20</div>
-                                <div class="linha-preco">
-                                    <span class="preco-atual">R$ 3,80</span>
-                                    <span class="porcentagem-off">10% OFF</span>
-                                </div>
-                                <div class="parcelamento">Em até 2x no cartão</div>
-                            </div>
-
-                            <div class="info-estoque-disponivel">
-                                <span>●</span> Em estoque
-                            </div>
-
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
-                                🛒 Comprar
-                            </button>
-                        </div>
-                    </article>
-
-                    <article class="card-produto" data-id="4" data-categoria="Energéticos" data-nome="Red Bull Energy Drink 250ml" data-preco="11.90">
-                        <div class="imagem-container">
-                            <span class="tag-frete-gratis">🚚 Grátis</span>
-                            <div class="icone-imagem-fallback">⚡</div>
-                        </div>
-
-                        <div class="detalhes-produto">
-                            <span class="categoria-tag">Energéticos</span>
-                            <h2 class="titulo-produto">Red Bull Energy Drink 250ml</h2>
-                            <p class="descricao-produto">Lata 250 ml • Vitaliza mente e corpo</p>
-
-                            <div class="bloco-precos">
-                                <div class="preco-original">R$ 13,90</div>
-                                <div class="linha-preco">
-                                    <span class="preco-atual">R$ 11,90</span>
-                                    <span class="porcentagem-off">14% OFF</span>
-                                </div>
-                                <div class="parcelamento">Em até 3x sem juros</div>
-                            </div>
-
-                            <div class="info-estoque-disponivel">
-                                <span>●</span> Em estoque
-                            </div>
-
-                            <button type="button" class="botao-comprar" onclick="adicionarAoCarrinho(this)">
-                                🛒 Comprar
-                            </button>
-                        </div>
-                    </article>
-                </c:otherwise>
-            </c:choose>
+                    </div>
+                </article>
+            </c:forEach>
 
             <!-- MENSAGEM QUANDO NENHUM PRODUTO FOR ENCONTRADO -->
             <div class="estado-vazio" id="estadoVazio">
@@ -345,6 +202,9 @@
     <!-- SCRIPT DE FILTROS, BUSCA E CARRINHO -->
     <script>
         renderHeader();
+        if (Auth.isAdmin()) {
+            document.querySelectorAll('.acoes-admin').forEach(el => el.style.display = '');
+        }
 
         function adicionarAoCarrinho(botao) {
             const card = botao.closest('.card-produto');
@@ -353,7 +213,8 @@
                 id: Number(card.dataset.id),
                 nome,
                 preco: Number(card.dataset.preco),
-                icone: card.querySelector('.icone-imagem-fallback').textContent.trim()
+                icone: card.dataset.icone,
+                imagem: card.dataset.imagem || null
             });
             document.getElementById('toastMensagem').textContent = `"${nome}" adicionado ao carrinho!`;
             const toast = document.getElementById('toastCarrinho');

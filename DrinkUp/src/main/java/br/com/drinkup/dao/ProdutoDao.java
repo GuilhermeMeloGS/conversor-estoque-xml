@@ -15,12 +15,12 @@ import java.util.Set;
 
 public class ProdutoDao {
 
-    public void criarProduto(Produto produto) {
+    public void criarProduto(Produto produto) throws SQLException {
         String sql = """
                 INSERT INTO produto
                 (idCategoria, nome, codigoDeBarras, descricao,
-                 preco, quantidadeEstoque, volumeML)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                 preco, quantidadeEstoque, volumeML, imagem)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = ConnectionPoolConfig.getConnection();
@@ -33,11 +33,31 @@ public class ProdutoDao {
             statement.setDouble(5, produto.getPreco());
             statement.setInt(6, produto.getQuantidadeEstoque());
             statement.setInt(7, produto.getVolumeML());
+            statement.setBytes(8, produto.getImagem());
 
             statement.executeUpdate();
+        }
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    /** Devolve um Produto só com id e bytes da imagem, ou null se o produto não tem imagem. */
+    public Produto buscarImagem(int id) throws SQLException {
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT imagem FROM produto WHERE idProduto = ?")) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                if (!resultado.next()) return null;
+
+                byte[] bytes = resultado.getBytes("imagem");
+                if (bytes == null) return null;
+
+                Produto produto = new Produto();
+                produto.setIdProduto(id);
+                produto.setImagem(bytes);
+                return produto;
+            }
         }
     }
 
@@ -70,6 +90,59 @@ public class ProdutoDao {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static final String SQL_PRODUTO_COM_CATEGORIA = """
+            SELECT p.idProduto, p.idCategoria, p.nome, p.codigoDeBarras, p.descricao,
+                   p.preco, p.quantidadeEstoque, p.volumeML,
+                   CASE WHEN p.imagem IS NULL THEN FALSE ELSE TRUE END AS temImagem,
+                   c.nome AS nomeCategoria, c.icone AS iconeCategoria
+            FROM produto p
+            JOIN categoria c ON c.idCategoria = p.idCategoria
+            """;
+
+    private Produto mapearComCategoria(ResultSet resultado) throws SQLException {
+        Produto produto = new Produto();
+        produto.setIdProduto(resultado.getInt("idProduto"));
+        produto.setIdCategoria(resultado.getInt("idCategoria"));
+        produto.setNomeDoProduto(resultado.getString("nome"));
+        produto.setCodigoDeBarras(resultado.getString("codigoDeBarras"));
+        produto.setDescricao(resultado.getString("descricao"));
+        produto.setPreco(resultado.getDouble("preco"));
+        produto.setQuantidadeEstoque(resultado.getInt("quantidadeEstoque"));
+        produto.setVolumeML(resultado.getInt("volumeML"));
+        produto.setTemImagem(resultado.getBoolean("temImagem"));
+        produto.setNomeCategoria(resultado.getString("nomeCategoria"));
+        produto.setIconeCategoria(resultado.getString("iconeCategoria"));
+        return produto;
+    }
+
+    public List<Produto> listarComCategoria() throws SQLException {
+        List<Produto> produtos = new ArrayList<>();
+
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     SQL_PRODUTO_COM_CATEGORIA + " ORDER BY p.idProduto");
+             ResultSet resultado = statement.executeQuery()) {
+
+            while (resultado.next()) {
+                produtos.add(mapearComCategoria(resultado));
+            }
+        }
+        return produtos;
+    }
+
+    public Produto buscarPorId(int id) throws SQLException {
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     SQL_PRODUTO_COM_CATEGORIA + " WHERE p.idProduto = ?")) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                return resultado.next() ? mapearComCategoria(resultado) : null;
+            }
         }
     }
 
@@ -199,6 +272,16 @@ public class ProdutoDao {
             ps.setInt(8, produto.getIdProduto());
 
             ps.executeUpdate();
+
+            // Sem upload novo, a imagem que já está no banco é mantida.
+            if (produto.getImagem() != null) {
+                try (PreparedStatement psImagem = connection.prepareStatement(
+                        "UPDATE PRODUTO SET IMAGEM = ? WHERE IDPRODUTO = ?")) {
+                    psImagem.setBytes(1, produto.getImagem());
+                    psImagem.setInt(2, produto.getIdProduto());
+                    psImagem.executeUpdate();
+                }
+            }
         }
     }
 

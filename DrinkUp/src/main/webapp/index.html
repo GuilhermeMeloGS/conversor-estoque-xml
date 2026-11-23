@@ -115,40 +115,8 @@
                 </a>
             </div>
 
-            <div class="categorias">
-
-                <a href="#produtos" class="cartao-categoria">
-                    <div class="icone-categoria">🍺</div>
-                    <div>
-                        <h3>Cervejas</h3>
-                        <p>Diferentes marcas e estilos</p>
-                    </div>
-                </a>
-
-                <a href="#produtos" class="cartao-categoria">
-                    <div class="icone-categoria">🥤</div>
-                    <div>
-                        <h3>Refrigerantes</h3>
-                        <p>Opções para refrescar</p>
-                    </div>
-                </a>
-
-                <a href="#produtos" class="cartao-categoria">
-                    <div class="icone-categoria">🍹</div>
-                    <div>
-                        <h3>Combos</h3>
-                        <p>Produtos para compartilhar</p>
-                    </div>
-                </a>
-
-                <a href="#ofertas" class="cartao-categoria">
-                    <div class="icone-categoria">✨</div>
-                    <div>
-                        <h3>Ofertas</h3>
-                        <p>Confira os destaques</p>
-                    </div>
-                </a>
-
+            <div class="categorias" id="listaCategorias">
+                <!-- preenchido pelo JS com as categorias do banco -->
             </div>
         </section>
 
@@ -166,68 +134,8 @@
                 </a>
             </div>
 
-            <div class="produtos">
-
-                <article class="cartao-produto">
-                    <div class="imagem-produto">🍺</div>
-                    <div class="info-produto">
-                        <p class="categoria-produto">Cerveja nacional</p>
-                        <h3>Brahma Chopp</h3>
-                        <p class="descricao-produto">Lata 350 ml</p>
-                        <div class="base-produto">
-                            <span class="preco-produto">R$ 8,90</span>
-                            <button class="botao-adicionar" type="button"
-                                    aria-label="Adicionar Brahma ao carrinho">+</button>
-                        </div>
-                        <p class="estoque-produto">● Disponível</p>
-                    </div>
-                </article>
-
-                <article class="cartao-produto">
-                    <div class="imagem-produto">🍺</div>
-                    <div class="info-produto">
-                        <p class="categoria-produto">Cerveja importada</p>
-                        <h3>Heineken</h3>
-                        <p class="descricao-produto">Long Neck 330 ml</p>
-                        <div class="base-produto">
-                            <span class="preco-produto">R$ 6,50</span>
-                            <button class="botao-adicionar" type="button"
-                                    aria-label="Adicionar Heineken ao carrinho">+</button>
-                        </div>
-                        <p class="estoque-produto">● Disponível</p>
-                    </div>
-                </article>
-
-                <article class="cartao-produto">
-                    <div class="imagem-produto">🍺</div>
-                    <div class="info-produto">
-                        <p class="categoria-produto">Cerveja nacional</p>
-                        <h3>Skol</h3>
-                        <p class="descricao-produto">Lata 350 ml</p>
-                        <div class="base-produto">
-                            <span class="preco-produto">R$ 4,20</span>
-                            <button class="botao-adicionar" type="button"
-                                    aria-label="Adicionar Skol ao carrinho">+</button>
-                        </div>
-                        <p class="estoque-produto">● Disponível</p>
-                    </div>
-                </article>
-
-                <article class="cartao-produto">
-                    <div class="imagem-produto">🥤</div>
-                    <div class="info-produto">
-                        <p class="categoria-produto">Refrigerante</p>
-                        <h3>Coca-Cola</h3>
-                        <p class="descricao-produto">Garrafa 2 litros</p>
-                        <div class="base-produto">
-                            <span class="preco-produto">R$ 9,90</span>
-                            <button class="botao-adicionar" type="button"
-                                    aria-label="Adicionar Coca-Cola ao carrinho">+</button>
-                        </div>
-                        <p class="estoque-produto">● Disponível</p>
-                    </div>
-                </article>
-
+            <div class="produtos" id="listaProdutosDestaque">
+                <!-- preenchido pelo JS com os produtos do banco -->
             </div>
         </section>
 
@@ -269,7 +177,67 @@
     </footer>
 
 <script src="shared/auth.js"></script>
-<script>renderHeader();</script>]
+<script>
+    renderHeader();
+
+    function esc(t) {
+        const d = document.createElement('div');
+        d.textContent = t == null ? '' : t;
+        return d.innerHTML;
+    }
+
+    function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+
+    async function carregarHome() {
+        const [categorias, produtos] = await Promise.all([
+            fetch('api/categorias').then(r => r.json()),
+            fetch('api/produtos').then(r => r.json())
+        ]);
+
+        document.getElementById('listaCategorias').innerHTML = categorias.map(c => {
+            const qtd = produtos.filter(p => p.idCategoria === c.id).length;
+            return `
+            <a href="produtos" class="cartao-categoria">
+                <div class="icone-categoria">${esc(c.icone)}</div>
+                <div>
+                    <h3>${esc(c.nome)}</h3>
+                    <p>${qtd} ${qtd === 1 ? 'produto' : 'produtos'}</p>
+                </div>
+            </a>`;
+        }).join('');
+
+        // Destaques: os 4 produtos com mais estoque disponível.
+        const destaques = produtos.filter(p => p.estoque > 0)
+            .sort((a, b) => b.estoque - a.estoque).slice(0, 4);
+
+        document.getElementById('listaProdutosDestaque').innerHTML = destaques.map(p => `
+            <article class="cartao-produto">
+                <div class="imagem-produto">${p.imagem ? `<img class="foto-produto" src="${esc(p.imagem)}" alt="${esc(p.nome)}" loading="lazy">` : esc(p.icone)}</div>
+                <div class="info-produto">
+                    <p class="categoria-produto">${esc(p.categoria)}</p>
+                    <h3>${esc(p.nome)}</h3>
+                    <p class="descricao-produto">${p.volumeML} ml</p>
+                    <div class="base-produto">
+                        <span class="preco-produto">${fmt(p.preco)}</span>
+                        <button class="botao-adicionar" type="button" data-id="${p.id}"
+                                aria-label="Adicionar ${esc(p.nome)} ao carrinho">+</button>
+                    </div>
+                    <p class="estoque-produto">● Disponível</p>
+                </div>
+            </article>`).join('');
+
+        document.querySelectorAll('#listaProdutosDestaque .botao-adicionar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const p = destaques.find(x => x.id === Number(btn.dataset.id));
+                Carrinho.adicionar({ id: p.id, nome: p.nome, preco: p.preco, icone: p.icone, imagem: p.imagem });
+            });
+        });
+    }
+
+    carregarHome().catch(() => {
+        document.getElementById('listaCategorias').textContent = 'Não foi possível carregar as categorias.';
+    });
+</script>
     <script src="shared/menu.js"></script>
 </body>
 </html>

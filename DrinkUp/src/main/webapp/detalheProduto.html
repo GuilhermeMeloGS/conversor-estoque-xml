@@ -103,18 +103,6 @@
     </footer>
 
 <script>
-    /* Mock dos produtos — mesmos do listaProdutos */
-    const PRODUTOS = [
-        { id:1, nome:'Cerveja Heineken Long Neck 330ml',       categoria:'Cervejas',      icone:'🍺', preco:9.90,  precoAnt:11.90, off:'15% OFF', parcelamento:'Em até 3x de R$ 3,30 sem juros',       descricao:'Garrafa 330 ml • Cerveja Premium Puro Malte, origem holandesa, sabor suave e refrescante.' },
-        { id:2, nome:'Coca-Cola Original Lata 350ml',          categoria:'Refrigerantes', icone:'🥤', preco:4.50,  precoAnt:5.20,  off:'13% OFF', parcelamento:'Preço especial de estoque',             descricao:'Lata 350 ml • O sabor original da Coca-Cola, gelada e refrescante para qualquer momento.' },
-        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml',        categoria:'Cervejas',      icone:'🍺', preco:3.80,  precoAnt:4.20,  off:'10% OFF', parcelamento:'Em até 2x no cartão',                  descricao:'Lata 350 ml • Cerveja Pilsen leve e refrescante, a mais tradicional do Brasil.' },
-        { id:4, nome:'Red Bull Energy Drink 250ml',            categoria:'Energéticos',   icone:'⚡', preco:11.90, precoAnt:13.90, off:'14% OFF', parcelamento:'Em até 3x sem juros',                  descricao:'Lata 250 ml • Vitaliza mente e corpo. Rico em taurina, cafeína e vitaminas do complexo B.' },
-        { id:5, nome:'Suco Del Valle Uva 1L',                  categoria:'Sucos',         icone:'🧃', preco:7.90,  precoAnt:9.50,  off:'17% OFF', parcelamento:'Pronto para beber',                    descricao:'Garrafa 1000 ml • Suco integral de uva, sem adição de conservantes.' },
-        { id:6, nome:'Água Mineral Crystal sem Gás 500ml',     categoria:'Águas',         icone:'💧', preco:2.50,  precoAnt:null,  off:null,      parcelamento:'Preço unitário',                       descricao:'Garrafa 500 ml • Água mineral pura, sem gás, ideal para hidratação.' },
-        { id:7, nome:'Vinho Tinto Seco Reserva 750ml',         categoria:'Vinhos',        icone:'🍷', preco:45.90, precoAnt:57.00, off:'20% OFF', parcelamento:'Em até 4x de R$ 11,48 sem juros',      descricao:'Garrafa 750 ml • Vinho fino Cabernet Sauvignon, aromas de frutas vermelhas e especiarias.' },
-        { id:8, nome:'Whisky Escocês 12 Anos 1L',              categoria:'Destilados',    icone:'🥃', preco:149.90,precoAnt:184.00,off:'18% OFF', parcelamento:'Em até 6x de R$ 24,98 sem juros',      descricao:'Garrafa 1000 ml • Whisky envelhecido 12 anos, notas de baunilha, mel e carvalho.' },
-    ];
-
     let qty = 1;
     let produtoAtual = null;
 
@@ -126,8 +114,10 @@
     }
 
     function comprar() {
-        if (!produtoAtual) return;
-        for (let i = 0; i < qty; i++) Carrinho.adicionar({ ...produtoAtual });
+        if (!produtoAtual || produtoAtual.estoque < 1) return;
+        for (let i = 0; i < qty; i++) {
+            Carrinho.adicionar({ id: produtoAtual.id, nome: produtoAtual.nome, preco: produtoAtual.preco, icone: produtoAtual.icone, imagem: produtoAtual.imagem });
+        }
 
         const toast = document.getElementById('toastCarrinho');
         document.getElementById('toastMensagem').textContent = `"${produtoAtual.nome}" adicionado!`;
@@ -135,32 +125,51 @@
         setTimeout(() => toast.classList.remove('visivel'), 2500);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        renderHeader();
-
-        const params = new URLSearchParams(window.location.search);
-        const id = parseInt(params.get('id')) || 1;
-        produtoAtual = PRODUTOS.find(p => p.id === id) || PRODUTOS[0];
-
-        document.getElementById('bcNome').textContent         = produtoAtual.nome;
-        document.getElementById('detNome').textContent        = produtoAtual.nome;
-        document.getElementById('detCategoria').textContent   = produtoAtual.categoria;
-        document.getElementById('detDescricao').textContent   = produtoAtual.descricao;
-        document.getElementById('detPreco').textContent       = fmt(produtoAtual.preco);
-        document.getElementById('detParcelamento').textContent= produtoAtual.parcelamento;
-        document.getElementById('fotoPrincipal').textContent  = produtoAtual.icone;
-
-        const precoAntEl = document.getElementById('detPrecoAnt');
-        const offEl = document.getElementById('detOff');
-        if (produtoAtual.precoAnt) {
-            precoAntEl.textContent = fmt(produtoAtual.precoAnt);
-            offEl.textContent = produtoAtual.off;
+    function mostrarProduto(p) {
+        produtoAtual = p;
+        document.title = 'DrinkUp | ' + p.nome;
+        document.getElementById('detNome').textContent      = p.nome;
+        document.getElementById('detCategoria').textContent = p.categoria;
+        document.getElementById('detDescricao').textContent = p.descricao + ' (' + p.volumeML + ' ml)';
+        document.getElementById('detPreco').textContent     = fmt(p.preco);
+        const foto = document.getElementById('fotoPrincipal');
+        const miniaturas = document.getElementById('miniaturas');
+        if (p.imagem) {
+            foto.innerHTML = '';
+            const img = document.createElement('img');
+            img.className = 'foto-produto-detalhe';
+            img.src = p.imagem;
+            img.alt = p.nome;
+            foto.appendChild(img);
+            miniaturas.style.display = 'none'; // só existe uma foto por produto
         } else {
-            precoAntEl.style.display = 'none';
-            offEl.style.display = 'none';
+            foto.textContent = p.icone;
+            document.querySelectorAll('.miniatura').forEach(m => m.textContent = p.icone);
         }
 
-        document.querySelectorAll('.miniatura').forEach(m => m.textContent = produtoAtual.icone);
+        document.getElementById('detPrecoAnt').style.display = 'none';
+        document.getElementById('detOff').style.display = 'none';
+        document.getElementById('detParcelamento').textContent = p.estoque + ' unidades em estoque';
+
+        const estoque = document.querySelector('.estoque-detalhe');
+        if (p.estoque < 1) {
+            estoque.innerHTML = '<span class="dot-verde">●</span> <strong>Produto esgotado</strong>';
+            document.querySelector('.botao-comprar-detalhe').disabled = true;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        renderHeader();
+
+        const id = new URLSearchParams(window.location.search).get('id');
+        try {
+            const resposta = await fetch('api/produto?id=' + encodeURIComponent(id));
+            if (!resposta.ok) throw new Error();
+            mostrarProduto(await resposta.json());
+        } catch {
+            document.querySelector('.layout-detalhe').innerHTML =
+                '<p>Produto não encontrado. <a href="produtos">Voltar ao catálogo</a></p>';
+        }
     });
 </script>
     <script src="shared/menu.js"></script>
