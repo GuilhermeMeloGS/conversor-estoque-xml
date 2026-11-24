@@ -4,16 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="">
+    <list default="true" id="164016df-cc4e-4ca7-8e91-3fac8d8a88ea" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/EstoqueDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/EstoqueServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ProdutosEstoqueServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/MensagemImportacaoXMLServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/estoques.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/importados.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -22,7 +40,7 @@
   "customColor": "",
   "associatedIndex": 5
 }]]></component>
-  <component name="ProjectId" id="3MSwsOWblADldSAGT8DsvhPXS8G" />
+  <component name="ProjectId" id="3MYpckRaO48hnmwmutHApFUkwTA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -35,7 +53,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/nova-alteracao",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -54,11 +72,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="104bee97-f697-4b9a-a523-64a084f4a064" name="Changes" comment="" />
-      <created>1795357486167</created>
+      <changelist id="164016df-cc4e-4ca7-8e91-3fac8d8a88ea" name="Changes" comment="" />
+      <created>1795537439847</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1795357486167</updated>
+      <updated>1795537439847</updated>
     </task>
     <servers />
   </component>
@@ -68,10 +86,17 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java</url>
-          <line>60</line>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html</url>
+          <line>111</line>
+          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/DrinkUp/src/main/webapp/estoques.html</url>
+          <line>258</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

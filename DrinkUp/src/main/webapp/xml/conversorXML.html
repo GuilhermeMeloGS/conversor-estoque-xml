@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,6 +30,9 @@
             Gerencie a exportação e importação dos produtos do estoque.
         </p>
     </section>
+
+    <div id="avisoImportacao"
+         style="display:none; background:#fff; padding:16px; border-radius:10px; margin-bottom:20px;"></div>
 
     <section class="opcoes">
 
@@ -138,6 +140,22 @@
             nomeArquivo.textContent = "Nenhum arquivo selecionado";
         }
     });
+
+    async function mostrarAvisoImportacao(url) {
+        try {
+            const resposta = await fetch(url);
+            const m = await resposta.json();
+            const texto = m.erro || m.sucesso;
+            if (!texto) return;
+
+            const aviso = document.getElementById("avisoImportacao");
+            aviso.textContent = texto;
+            aviso.style.display = "block";
+            aviso.style.borderLeft = "5px solid " + (m.erro ? "#c0392b" : "#27ae60");
+        } catch (e) { /* sem mensagem */ }
+    }
+
+    mostrarAvisoImportacao("../estoque/xml/mensagem");
 </script>
 
 </body>

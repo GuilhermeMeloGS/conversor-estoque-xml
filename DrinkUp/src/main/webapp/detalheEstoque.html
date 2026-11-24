@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos do Estoque | DrinkUp</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="shared/auth.js"></script>
+    <style>
+        .detalhe { padding: 35px; width: 100%; }
+        .barra { display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+        .btn { display: inline-block; padding: 10px 14px; border-radius: 7px; background: #ffc900;
+            color: #111; text-decoration: none; font-weight: bold; }
+        .btn.secundario { background: #eee; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px;
+            overflow: hidden; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #fafafa; }
+        #mensagem { background: white; padding: 16px; border-radius: 10px; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+<header class="cabecalho">
+    <a href="index.html" class="logo">
+        <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+    </a>
+</header>
+
+<main class="detalhe">
+    <a href="estoques.html" class="btn secundario">← Voltar aos estoques</a>
+
+    <div class="barra">
+        <h1 id="titulo">Produtos do estoque</h1>
+        <a id="linkExportar" class="btn" href="#">↓ Baixar XML</a>
+    </div>
+
+    <div id="mensagem">Carregando produtos...</div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Categoria</th>
+            <th>Produto</th>
+            <th>Código de barras</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Volume (ml)</th>
+        </tr>
+        </thead>
+        <tbody id="linhas"></tbody>
+    </table>
+</main>
+
+<script>
+    if (!Auth.isAdmin()) {
+        window.location.href = 'paginaLogin.html';
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const principal = params.get('tipo') === 'principal';
+    const id = params.get('id');
+
+    if (!principal && !id) {
+        document.getElementById('mensagem').textContent = 'Estoque não informado.';
+    } else {
+        document.getElementById('linkExportar').href = principal
+            ? 'estoque/xml/exportar'
+            : 'estoque/xml/exportar?id=' + encodeURIComponent(id);
+
+        carregar();
+    }
+
+    async function carregar() {
+        const mensagem = document.getElementById('mensagem');
+        const linhas = document.getElementById('linhas');
+        linhas.innerHTML = '';
+
+        try {
+            const url = principal
+                ? 'estoques/produtos?tipo=principal'
+                : 'estoques/produtos?id=' + encodeURIComponent(id);
+
+            const resposta = await fetch(url);
+            const dados = await resposta.json();
+
+            if (!resposta.ok) {
+                throw new Error(dados.erro || 'Não foi possível carregar os produtos.');
+            }
+
+            const produtos = Array.isArray(dados.produtos) ? dados.produtos : [];
+            document.getElementById('titulo').textContent = dados.nome || 'Produtos do estoque';
+            mensagem.textContent = produtos.length + ' produto(s) neste estoque.';
+
+            if (!produtos.length) {
+                linhas.innerHTML = '<tr><td colspan="6">Nenhum produto neste estoque.</td></tr>';
+                return;
+            }
+
+            produtos.forEach(p => {
+                const tr = document.createElement('tr');
+                const precoFormatado = Number.isFinite(Number(p.preco))
+                    ? 'R$ ' + Number(p.preco).toFixed(2)
+                    : '';
+
+                [p.categoria, p.nome, p.codigoDeBarras, precoFormatado, p.quantidadeEstoque, p.volumeML]
+                    .forEach(valor => {
+                        const td = document.createElement('td');
+                        td.textContent = valor ?? '';
+                        tr.appendChild(td);
+                    });
+                linhas.appendChild(tr);
+            });
+
+        } catch (erro) {
+            mensagem.textContent = erro.message;
+        }
+    }
+</script>
+</body>
+</html>

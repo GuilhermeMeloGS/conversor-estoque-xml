@@ -3,6 +3,7 @@ package xml;
 
 import br.com.drinkup.model.Produto;
 
+import br.com.drinkup.utilidades.UtilidadesSessao;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +22,9 @@ public class PreviewImportacaoXMLServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
+        if (UtilidadesSessao.exigirLogin(request, response, true) == null) {
+            return;
+        }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
