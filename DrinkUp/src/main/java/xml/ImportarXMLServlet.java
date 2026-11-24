@@ -2,6 +2,9 @@
 package xml;
 
 import br.com.drinkup.model.Produto;
+import br.com.drinkup.model.TipoUsuario;
+import br.com.drinkup.model.Usuario;
+import br.com.drinkup.utilidades.UtilidadesSessao;
 import xml.service.EstoqueXMLService;
 
 import javax.servlet.ServletException;
@@ -15,6 +18,8 @@ import javax.servlet.http.Part;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @WebServlet("/estoque/xml/importar")
@@ -36,6 +41,12 @@ public class ImportarXMLServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+
+        Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
+        if (usuarioLogado == null || usuarioLogado.getTipo() != TipoUsuario.Admin) {
+            response.sendRedirect(request.getContextPath() + "/paginaLogin.html");
+            return;
+        }
 
         HttpSession sessao = request.getSession();
 
@@ -111,7 +122,8 @@ public class ImportarXMLServlet extends HttpServlet {
             );
 
             response.sendRedirect(
-                    request.getContextPath() + "/xml/conversorXML.html"
+                    request.getContextPath() + "/xml/conversorXML.html?erro="
+                            + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8)
             );
 
         } catch (Exception e) {

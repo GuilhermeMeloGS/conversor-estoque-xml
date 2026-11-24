@@ -70,38 +70,36 @@ public class LeitorXML {
             Element elemento = (Element) node;
 
 
-            int idCategoria = Integer.parseInt(
-                    obterValor(elemento, "idCategoria"));
+            try {
+                int idCategoria = Integer.parseInt(
+                        obterValor(elemento, "idCategoria"));
 
-            String nome = obterValor(elemento, "nome");
+                String nome = obterValor(elemento, "nome");
+                String codigoDeBarras =
+                        obterValor(elemento, "codigoDeBarras");
+                String descricao = obterValor(elemento, "descricao");
+                double preco = Double.parseDouble(
+                        obterValor(elemento, "preco"));
+                int quantidadeEstoque = Integer.parseInt(
+                        obterValor(elemento, "quantidadeEstoque"));
+                int volumeML = Integer.parseInt(
+                        obterValor(elemento, "volumeML"));
 
-            String codigoDeBarras =
-                    obterValor(elemento, "codigoDeBarras");
-
-            String descricao = obterValor(elemento, "descricao");
-
-            double preco = Double.parseDouble(
-                    obterValor(elemento, "preco"));
-
-            int quantidadeEstoque = Integer.parseInt(
-                    obterValor(elemento, "quantidadeEstoque"));
-
-            int volumeML = Integer.parseInt(
-                    obterValor(elemento, "volumeML"));
-
-
-            Produto produto = new Produto();
-
-            produto.setIdCategoria(idCategoria);
-            produto.setNomeDoProduto(nome);
-            produto.setCodigoDeBarras(codigoDeBarras);
-            produto.setDescricao(descricao);
-            produto.setPreco(preco);
-            produto.setQuantidadeEstoque(quantidadeEstoque);
-            produto.setVolumeML(volumeML);
-
-
-            produtos.add(produto);
+                Produto produto = new Produto();
+                produto.setIdCategoria(idCategoria);
+                produto.setNomeDoProduto(nome);
+                produto.setCodigoDeBarras(codigoDeBarras);
+                produto.setDescricao(descricao);
+                produto.setPreco(preco);
+                produto.setQuantidadeEstoque(quantidadeEstoque);
+                produto.setVolumeML(volumeML);
+                produtos.add(produto);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "O XML possui um valor numérico inválido no produto "
+                                + (i + 1) + ".", e
+                );
+            }
         }
 
         return produtos;

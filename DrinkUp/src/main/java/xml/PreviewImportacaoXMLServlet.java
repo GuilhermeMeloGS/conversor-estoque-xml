@@ -2,6 +2,9 @@
 package xml;
 
 import br.com.drinkup.model.Produto;
+import br.com.drinkup.model.TipoUsuario;
+import br.com.drinkup.model.Usuario;
+import br.com.drinkup.utilidades.UtilidadesSessao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +23,15 @@ public class PreviewImportacaoXMLServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
             throws ServletException, IOException {
+
+        Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
+        if (usuarioLogado == null || usuarioLogado.getTipo() != TipoUsuario.Admin) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print("{\"erro\":\"Acesso permitido apenas para administradores.\"}");
+            return;
+        }
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
