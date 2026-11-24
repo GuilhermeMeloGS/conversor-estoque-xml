@@ -1,4 +1,3 @@
-
 package br.com.drinkup.servlet;
 
 import br.com.drinkup.servlet.config.ConnectionPoolConfig;
@@ -86,7 +85,7 @@ public class IniciarBancoServlet implements ServletContextListener {
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS importacaoXML (
-                    idImportacoa INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                    idImportacao INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
                     idUsuarioAdmin INT NOT NULL,
                     nomeArquivo VARCHAR(255),
                     dataImportacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -104,7 +103,7 @@ public class IniciarBancoServlet implements ServletContextListener {
                     dataCriacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     CONSTRAINT fk_estoqueXML_importacao
                         FOREIGN KEY (idImportacao)
-                        REFERENCES importacaoXML(idImportacoa)
+                        REFERENCES importacaoXML(idImportacao)
                 )
                 """,
 
