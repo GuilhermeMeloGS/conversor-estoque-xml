@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Estoques | DrinkUp</title>
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="shared/auth.js"></script>
+
+    <style>
+        .estoques-container {
+            padding: 35px;
+            width: 100%;
+        }
+
+        .estoques-cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .estoques-cabecalho h1 {
+            margin-bottom: 8px;
+        }
+
+        .estoques-cabecalho p {
+            color: #777;
+        }
+
+        .lista-estoques {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card-estoque {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .card-estoque h2 {
+            margin-bottom: 8px;
+        }
+
+        .card-estoque p {
+            color: #777;
+            margin-bottom: 18px;
+        }
+
+        .informacoes-estoque {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .informacoes-estoque strong {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .tipo-estoque {
+            display: inline-block;
+            background: #fff0b3;
+            color: #765600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .acoes-estoque {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-estoque {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 7px;
+            background: #ffc900;
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-estoque.secundario {
+            background: #eee;
+        }
+
+        .mensagem-estoques {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .estoques-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="cabecalho">
+    <a href="index.html" class="logo">
+        <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+    </a>
+</header>
+
+<main class="estoques-container">
+
+    <a href="admin.html" class="btn-estoque secundario">
+        ← Voltar ao painel
+    </a>
+
+    <div class="estoques-cabecalho">
+        <div>
+            <h1>Gerenciar Estoques</h1>
+            <p>Gerencie o estoque principal e os estoques importados por XML.</p>
+        </div>
+
+        <a href="xml/conversorXML.html" class="btn-estoque">
+            + Importar estoque XML
+        </a>
+    </div>
+
+    <div id="mensagemEstoques" class="mensagem-estoques">
+        Carregando estoques...
+    </div>
+
+    <div id="avisoImportacao" class="mensagem-estoques" style="display:none"></div>
+
+    <section id="listaEstoques" class="lista-estoques"></section>
+
+</main>
+
+<script>
+    if (!Auth.isAdmin()) {
+        window.location.href = 'paginaLogin.html';
+    }
+
+    function escaparHTML(valor) {
+        return String(valor ?? '').replace(/[&<>"']/g, caractere => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[caractere]);
+    }
+
+    async function mostrarAvisoImportacao(url) {
+        try {
+            const resposta = await fetch(url);
+            const m = await resposta.json();
+            const texto = m.erro || m.sucesso;
+            if (!texto) return;
+
+            const aviso = document.getElementById('avisoImportacao');
+            aviso.textContent = texto;
+            aviso.style.display = 'block';
+            aviso.style.borderLeft = '5px solid ' + (m.erro ? '#c0392b' : '#27ae60');
+        } catch (e) { /* sem mensagem */ }
+    }
+
+    async function carregarEstoques() {
+        const lista = document.getElementById('listaEstoques');
+        const mensagem = document.getElementById('mensagemEstoques');
+
+        try {
+            const resposta = await fetch('estoques/dados');
+
+            if (!resposta.ok) {
+                throw new Error('Não foi possível consultar os estoques.');
+            }
+
+            const estoques = await resposta.json();
+
+            mensagem.textContent = estoques.length + ' estoque(s) cadastrado(s).';
+
+            if (!estoques.length) {
+                lista.innerHTML = '<p>Nenhum estoque cadastrado.</p>';
+                return;
+            }
+
+            lista.innerHTML = estoques.map(estoque => {
+                const principal = estoque.tipo === 'PRINCIPAL';
+
+                const linkDetalhe = principal
+                    ? 'detalheEstoque.html?tipo=principal'
+                    : 'detalheEstoque.html?id=' + encodeURIComponent(estoque.id);
+
+                // Se o ExportarXMLServlet usar outro parâmetro (ex.: tipo=principal), ajuste aqui
+                const linkExportar = principal
+                    ? 'estoque/xml/exportar'
+                    : 'estoque/xml/exportar?id=' + encodeURIComponent(estoque.id);
+
+                return `
+                    <article class="card-estoque">
+                        <h2>${escaparHTML(estoque.nome)}</h2>
+
+                        <p>
+                            ${principal
+                    ? 'Estoque utilizado pela loja'
+                    : 'Estoque importado via XML'}
+                        </p>
+
+                        <span class="tipo-estoque">
+                            ${principal ? 'ESTOQUE PRINCIPAL' : 'IMPORTADO VIA XML'}
+                        </span>
+
+                        <div class="informacoes-estoque">
+                            <div>
+                                Produtos
+                                <strong>${escaparHTML(estoque.quantidadeProdutos)}</strong>
+                            </div>
+
+                            <div>
+                                Quantidade
+                                <strong>${escaparHTML(estoque.quantidadeTotal)}</strong>
+                            </div>
+                        </div>
+
+                        <div class="acoes-estoque">
+                            <a class="btn-estoque secundario"
+                               href="${linkDetalhe}">
+                                Visualizar produtos
+                            </a>
+
+                            <a class="btn-estoque"
+                               href="${linkExportar}">
+                                ↓ Baixar XML
+                            </a>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+        } catch (erro) {
+            mensagem.textContent = erro.message;
+        }
+    }
+
+    carregarEstoques();
+    mostrarAvisoImportacao('estoque/xml/mensagem');
+</script>
+
+</body>
+</html>

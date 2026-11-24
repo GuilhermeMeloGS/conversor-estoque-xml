@@ -1,5 +1,5 @@
-package br.com.drinkup.servlet;
 
+package br.com.drinkup.servlet;
 
 import br.com.drinkup.servlet.config.ConnectionPoolConfig;
 
@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 @WebListener
-public class IniciarBancoServlet implements ServletContextListener{
+public class IniciarBancoServlet implements ServletContextListener {
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent)  {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         List<String> scriptsCriacao = List.of(
                 """
@@ -43,7 +43,6 @@ public class IniciarBancoServlet implements ServletContextListener{
                     icone VARCHAR(20)
                 )
                 """,
-                // Bancos criados antes da coluna icone existir.
                 "ALTER TABLE categoria ADD COLUMN IF NOT EXISTS icone VARCHAR(20)",
                 """
                 CREATE TABLE IF NOT EXISTS produto (
@@ -56,10 +55,10 @@ public class IniciarBancoServlet implements ServletContextListener{
                     quantidadeEstoque INT,
                     volumeML INT,
                     imagem BLOB,
-                    CONSTRAINT fk_produto_categoria FOREIGN KEY (idCategoria) REFERENCES categoria(idCategoria)
+                    CONSTRAINT fk_produto_categoria
+                        FOREIGN KEY (idCategoria) REFERENCES categoria(idCategoria)
                 )
                 """,
-                // Bancos criados antes da coluna imagem existir.
                 "ALTER TABLE produto ADD COLUMN IF NOT EXISTS imagem BLOB",
                 """
                 CREATE TABLE IF NOT EXISTS venda (
@@ -68,7 +67,8 @@ public class IniciarBancoServlet implements ServletContextListener{
                     dataVenda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     valorTotal DECIMAL(10,2),
                     status ENUM('Pendente', 'Cancelado', 'Concluido'),
-                    CONSTRAINT fk_venda_usuario FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario)
+                    CONSTRAINT fk_venda_usuario
+                        FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario)
                 )
                 """,
                 """
@@ -78,8 +78,10 @@ public class IniciarBancoServlet implements ServletContextListener{
                     idProduto INT NOT NULL,
                     quantidade INT,
                     precoUnitario DECIMAL(10,2),
-                    CONSTRAINT fk_itemVenda_venda FOREIGN KEY (idVenda) REFERENCES venda(idVenda),
-                    CONSTRAINT fk_itemVenda_produto FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
+                    CONSTRAINT fk_itemVenda_venda
+                        FOREIGN KEY (idVenda) REFERENCES venda(idVenda),
+                    CONSTRAINT fk_itemVenda_produto
+                        FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
                 )
                 """,
                 """
@@ -88,7 +90,42 @@ public class IniciarBancoServlet implements ServletContextListener{
                     idUsuarioAdmin INT NOT NULL,
                     nomeArquivo VARCHAR(255),
                     dataImportacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    CONSTRAINT fk_importacaoXML_usuario FOREIGN KEY (idUsuarioAdmin) REFERENCES usuario(idUsuario)
+                    CONSTRAINT fk_importacaoXML_usuario
+                        FOREIGN KEY (idUsuarioAdmin) REFERENCES usuario(idUsuario)
+                )
+                """,
+
+                // Cadastro dos estoques importados.
+                """
+                CREATE TABLE IF NOT EXISTS estoqueXML (
+                    idEstoque INT PRIMARY KEY AUTO_INCREMENT,
+                    idImportacao INT NOT NULL,
+                    nome VARCHAR(150) NOT NULL,
+                    dataCriacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT fk_estoqueXML_importacao
+                        FOREIGN KEY (idImportacao)
+                        REFERENCES importacaoXML(idImportacoa)
+                )
+                """,
+
+                // Produtos pertencentes a cada estoque importado.
+                """
+                CREATE TABLE IF NOT EXISTS produtoEstoqueXML (
+                    idProdutoEstoque INT PRIMARY KEY AUTO_INCREMENT,
+                    idEstoque INT NOT NULL,
+                    idCategoria INT,
+                    nome VARCHAR(150),
+                    codigoDeBarras VARCHAR(50),
+                    descricao CLOB,
+                    preco DECIMAL(10,2),
+                    quantidadeEstoque INT,
+                    volumeML INT,
+                    CONSTRAINT fk_produtoEstoqueXML_estoque
+                        FOREIGN KEY (idEstoque)
+                        REFERENCES estoqueXML(idEstoque),
+                    CONSTRAINT fk_produtoEstoqueXML_categoria
+                        FOREIGN KEY (idCategoria)
+                        REFERENCES categoria(idCategoria)
                 )
                 """
         );
@@ -100,30 +137,28 @@ public class IniciarBancoServlet implements ServletContextListener{
             """;
 
         String inserirCategoriasBase = """
-                MERGE INTO categoria (idCategoria, nome, icone)
-                KEY (idCategoria)
-                VALUES (?, ?, ?)
-                """;
+            MERGE INTO categoria (idCategoria, nome, icone)
+            KEY (idCategoria)
+            VALUES (?, ?, ?)
+            """;
 
         String inserirProdutosBase = """
-                INSERT INTO produto
-                (idCategoria, nome, codigoDeBarras, descricao, preco, quantidadeEstoque, volumeML)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """;
+            INSERT INTO produto
+            (idCategoria, nome, codigoDeBarras, descricao, preco, quantidadeEstoque, volumeML)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
 
-        // { idCategoria, nome, icone } - ícones em escapes unicode para não depender do encoding do fonte.
         Object[][] categoriasBase = {
-                {1, "Cervejas",      "\uD83C\uDF7A"},   // 🍺
-                {2, "Refrigerantes", "\uD83E\uDD64"},   // 🥤
-                {3, "Combos",        "\uD83C\uDF79"},   // 🍹
-                {4, "Sucos",         "\uD83E\uDDC3"},   // 🧃
-                {5, "Energ\u00E9ticos", "\u26A1"},       // ⚡
-                {6, "\u00C1guas",    "\uD83D\uDCA7"},   // 💧
-                {7, "Vinhos",        "\uD83C\uDF77"},   // 🍷
-                {8, "Destilados",    "\uD83E\uDD43"}    // 🥃
+                {1, "Cervejas", "\uD83C\uDF7A"},
+                {2, "Refrigerantes", "\uD83E\uDD64"},
+                {3, "Combos", "\uD83C\uDF79"},
+                {4, "Sucos", "\uD83E\uDDC3"},
+                {5, "Energéticos", "\u26A1"},
+                {6, "Águas", "\uD83D\uDCA7"},
+                {7, "Vinhos", "\uD83C\uDF77"},
+                {8, "Destilados", "\uD83E\uDD43"}
         };
 
-        // { idCategoria, nome, codigoDeBarras, descricao, preco, quantidadeEstoque, volumeML }
         Object[][] produtosBase = {
                 {1, "Cerveja Heineken Long Neck 330ml", "7891000000011", "Cerveja Premium Puro Malte, origem holandesa, sabor suave e refrescante.", 9.90, 120, 330},
                 {1, "Cerveja Brahma Chopp Lata 350ml", "7891000000028", "Cerveja Pilsen leve e refrescante, ideal para qualquer ocasião.", 3.80, 300, 350},
@@ -147,12 +182,11 @@ public class IniciarBancoServlet implements ServletContextListener{
                 {8, "Gin Tanqueray London Dry 750ml", "7891000000202", "Gin London Dry clássico, com notas de zimbro e cítricos.", 119.90, 35, 750}
         };
 
-        // { diasAtras, status, { codigoDeBarras, quantidade }... }
         Object[][] vendasBase = {
                 {40, "Concluido", new Object[]{"7891000000011", 2}, new Object[]{"7891000000059", 3}},
                 {20, "Concluido", new Object[]{"7891000000127", 4}},
-                {5,  "Pendente",  new Object[]{"7891000000189", 1}},
-                {2,  "Cancelado", new Object[]{"7891000000165", 2}, new Object[]{"7891000000172", 1}}
+                {5, "Pendente", new Object[]{"7891000000189", 1}},
+                {2, "Cancelado", new Object[]{"7891000000165", 2}, new Object[]{"7891000000172", 1}}
         };
 
         try (Connection connection = ConnectionPoolConfig.getConnection();
@@ -177,7 +211,6 @@ public class IniciarBancoServlet implements ServletContextListener{
                 psCategoria.executeBatch();
             }
 
-            // Só popula os produtos se a tabela estiver vazia, para não sobrescrever dados existentes.
             if (tabelaVazia(stmt, "produto")) {
                 try (PreparedStatement psProduto = connection.prepareStatement(inserirProdutosBase)) {
                     for (Object[] p : produtosBase) {
@@ -194,7 +227,6 @@ public class IniciarBancoServlet implements ServletContextListener{
                 }
             }
 
-            // Renomeia o whisky de exemplo em bancos antigos (só se o nome ainda for o original, sem apagar edições do admin).
             try (PreparedStatement psRenomear = connection.prepareStatement(
                     "UPDATE produto SET nome = ? WHERE codigoDeBarras = ? AND nome = ?")) {
                 psRenomear.setString(1, "Whisky Escocês Ballantines 12 Anos 1L");
@@ -203,19 +235,20 @@ public class IniciarBancoServlet implements ServletContextListener{
                 psRenomear.executeUpdate();
             }
 
-            // Imagens dos produtos de exemplo. A foto preferida da pasta imagensProdutos substitui a imagem
-            // gerada ou qualquer outra versão da própria pasta (ex.: .jpg trocado por .webp menor),
-            // mas nunca uma imagem enviada pelo admin.
             Map<String, byte[]> imagemAtual = new HashMap<>();
+
             try (ResultSet rs = stmt.executeQuery("SELECT codigoDeBarras, imagem FROM produto")) {
                 while (rs.next()) {
                     imagemAtual.put(rs.getString(1), rs.getBytes(2));
                 }
             }
+
             try (PreparedStatement psImagem = connection.prepareStatement(
                     "UPDATE produto SET imagem = ? WHERE codigoDeBarras = ?")) {
+
                 for (Object[] p : produtosBase) {
                     String codigo = (String) p[2];
+
                     if (!imagemAtual.containsKey(codigo)) continue;
 
                     byte[] atual = imagemAtual.get(codigo);
@@ -227,9 +260,11 @@ public class IniciarBancoServlet implements ServletContextListener{
                             || atual.length == 0
                             || isPlaceholderAntigo(atual)
                             || fotos.stream().anyMatch(f -> Arrays.equals(f, atual));
+
                     if (!gerenciadaPeloSeed) continue;
 
                     byte[] nova = fotos.isEmpty() ? gerada : fotos.get(0);
+
                     if (nova == null || Arrays.equals(nova, atual)) continue;
 
                     psImagem.setBytes(1, nova);
@@ -238,15 +273,13 @@ public class IniciarBancoServlet implements ServletContextListener{
                 }
             }
 
-            // Vendas de exemplo para o cliente de teste (somente se ainda não existir nenhuma venda).
             if (tabelaVazia(stmt, "venda")) {
                 inserirVendasBase(connection, vendasBase, "cliente@cliente.com");
             }
 
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Erro ao iniciar o banco de dados: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -255,7 +288,7 @@ public class IniciarBancoServlet implements ServletContextListener{
         ps.setString(1, nome);
         ps.setString(2, sobrenome);
         ps.setString(3, email);
-        ps.setString(4, senha); // Ajuste ou aplique hash se o seu login usar criptografia
+        ps.setString(4, senha);
         ps.setString(5, tipo);
         ps.executeUpdate();
     }
@@ -271,9 +304,11 @@ public class IniciarBancoServlet implements ServletContextListener{
             throws Exception {
 
         int idCliente;
+
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT idUsuario FROM usuario WHERE email = ?")) {
             ps.setString(1, emailCliente);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return;
                 idCliente = rs.getInt(1);
@@ -281,12 +316,12 @@ public class IniciarBancoServlet implements ServletContextListener{
         }
 
         String sqlVenda = "INSERT INTO venda (idUsuario, dataVenda, valorTotal, status) VALUES (?, ?, 0, ?)";
-        // O preço do item é copiado do produto no momento da venda.
+
         String sqlItem = """
                 INSERT INTO itemVenda (idVenda, idProduto, quantidade, precoUnitario)
                 SELECT ?, idProduto, ?, preco FROM produto WHERE codigoDeBarras = ?
                 """;
-        // Total = subtotal + frete (R$ 8,90 abaixo de R$ 50,00), mesma regra do carrinho.
+
         String sqlTotal = """
                 UPDATE venda SET valorTotal =
                     (SELECT COALESCE(SUM(quantidade * precoUnitario), 0) FROM itemVenda WHERE idVenda = ?)
@@ -306,6 +341,7 @@ public class IniciarBancoServlet implements ServletContextListener{
                 psVenda.executeUpdate();
 
                 int idVenda;
+
                 try (ResultSet chaves = psVenda.getGeneratedKeys()) {
                     chaves.next();
                     idVenda = chaves.getInt(1);
@@ -313,6 +349,7 @@ public class IniciarBancoServlet implements ServletContextListener{
 
                 for (int i = 2; i < venda.length; i++) {
                     Object[] item = (Object[]) venda[i];
+
                     psItem.setInt(1, idVenda);
                     psItem.setInt(2, (Integer) item[1]);
                     psItem.setString(3, (String) item[0]);
@@ -327,15 +364,23 @@ public class IniciarBancoServlet implements ServletContextListener{
         }
     }
 
-    /** Imagens geradas por versões anteriores do seed (fundo colorido com o nome do produto). */
+    /**
+     * Verifica imagens antigas geradas pelo seed.
+     */
     private static boolean isPlaceholderAntigo(byte[] atual) {
         try {
-            java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(atual));
-            return img != null && img.getWidth() == 400 && img.getHeight() == 400
+            java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(
+                    new java.io.ByteArrayInputStream(atual));
+
+            return img != null
+                    && img.getWidth() == 400
+                    && img.getHeight() == 400
                     && !Arrays.equals(atual, ImagensBase.gerar())
                     && atual.length < 20_000
                     && (img.getRGB(5, 5) & 0xFFFFFF) != 0xFFFFFF
-                    && "image/png".equals(br.com.drinkup.utilidades.UtilidadesImagem.tipoPorAssinatura(atual));
+                    && "image/png".equals(
+                    br.com.drinkup.utilidades.UtilidadesImagem.tipoPorAssinatura(atual));
+
         } catch (Exception e) {
             return false;
         }
@@ -343,6 +388,5 @@ public class IniciarBancoServlet implements ServletContextListener{
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
     }
 }

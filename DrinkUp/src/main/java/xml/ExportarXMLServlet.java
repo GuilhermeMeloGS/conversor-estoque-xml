@@ -1,6 +1,6 @@
-
 package xml;
 
+import br.com.drinkup.utilidades.UtilidadesSessao;
 import xml.service.EstoqueXMLService;
 
 import javax.servlet.ServletException;
@@ -22,37 +22,50 @@ public class ExportarXMLServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
 
+        if (UtilidadesSessao.exigirLogin(request, response, true) == null) {
+            return;
+        }
+
         try {
+            String idParam = request.getParameter("id");
+            byte[] arquivoXML;
+            String nomeArquivo;
 
-
-            byte[] arquivoXML =
-                    estoqueXMLService.exportarEstoque();
-
+            if (idParam == null || idParam.trim().isEmpty()) {
+                // Estoque principal
+                arquivoXML = estoqueXMLService.exportarEstoque();
+                nomeArquivo = "estoque.xml";
+            } else {
+                // Estoque importado por XML
+                int id;
+                try {
+                    id = Integer.parseInt(idParam.trim());
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id inválido.");
+                    return;
+                }
+                arquivoXML = estoqueXMLService.exportarEstoqueImportado(id);
+                nomeArquivo = "estoque-importado-" + id + ".xml";
+            }
 
             response.setContentType("application/xml");
             response.setCharacterEncoding("UTF-8");
-
-            response.setHeader(
-                    "Content-Disposition",
-                    "attachment; filename=\"estoque.xml\""
-            );
-
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + nomeArquivo + "\"");
             response.setContentLength(arquivoXML.length);
-
 
             response.getOutputStream().write(arquivoXML);
             response.getOutputStream().flush();
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 
-            throw new ServletException(
-                    "Erro ao exportar o estoque para XML.", e
-            );
+        } catch (Exception e) {
+            throw new ServletException("Erro ao exportar o estoque para XML.", e);
         }
     }
 }

@@ -1,7 +1,8 @@
 package xml;
 
-import br.com.drinkup.dao.ProdutoDao;
+import br.com.drinkup.dao.EstoqueDao;
 import br.com.drinkup.model.Produto;
+import br.com.drinkup.model.TipoUsuario;
 import br.com.drinkup.model.Usuario;
 import br.com.drinkup.utilidades.UtilidadesSessao;
 
@@ -10,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -18,48 +20,40 @@ import java.util.List;
 public class ConfirmarImportacaoXMLServlet extends HttpServlet {
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Garante que há um usuário logado na sessão
-        Usuario usuarioLogado = UtilidadesSessao.getUsuarioLogado(request);
-        if (usuarioLogado == null) {
+        Usuario usuario = UtilidadesSessao.getUsuarioLogado(request);
+        if (usuario == null || usuario.getTipo() != TipoUsuario.Admin) {
             response.sendRedirect(request.getContextPath() + "/paginaLogin.html");
             return;
         }
 
-        List<Produto> produtos = (List<Produto>)
-                request.getSession().getAttribute("produtosImportacaoXML");
+        HttpSession sessao = request.getSession();
+        List<Produto> produtos = (List<Produto>) sessao.getAttribute("produtosImportacaoXML");
+        String nomeArquivo = (String) sessao.getAttribute("nomeArquivoImportacaoXML");
 
         if (produtos == null || produtos.isEmpty()) {
-            request.getSession().setAttribute(
-                    "erroImportacao",
-                    "Nenhum produto encontrado para importar."
-            );
-            response.sendRedirect(request.getContextPath() + "/produtos");
+            sessao.setAttribute("erroImportacao", "Nenhum produto encontrado para importar.");
+            response.sendRedirect(request.getContextPath() + "/xml/conversorXML.html");
             return;
         }
 
         try {
-            // 2. Salva os produtos importados no estoque
-            new ProdutoDao().importarProdutos(produtos);
+            // Grava em estoque próprio; o estoque principal (produto) não é alterado.
+            new EstoqueDao().salvarImportacao(usuario.getId(), nomeArquivo, produtos);
 
-            request.getSession().removeAttribute("produtosImportacaoXML");
-            request.getSession().setAttribute(
-                    "sucessoImportacao",
-                    "Produtos importados com sucesso!"
-            );
+            sessao.removeAttribute("produtosImportacaoXML");
+            sessao.removeAttribute("nomeArquivoImportacaoXML");
+            sessao.setAttribute("sucessoImportacao", "Estoque importado com sucesso!");
 
-            // 3. Redireciona para a página de estoque/produtos após confirmar
-            response.sendRedirect(request.getContextPath() + "/produtos");
+            response.sendRedirect(request.getContextPath() + "/estoques.html");
 
         } catch (SQLException e) {
-            request.getSession().setAttribute(
-                    "erroImportacao",
-                    "Erro ao importar produtos: " + e.getMessage()
-            );
-            response.sendRedirect(request.getContextPath() + "/produtos");
+            sessao.setAttribute("erroImportacao", "Erro ao importar produtos: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/xml/conversorXML.html");
         }
     }
 }
