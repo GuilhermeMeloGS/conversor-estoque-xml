@@ -4,22 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="164016df-cc4e-4ca7-8e91-3fac8d8a88ea" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/EstoqueDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/EstoqueServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ProdutosEstoqueServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/MensagemImportacaoXMLServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/estoques.html" afterDir="false" />
+    <list default="true" id="b83da179-4a9d-4c94-a9c5-306b12a22c87" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/EditarEstoqueServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/EstoqueDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/EstoqueDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/ProdutoDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/CadastraProdutoServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ConfirmarImportacaoXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ExportarXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/ImportarXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/PreviewImportacaoXMLServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/xml/service/EstoqueXMLService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/xml/conversorXML.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ProdutosEstoqueServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/ProdutosEstoqueServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/cadastroBebida.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html" beforeDir="false" afterPath="$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,11 +30,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
-  <component name="ProjectId" id="3MYpckRaO48hnmwmutHApFUkwTA" />
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3MbSzyIBrKcwZG2zNDL0dToiFdA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -72,11 +66,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="164016df-cc4e-4ca7-8e91-3fac8d8a88ea" name="Changes" comment="" />
-      <created>1795537439847</created>
+      <changelist id="b83da179-4a9d-4c94-a9c5-306b12a22c87" name="Changes" comment="" />
+      <created>1795618042823</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1795537439847</updated>
+      <updated>1795618042823</updated>
     </task>
     <servers />
   </component>
@@ -86,16 +80,14 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/DrinkUp/src/main/webapp/detalheEstoque.html</url>
-          <line>111</line>
-          <properties lambdaOrdinal="-1" />
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/dao/EstoqueDao.java</url>
+          <line>24</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/DrinkUp/src/main/webapp/estoques.html</url>
-          <line>258</line>
-          <properties lambdaOrdinal="-1" />
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DrinkUp/src/main/java/br/com/drinkup/servlet/IniciarBancoServlet.java</url>
+          <line>28</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

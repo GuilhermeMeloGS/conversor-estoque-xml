@@ -92,9 +92,10 @@ public class EstoqueDao {
         }
     }
 
+    /** Lista os produtos de um estoque importado. O idProduto do Produto recebe o idProdutoEstoque. */
     public List<Produto> listarProdutosDoEstoque(int idEstoque) throws SQLException {
         String sql = """
-                SELECT p.idCategoria, p.nome, p.codigoDeBarras, p.descricao,
+                SELECT p.idProdutoEstoque, p.idCategoria, p.nome, p.codigoDeBarras, p.descricao,
                        p.preco, p.quantidadeEstoque, p.volumeML,
                        c.nome AS nomeCategoria
                 FROM produtoEstoqueXML p
@@ -113,6 +114,7 @@ public class EstoqueDao {
             try (ResultSet r = statement.executeQuery()) {
                 while (r.next()) {
                     Produto p = new Produto();
+                    p.setIdProduto(r.getInt("idProdutoEstoque"));
                     p.setIdCategoria(r.getInt("idCategoria"));
                     p.setNomeDoProduto(r.getString("nome"));
                     p.setCodigoDeBarras(r.getString("codigoDeBarras"));
@@ -128,6 +130,223 @@ public class EstoqueDao {
 
         return produtos;
     }
+
+    // ------------------------------------------------------------------
+    // EDIÇÃO DE ESTOQUE IMPORTADO
+    // ------------------------------------------------------------------
+
+    /** Renomeia um estoque importado. */
+    public void renomearEstoque(int idEstoque, String novoNome) throws SQLException {
+        if (novoNome == null || novoNome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Informe um nome para o estoque.");
+        }
+
+        novoNome = novoNome.trim();
+
+        if (novoNome.length() > 150) {
+            throw new IllegalArgumentException("O nome pode ter no máximo 150 caracteres.");
+        }
+
+        String sql = "UPDATE estoqueXML SET nome = ? WHERE idEstoque = ?";
+
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, novoNome);
+            statement.setInt(2, idEstoque);
+
+            if (statement.executeUpdate() == 0) {
+                throw new IllegalArgumentException("Estoque não encontrado.");
+            }
+        }
+    }
+
+    /** Adiciona um produto a um estoque importado. */
+    public void adicionarProduto(int idEstoque, Produto p) throws SQLException {
+
+        if (p.getNomeDoProduto() == null || p.getNomeDoProduto().trim().isEmpty()) {
+            throw new IllegalArgumentException("Informe o nome do produto.");
+        }
+
+        if (p.getCodigoDeBarras() == null || p.getCodigoDeBarras().trim().isEmpty()) {
+            throw new IllegalArgumentException("Informe o código de barras.");
+        }
+
+        if (!Double.isFinite(p.getPreco()) || p.getPreco() < 0
+                || p.getQuantidadeEstoque() < 0 || p.getVolumeML() < 0) {
+            throw new IllegalArgumentException("Preço, estoque e volume não podem ser negativos.");
+        }
+
+        try (Connection connection = ConnectionPoolConfig.getConnection()) {
+
+            if (!existe(connection, "SELECT COUNT(*) FROM estoqueXML WHERE idEstoque = ?", idEstoque)) {
+                throw new IllegalArgumentException("Estoque não encontrado.");
+            }
+
+            if (!existe(connection, "SELECT COUNT(*) FROM categoria WHERE idCategoria = ?",
+                    p.getIdCategoria())) {
+                throw new IllegalArgumentException("Categoria não encontrada: " + p.getIdCategoria());
+            }
+
+            String sqlDuplicado = """
+                    SELECT COUNT(*) FROM produtoEstoqueXML
+                    WHERE idEstoque = ? AND codigoDeBarras = ?
+                    """;
+
+            try (PreparedStatement st = connection.prepareStatement(sqlDuplicado)) {
+                st.setInt(1, idEstoque);
+                st.setString(2, p.getCodigoDeBarras().trim());
+
+                try (ResultSet r = st.executeQuery()) {
+                    r.next();
+                    if (r.getInt(1) > 0) {
+                        throw new IllegalArgumentException(
+                                "Já existe um produto com esse código de barras neste estoque.");
+                    }
+                }
+            }
+
+            String sqlInserir = """
+                    INSERT INTO produtoEstoqueXML
+                    (idEstoque, idCategoria, nome, codigoDeBarras, descricao,
+                     preco, quantidadeEstoque, volumeML)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """;
+
+            try (PreparedStatement st = connection.prepareStatement(sqlInserir)) {
+                st.setInt(1, idEstoque);
+                st.setInt(2, p.getIdCategoria());
+                st.setString(3, p.getNomeDoProduto().trim());
+                st.setString(4, p.getCodigoDeBarras().trim());
+                st.setString(5, p.getDescricao());
+                st.setDouble(6, p.getPreco());
+                st.setInt(7, p.getQuantidadeEstoque());
+                st.setInt(8, p.getVolumeML());
+                st.executeUpdate();
+            }
+        }
+    }
+
+    /**
+     * Associa um produto já cadastrado no catálogo principal a um estoque importado.
+     * A quantidade informada é gravada somente em produtoEstoqueXML; não altera
+     * produto.quantidadeEstoque.
+     */
+    public void associarProdutoAoEstoque(int idEstoque, int idProduto,
+                                         int quantidadeEstoqueImportado) throws SQLException {
+        if (quantidadeEstoqueImportado < 0) {
+            throw new IllegalArgumentException("A quantidade não pode ser negativa.");
+        }
+
+        String sqlProduto = """
+                SELECT idCategoria, nome, codigoDeBarras, descricao, preco, volumeML
+                FROM produto
+                WHERE idProduto = ?
+                """;
+        String sqlDuplicado = """
+                SELECT COUNT(*) FROM produtoEstoqueXML
+                WHERE idEstoque = ? AND (idProduto = ? OR codigoDeBarras = ?)
+                """;
+        String sqlInserir = """
+                INSERT INTO produtoEstoqueXML
+                (idEstoque, idProduto, idCategoria, nome, codigoDeBarras, descricao,
+                 preco, quantidadeEstoque, volumeML)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection connection = ConnectionPoolConfig.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!existe(connection, "SELECT COUNT(*) FROM estoqueXML WHERE idEstoque = ?", idEstoque)) {
+                    throw new IllegalArgumentException("Estoque não encontrado.");
+                }
+
+                int idCategoria;
+                String nome;
+                String codigoDeBarras;
+                String descricao;
+                double preco;
+                int volumeML;
+
+                try (PreparedStatement st = connection.prepareStatement(sqlProduto)) {
+                    st.setInt(1, idProduto);
+                    try (ResultSet r = st.executeQuery()) {
+                        if (!r.next()) {
+                            throw new IllegalArgumentException("Produto não encontrado no catálogo.");
+                        }
+                        idCategoria = r.getInt("idCategoria");
+                        nome = r.getString("nome");
+                        codigoDeBarras = r.getString("codigoDeBarras");
+                        descricao = r.getString("descricao");
+                        preco = r.getDouble("preco");
+                        volumeML = r.getInt("volumeML");
+                    }
+                }
+
+                try (PreparedStatement st = connection.prepareStatement(sqlDuplicado)) {
+                    st.setInt(1, idEstoque);
+                    st.setInt(2, idProduto);
+                    st.setString(3, codigoDeBarras);
+                    try (ResultSet r = st.executeQuery()) {
+                        r.next();
+                        if (r.getInt(1) > 0) {
+                            throw new IllegalArgumentException(
+                                    "Este produto já está associado a esse estoque.");
+                        }
+                    }
+                }
+
+                try (PreparedStatement st = connection.prepareStatement(sqlInserir)) {
+                    st.setInt(1, idEstoque);
+                    st.setInt(2, idProduto);
+                    st.setInt(3, idCategoria);
+                    st.setString(4, nome);
+                    st.setString(5, codigoDeBarras);
+                    st.setString(6, descricao);
+                    st.setDouble(7, preco);
+                    st.setInt(8, quantidadeEstoqueImportado);
+                    st.setInt(9, volumeML);
+                    st.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException | RuntimeException e) {
+                connection.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /** Remove um produto de um estoque importado. */
+    public void removerProduto(int idEstoque, int idProdutoEstoque) throws SQLException {
+        String sql = "DELETE FROM produtoEstoqueXML WHERE idProdutoEstoque = ? AND idEstoque = ?";
+
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, idProdutoEstoque);
+            statement.setInt(2, idEstoque);
+
+            if (statement.executeUpdate() == 0) {
+                throw new IllegalArgumentException("Produto não encontrado neste estoque.");
+            }
+        }
+    }
+
+    private boolean existe(Connection connection, String sql, int id) throws SQLException {
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, id);
+
+            try (ResultSet r = st.executeQuery()) {
+                r.next();
+                return r.getInt(1) > 0;
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // IMPORTAÇÃO
+    // ------------------------------------------------------------------
 
     /**
      * Salva uma importação XML em estoque próprio (importacaoXML, estoqueXML,

@@ -1,4 +1,3 @@
-
 package br.com.drinkup.dao;
 
 import br.com.drinkup.model.Produto;
@@ -16,6 +15,13 @@ import java.util.Set;
 public class ProdutoDao {
 
     public void criarProduto(Produto produto) throws SQLException {
+        criarProdutoEObterId(produto);
+    }
+
+    /**
+     * Cadastra um produto no estoque principal e devolve o ID gerado.
+     */
+    public int criarProdutoEObterId(Produto produto) throws SQLException {
         String sql = """
                 INSERT INTO produto
                 (idCategoria, nome, codigoDeBarras, descricao,
@@ -24,7 +30,8 @@ public class ProdutoDao {
                 """;
 
         try (Connection connection = ConnectionPoolConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(
+                     sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             statement.setInt(1, produto.getIdCategoria());
             statement.setString(2, produto.getNomeDoProduto());
@@ -36,6 +43,13 @@ public class ProdutoDao {
             statement.setBytes(8, produto.getImagem());
 
             statement.executeUpdate();
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+                throw new SQLException("Não foi possível obter o ID do produto cadastrado.");
+            }
         }
     }
 

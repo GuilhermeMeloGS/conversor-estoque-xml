@@ -38,6 +38,9 @@
         <!-- Campo oculto para carregar o ID caso seja edição -->
         <input type="hidden" name="id" id="id">
 
+        <!-- ID do estoque importado que receberá o produto, quando informado -->
+        <input type="hidden" name="idEstoqueDestino" id="idEstoqueDestino" value="">
+
         <section class="painel-formulario" aria-labelledby="titulo-informacoes">
             <div class="titulo-painel">
                 <h2 id="titulo-informacoes">Informações básicas</h2>
@@ -112,11 +115,22 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
+    const idEstoqueDestino = urlParams.get('idEstoqueDestino');
     const formulario = document.querySelector('.formulario-cadastro');
     const selectCategoria = document.getElementById('idCategoria');
 
+    // Mantém o ID do estoque importado durante o envio do formulário.
+    if (idEstoqueDestino) {
+        document.getElementById('idEstoqueDestino').value = idEstoqueDestino;
+
+        document.getElementById('titulo-pagina').innerText = "Adicionar bebida ao estoque";
+        document.getElementById('subtitulo-pagina').innerText =
+            "Cadastre a bebida e informe a quantidade que ficará neste estoque.";
+    }
+
     async function carregar() {
         const categorias = await (await fetch('api/categorias')).json();
+
         categorias.forEach(c => {
             const opcao = document.createElement('option');
             opcao.value = c.id;
@@ -127,16 +141,19 @@
         if (!id) return;
 
         formulario.action = 'produtos/atualizar';
+
         document.getElementById('titulo-pagina').innerText = "Editar bebida";
         document.getElementById('subtitulo-pagina').innerText = "Altere os dados do produto no catálogo.";
         document.getElementById('botao-enviar').innerText = "Salvar alterações";
 
         const resposta = await fetch('api/produto?id=' + encodeURIComponent(id));
+
         if (!resposta.ok) {
             alert('Produto não encontrado.');
             window.location.href = 'produtos';
             return;
         }
+
         const p = await resposta.json();
 
         document.getElementById('id').value = p.id;
@@ -149,6 +166,7 @@
         document.getElementById('volumeML').value = p.volumeML;
 
         mostrarPrevia(p.imagem);
+
         if (p.temFoto) {
             document.getElementById('avisoImagem').textContent =
                 'Imagem atual mantida, a menos que você escolha outra.';
@@ -166,6 +184,7 @@
 
     inputImagem.addEventListener('change', function () {
         const arquivo = this.files[0];
+
         if (!arquivo) return;
 
         if (arquivo.size > LIMITE_IMAGEM) {
@@ -173,25 +192,43 @@
             this.value = '';
             return;
         }
+
         document.getElementById('avisoImagem').textContent = arquivo.name;
         mostrarPrevia(URL.createObjectURL(arquivo));
     });
 
-    // Erros do servidor (ex.: arquivo inválido) aparecem sem sair do formulário.
+    // Erros do servidor aparecem sem sair do formulário.
     formulario.addEventListener('submit', async function (e) {
         e.preventDefault();
+
         const botao = document.getElementById('botao-enviar');
         botao.disabled = true;
+
         try {
-            const resposta = await fetch(formulario.action, { method: 'POST', body: new FormData(formulario) });
+            const resposta = await fetch(formulario.action, {
+                method: 'POST',
+                body: new FormData(formulario)
+            });
+
             if (resposta.ok) {
-                window.location.href = 'produtos';
+                if (idEstoqueDestino) {
+                    window.location.href = 'detalheEstoque.html?id=' +
+                        encodeURIComponent(idEstoqueDestino);
+                } else {
+                    window.location.href = 'produtos';
+                }
+
                 return;
             }
+
             const dados = await resposta.json().catch(() => ({}));
-            alert(dados.erro || 'Não foi possível salvar o produto. Verifique se o código de barras já existe.');
+
+            alert(dados.erro ||
+                'Não foi possível salvar o produto. Verifique se o código de barras já existe.');
+
         } catch {
             alert('Erro de comunicação com o servidor.');
+
         } finally {
             botao.disabled = false;
         }
@@ -199,6 +236,7 @@
 
     carregar().catch(() => alert('Não foi possível carregar os dados do banco.'));
 </script>
+
 <script src="shared/menu.js"></script>
 </body>
 

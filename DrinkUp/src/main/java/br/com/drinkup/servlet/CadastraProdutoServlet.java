@@ -1,5 +1,6 @@
 package br.com.drinkup.servlet;
 
+import br.com.drinkup.dao.EstoqueDao;
 import br.com.drinkup.dao.ProdutoDao;
 import br.com.drinkup.model.Produto;
 import br.com.drinkup.utilidades.UtilidadesImagem;
@@ -15,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/produtos/cadastrar")
-@MultipartConfig(maxFileSize = UtilidadesImagem.TAMANHO_MAXIMO, maxRequestSize = UtilidadesImagem.TAMANHO_MAXIMO + 512 * 1024)
+@MultipartConfig(maxFileSize = UtilidadesImagem.TAMANHO_MAXIMO,
+        maxRequestSize = UtilidadesImagem.TAMANHO_MAXIMO + 512 * 1024)
 public class CadastraProdutoServlet extends HttpServlet {
 
     @Override
@@ -32,7 +34,10 @@ public class CadastraProdutoServlet extends HttpServlet {
         produto.setCodigoDeBarras(request.getParameter("codigoDeBarras"));
         produto.setDescricao(request.getParameter("descricao"));
         produto.setPreco(Double.parseDouble(request.getParameter("preco")));
-        produto.setQuantidadeEstoque(Integer.parseInt(request.getParameter("quantidadeEstoque")));
+
+        // A quantidade digitada pode pertencer ao estoque principal ou a um estoque importado.
+        int quantidadeInformada = Integer.parseInt(request.getParameter("quantidadeEstoque"));
+        produto.setQuantidadeEstoque(quantidadeInformada);
         produto.setVolumeML(Integer.parseInt(request.getParameter("volumeML")));
 
         try {
@@ -42,12 +47,33 @@ public class CadastraProdutoServlet extends HttpServlet {
             return;
         }
 
+        String idEstoqueDestinoParam = request.getParameter("idEstoqueDestino");
+        boolean cadastroEmEstoqueImportado = idEstoqueDestinoParam != null
+                && !idEstoqueDestinoParam.trim().isEmpty();
+
         try {
-            new ProdutoDao().criarProduto(produto);
+            ProdutoDao produtoDao = new ProdutoDao();
+
+            if (cadastroEmEstoqueImportado) {
+                int idEstoqueDestino = Integer.parseInt(idEstoqueDestinoParam);
+
+                // O produto entra no catálogo principal com quantidade zero.
+                // A quantidade informada fica exclusivamente no estoque importado.
+                produto.setQuantidadeEstoque(0);
+                int idProduto = produtoDao.criarProdutoEObterId(produto);
+
+                new EstoqueDao().associarProdutoAoEstoque(
+                        idEstoqueDestino, idProduto, quantidadeInformada);
+
+                response.sendRedirect(request.getContextPath()
+                        + "/detalheEstoque.html?id=" + idEstoqueDestino);
+            } else {
+                produtoDao.criarProduto(produto);
+                response.sendRedirect(request.getContextPath() + "/produtos");
+            }
+
         } catch (Exception e) {
             throw new ServletException(e);
         }
-
-        response.sendRedirect(request.getContextPath() + "/produtos");
     }
 }

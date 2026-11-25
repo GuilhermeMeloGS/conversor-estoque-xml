@@ -112,6 +112,7 @@ public class IniciarBancoServlet implements ServletContextListener {
                 CREATE TABLE IF NOT EXISTS produtoEstoqueXML (
                     idProdutoEstoque INT PRIMARY KEY AUTO_INCREMENT,
                     idEstoque INT NOT NULL,
+                    idProduto INT,
                     idCategoria INT,
                     nome VARCHAR(150),
                     codigoDeBarras VARCHAR(50),
@@ -119,14 +120,22 @@ public class IniciarBancoServlet implements ServletContextListener {
                     preco DECIMAL(10,2),
                     quantidadeEstoque INT,
                     volumeML INT,
+                
                     CONSTRAINT fk_produtoEstoqueXML_estoque
                         FOREIGN KEY (idEstoque)
                         REFERENCES estoqueXML(idEstoque),
+                
                     CONSTRAINT fk_produtoEstoqueXML_categoria
                         FOREIGN KEY (idCategoria)
-                        REFERENCES categoria(idCategoria)
+                        REFERENCES categoria(idCategoria),
+                
+                    CONSTRAINT fk_produtoEstoqueXML_produto
+                        FOREIGN KEY (idProduto)
+                        REFERENCES produto(idProduto)
                 )
-                """
+                """,
+                "ALTER TABLE produtoEstoqueXML ADD COLUMN IF NOT EXISTS idProduto INT",
+                "ALTER TABLE produtoEstoqueXML ADD CONSTRAINT IF NOT EXISTS fk_produtoEstoqueXML_produto FOREIGN KEY (idProduto) REFERENCES produto(idProduto)"
         );
 
         String sqlInserirUsuario = """

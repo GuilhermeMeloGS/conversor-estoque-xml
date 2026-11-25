@@ -1,7 +1,9 @@
 package br.com.drinkup.servlet;
 
+import br.com.drinkup.dao.CategoriaDao;
 import br.com.drinkup.dao.EstoqueDao;
 import br.com.drinkup.dao.ProdutoDao;
+import br.com.drinkup.model.Categoria;
 import br.com.drinkup.model.Produto;
 import br.com.drinkup.utilidades.UtilidadesJSON;
 import br.com.drinkup.utilidades.UtilidadesSessao;
@@ -28,10 +30,11 @@ public class ProdutosEstoqueServlet extends HttpServlet {
         }
 
         try {
+            boolean principal = "principal".equals(request.getParameter("tipo"));
             String nome;
             List<Produto> produtos;
 
-            if ("principal".equals(request.getParameter("tipo"))) {
+            if (principal) {
                 nome = "Estoque principal";
                 produtos = new ProdutoDao().listarComCategoria();
             } else {
@@ -54,12 +57,15 @@ public class ProdutosEstoqueServlet extends HttpServlet {
             }
 
             StringBuilder json = new StringBuilder("{\"nome\":\"")
-                    .append(UtilidadesJSON.escapeJson(nome)).append("\",\"produtos\":[");
+                    .append(UtilidadesJSON.escapeJson(nome))
+                    .append("\",\"editavel\":").append(!principal)
+                    .append(",\"produtos\":[");
 
             for (int i = 0; i < produtos.size(); i++) {
                 Produto p = produtos.get(i);
                 if (i > 0) json.append(",");
-                json.append("{\"categoria\":\"")
+                json.append("{\"id\":").append(p.getIdProduto())
+                        .append(",\"categoria\":\"")
                         .append(UtilidadesJSON.escapeJson(p.getNomeCategoria())).append("\"")
                         .append(",\"nome\":\"")
                         .append(UtilidadesJSON.escapeJson(p.getNomeDoProduto())).append("\"")
@@ -69,6 +75,14 @@ public class ProdutosEstoqueServlet extends HttpServlet {
                         .append(",\"quantidadeEstoque\":").append(p.getQuantidadeEstoque())
                         .append(",\"volumeML\":").append(p.getVolumeML())
                         .append("}");
+            }
+
+            json.append("],\"categorias\":[");
+
+            List<Categoria> categorias = new CategoriaDao().listarCategorias();
+            for (int i = 0; i < categorias.size(); i++) {
+                if (i > 0) json.append(",");
+                json.append(UtilidadesJSON.categoriaJson(categorias.get(i)));
             }
 
             json.append("]}");
