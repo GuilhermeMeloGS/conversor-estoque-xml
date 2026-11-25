@@ -7,20 +7,124 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="admin.css">
     <script src="shared/auth.js"></script>
+
     <style>
-        .detalhe { padding: 35px; width: 100%; }
-        .barra { display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 12px; margin: 20px 0; }
-        .btn { display: inline-block; padding: 10px 14px; border-radius: 7px; background: #ffc900;
-            color: #111; text-decoration: none; font-weight: bold; }
-        .btn.secundario { background: #eee; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px;
-            overflow: hidden; }
-        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #fafafa; }
-        #mensagem { background: white; padding: 16px; border-radius: 10px; margin-bottom: 16px; }
+        .detalhe {
+            padding: 35px;
+            width: 100%;
+        }
+
+        .barra {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 7px;
+            background: #ffc900;
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn.secundario {
+            background: #eee;
+        }
+
+        .btn.perigo {
+            background: #fdecea;
+            color: #b3261e;
+            padding: 7px 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #fafafa;
+        }
+
+        #mensagem {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        #mensagem.erro {
+            border-left: 5px solid #c0392b;
+        }
+
+        #mensagem.ok {
+            border-left: 5px solid #27ae60;
+        }
+
+        .painel {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .painel h2 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .linha-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .campo input, .campo select {
+            padding: 9px 10px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .campo.largo input {
+            min-width: 280px;
+        }
+
+        .oculto {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
 <header class="cabecalho">
@@ -30,6 +134,7 @@
 </header>
 
 <main class="detalhe">
+
     <a href="estoques.html" class="btn secundario">← Voltar aos estoques</a>
 
     <div class="barra">
@@ -38,6 +143,20 @@
     </div>
 
     <div id="mensagem">Carregando produtos...</div>
+
+    <!-- RENOMEAR (só estoques importados) -->
+    <section id="painelNome" class="painel oculto">
+        <h2>Nome do estoque</h2>
+
+        <form id="formNome" class="linha-form">
+            <div class="campo largo">
+                <label for="inputNome">Nome</label>
+                <input type="text" id="inputNome" maxlength="150" required>
+            </div>
+
+            <button type="submit" class="btn">Salvar nome</button>
+        </form>
+    </section>
 
     <table>
         <thead>
@@ -48,10 +167,26 @@
             <th>Preço</th>
             <th>Estoque</th>
             <th>Volume (ml)</th>
+            <th id="colAcoes" class="oculto">Ações</th>
         </tr>
         </thead>
+
         <tbody id="linhas"></tbody>
     </table>
+
+    <!-- ADICIONAR PRODUTO (só estoques importados) -->
+    <section id="painelAdicionar" class="painel oculto" style="margin-top:20px;">
+        <h2>Adicionar produto</h2>
+
+        <p>
+            Cadastre uma nova bebida e associe ao estoque importado.
+        </p>
+
+        <a id="linkAdicionar" class="btn" href="#">
+            + Adicionar produto
+        </a>
+    </section>
+
 </main>
 
 <script>
@@ -61,27 +196,46 @@
 
     const params = new URLSearchParams(window.location.search);
     const principal = params.get('tipo') === 'principal';
-    const id = params.get('id');
+    const idEstoque = params.get('id');
 
-    if (!principal && !id) {
-        document.getElementById('mensagem').textContent = 'Estoque não informado.';
-    } else {
-        document.getElementById('linkExportar').href = principal
-            ? 'estoque/xml/exportar'
-            : 'estoque/xml/exportar?id=' + encodeURIComponent(id);
+    const mensagem = document.getElementById('mensagem');
+    const linhas = document.getElementById('linhas');
 
-        carregar();
+    document.getElementById('linkExportar').href = principal
+        ? 'estoque/xml/exportar'
+        : 'estoque/xml/exportar?id=' + encodeURIComponent(idEstoque);
+
+    // Define o destino do cadastro usando o ID do estoque atual.
+    document.getElementById('linkAdicionar').href =
+        'cadastroBebida.html?idEstoqueDestino=' + encodeURIComponent(idEstoque);
+
+    function aviso(texto, tipo) {
+        mensagem.textContent = texto;
+        mensagem.className = tipo || '';
     }
 
-    async function carregar() {
-        const mensagem = document.getElementById('mensagem');
-        const linhas = document.getElementById('linhas');
-        linhas.innerHTML = '';
+    // Envia uma ação de edição para o servidor.
+    async function editar(dados) {
+        const corpo = new URLSearchParams(dados);
+        corpo.set('idEstoque', idEstoque);
 
+        const resposta = await fetch('estoques/editar', {
+            method: 'POST',
+            body: corpo
+        });
+
+        const json = await resposta.json();
+
+        if (!resposta.ok) {
+            throw new Error(json.erro || 'Não foi possível salvar a alteração.');
+        }
+    }
+
+    async function carregar(textoAviso) {
         try {
             const url = principal
                 ? 'estoques/produtos?tipo=principal'
-                : 'estoques/produtos?id=' + encodeURIComponent(id);
+                : 'estoques/produtos?id=' + encodeURIComponent(idEstoque);
 
             const resposta = await fetch(url);
             const dados = await resposta.json();
@@ -90,34 +244,95 @@
                 throw new Error(dados.erro || 'Não foi possível carregar os produtos.');
             }
 
-            const produtos = Array.isArray(dados.produtos) ? dados.produtos : [];
-            document.getElementById('titulo').textContent = dados.nome || 'Produtos do estoque';
-            mensagem.textContent = produtos.length + ' produto(s) neste estoque.';
+            document.getElementById('titulo').textContent = dados.nome;
+            document.getElementById('inputNome').value = dados.nome;
 
-            if (!produtos.length) {
-                linhas.innerHTML = '<tr><td colspan="6">Nenhum produto neste estoque.</td></tr>';
-                return;
-            }
+            const editavel = dados.editavel === true;
 
-            produtos.forEach(p => {
+            document.getElementById('painelNome').classList.toggle('oculto', !editavel);
+            document.getElementById('painelAdicionar').classList.toggle('oculto', !editavel);
+            document.getElementById('colAcoes').classList.toggle('oculto', !editavel);
+
+            // Monta a tabela de produtos.
+            linhas.innerHTML = '';
+
+            dados.produtos.forEach(p => {
                 const tr = document.createElement('tr');
-                const precoFormatado = Number.isFinite(Number(p.preco))
-                    ? 'R$ ' + Number(p.preco).toFixed(2)
-                    : '';
 
-                [p.categoria, p.nome, p.codigoDeBarras, precoFormatado, p.quantidadeEstoque, p.volumeML]
-                    .forEach(valor => {
-                        const td = document.createElement('td');
-                        td.textContent = valor ?? '';
-                        tr.appendChild(td);
-                    });
+                [
+                    p.categoria,
+                    p.nome,
+                    p.codigoDeBarras,
+                    'R$ ' + Number(p.preco).toFixed(2),
+                    p.quantidadeEstoque,
+                    p.volumeML
+                ].forEach(valor => {
+                    const td = document.createElement('td');
+                    td.textContent = valor ?? '';
+                    tr.appendChild(td);
+                });
+
+                if (editavel) {
+                    const td = document.createElement('td');
+
+                    const botao = document.createElement('button');
+                    botao.type = 'button';
+                    botao.className = 'btn perigo';
+                    botao.textContent = 'Remover';
+
+                    botao.addEventListener('click', () => removerProduto(p));
+
+                    td.appendChild(botao);
+                    tr.appendChild(td);
+                }
+
                 linhas.appendChild(tr);
             });
 
+            aviso(
+                textoAviso || (dados.produtos.length + ' produto(s) neste estoque.'),
+                textoAviso ? 'ok' : ''
+            );
+
         } catch (erro) {
-            mensagem.textContent = erro.message;
+            aviso(erro.message, 'erro');
         }
     }
+
+    async function removerProduto(p) {
+        if (!confirm('Remover "' + p.nome + '" deste estoque?')) return;
+
+        try {
+            await editar({
+                acao: 'remover',
+                idProdutoEstoque: p.id
+            });
+
+            await carregar('Produto removido.');
+
+        } catch (erro) {
+            aviso(erro.message, 'erro');
+        }
+    }
+
+    document.getElementById('formNome').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        try {
+            await editar({
+                acao: 'renomear',
+                nome: document.getElementById('inputNome').value
+            });
+
+            await carregar('Nome atualizado.');
+
+        } catch (erro) {
+            aviso(erro.message, 'erro');
+        }
+    });
+
+    carregar();
 </script>
+
 </body>
 </html>
