@@ -318,6 +318,125 @@ public class EstoqueDao {
         }
     }
 
+    /**
+     * Envia os produtos de um estoque importado para a loja (tabela produto).
+     * Produtos cujo código de barras ainda não existe na loja são criados, usando a
+     * quantidade do estoque importado como estoque inicial. Produtos que já existem
+     * na loja não são alterados. Em ambos os casos o produto do estoque importado
+     * passa a ficar ligado ao produto da loja (idProduto).
+     *
+     * @return {quantidade de produtos criados na loja, quantidade que já existiam}
+     */
+    public int[] enviarEstoqueParaLoja(int idEstoque) throws SQLException {
+
+        String sqlProdutos = """
+                SELECT idProdutoEstoque, idCategoria, nome, codigoDeBarras, descricao,
+                       preco, quantidadeEstoque, volumeML
+                FROM produtoEstoqueXML
+                WHERE idEstoque = ?
+                ORDER BY idProdutoEstoque
+                """;
+        String sqlBuscar = "SELECT idProduto FROM produto WHERE codigoDeBarras = ?";
+        String sqlCriar = """
+                INSERT INTO produto
+                (idCategoria, nome, codigoDeBarras, descricao, preco, quantidadeEstoque, volumeML)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
+        String sqlVincular = "UPDATE produtoEstoqueXML SET idProduto = ? WHERE idProdutoEstoque = ?";
+
+        try (Connection connection = ConnectionPoolConfig.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try {
+                if (!existe(connection, "SELECT COUNT(*) FROM estoqueXML WHERE idEstoque = ?", idEstoque)) {
+                    throw new IllegalArgumentException("Estoque não encontrado.");
+                }
+
+                // Lê todos os produtos do estoque antes de gravar.
+                List<Produto> itens = new ArrayList<>();
+                try (PreparedStatement st = connection.prepareStatement(sqlProdutos)) {
+                    st.setInt(1, idEstoque);
+                    try (ResultSet r = st.executeQuery()) {
+                        while (r.next()) {
+                            Produto p = new Produto();
+                            p.setIdProduto(r.getInt("idProdutoEstoque")); // id na tabela do estoque
+                            p.setIdCategoria(r.getInt("idCategoria"));
+                            p.setNomeDoProduto(r.getString("nome"));
+                            p.setCodigoDeBarras(r.getString("codigoDeBarras"));
+                            p.setDescricao(r.getString("descricao"));
+                            p.setPreco(r.getDouble("preco"));
+                            p.setQuantidadeEstoque(r.getInt("quantidadeEstoque"));
+                            p.setVolumeML(r.getInt("volumeML"));
+                            itens.add(p);
+                        }
+                    }
+                }
+
+                if (itens.isEmpty()) {
+                    throw new IllegalArgumentException("Este estoque não possui produtos.");
+                }
+
+                int criados = 0;
+                int jaExistiam = 0;
+
+                try (PreparedStatement buscar = connection.prepareStatement(sqlBuscar);
+                     PreparedStatement criar = connection.prepareStatement(
+                             sqlCriar, Statement.RETURN_GENERATED_KEYS);
+                     PreparedStatement vincular = connection.prepareStatement(sqlVincular)) {
+
+                    for (Produto p : itens) {
+
+                        if (p.getIdCategoria() <= 0) {
+                            throw new IllegalArgumentException(
+                                    "Produto sem categoria: " + p.getNomeDoProduto());
+                        }
+
+                        Integer idProduto = null;
+
+                        buscar.setString(1, p.getCodigoDeBarras());
+                        try (ResultSet r = buscar.executeQuery()) {
+                            if (r.next()) {
+                                idProduto = r.getInt(1);
+                            }
+                        }
+
+                        if (idProduto == null) {
+                            criar.setInt(1, p.getIdCategoria());
+                            criar.setString(2, p.getNomeDoProduto());
+                            criar.setString(3, p.getCodigoDeBarras());
+                            criar.setString(4, p.getDescricao());
+                            criar.setDouble(5, p.getPreco());
+                            criar.setInt(6, p.getQuantidadeEstoque());
+                            criar.setInt(7, p.getVolumeML());
+                            criar.executeUpdate();
+
+                            try (ResultSet keys = criar.getGeneratedKeys()) {
+                                if (!keys.next()) {
+                                    throw new SQLException("Não foi possível obter o ID do produto criado.");
+                                }
+                                idProduto = keys.getInt(1);
+                            }
+                            criados++;
+                        } else {
+                            jaExistiam++;
+                        }
+
+                        vincular.setInt(1, idProduto);
+                        vincular.setInt(2, p.getIdProduto());
+                        vincular.executeUpdate();
+                    }
+                }
+
+                connection.commit();
+                return new int[]{criados, jaExistiam};
+
+            } catch (SQLException | RuntimeException e) {
+                connection.rollback();
+                throw e;
+            }
+        }
+    }
+
     /** Remove um produto de um estoque importado. */
     public void removerProduto(int idEstoque, int idProdutoEstoque) throws SQLException {
         String sql = "DELETE FROM produtoEstoqueXML WHERE idProdutoEstoque = ? AND idEstoque = ?";

@@ -139,7 +139,10 @@
 
     <div class="barra">
         <h1 id="titulo">Produtos do estoque</h1>
-        <a id="linkExportar" class="btn" href="#">↓ Baixar XML</a>
+        <div>
+            <button id="btnEnviarLoja" type="button" class="btn oculto">🏪 Enviar para a loja</button>
+            <a id="linkExportar" class="btn" href="#">↓ Baixar XML</a>
+        </div>
     </div>
 
     <div id="mensagem">Carregando produtos...</div>
@@ -229,6 +232,8 @@
         if (!resposta.ok) {
             throw new Error(json.erro || 'Não foi possível salvar a alteração.');
         }
+
+        return json;
     }
 
     async function carregar(textoAviso) {
@@ -252,6 +257,7 @@
             document.getElementById('painelNome').classList.toggle('oculto', !editavel);
             document.getElementById('painelAdicionar').classList.toggle('oculto', !editavel);
             document.getElementById('colAcoes').classList.toggle('oculto', !editavel);
+            document.getElementById('btnEnviarLoja').classList.toggle('oculto', !editavel);
 
             // Monta a tabela de produtos.
             linhas.innerHTML = '';
@@ -328,6 +334,28 @@
 
         } catch (erro) {
             aviso(erro.message, 'erro');
+        }
+    });
+
+    document.getElementById('btnEnviarLoja').addEventListener('click', async () => {
+        if (!confirm('Enviar os produtos deste estoque para a loja?\n\n' +
+            'Produtos novos serão criados no catálogo da loja. ' +
+            'Produtos que já existem (mesmo código de barras) não serão alterados.')) {
+            return;
+        }
+
+        const botao = document.getElementById('btnEnviarLoja');
+        botao.disabled = true;
+
+        try {
+            const r = await editar({ acao: 'enviarLoja' });
+
+            aviso(r.criados + ' produto(s) novo(s) criado(s) na loja; '
+                + r.existentes + ' já existiam e não foram alterados.', 'ok');
+        } catch (erro) {
+            aviso(erro.message, 'erro');
+        } finally {
+            botao.disabled = false;
         }
     });
 
