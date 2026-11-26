@@ -425,7 +425,11 @@ button {
 .imagem-produto {
     height: 175px;
     display: grid;
+    /* trilhas fixas: sem isso a linha do grid cresce com a altura natural da foto */
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     place-items: center;
+    overflow: hidden;
     background: #fff7dc;
     font-size: 64px;
 }
@@ -494,41 +498,6 @@ button {
     color: var(--green);
     font-size: 11px;
     margin-top: 9px;
-}
-
-/* CHAMADA FINAL / OFERTAS */
-
-.chamada-ofertas {
-    margin: 0 7% 55px;
-    padding: 38px;
-    border-radius: 15px;
-    background: var(--yellow);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 25px;
-}
-
-.chamada-ofertas h2 {
-    font-size: 26px;
-    margin-bottom: 10px;
-}
-
-.chamada-ofertas p {
-    max-width: 560px;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.chamada-ofertas .botao-primario {
-    background: var(--black);
-    border-color: var(--black);
-    color: var(--white);
-    flex-shrink: 0;
-}
-
-.chamada-ofertas .botao-primario:hover {
-    background: #333333;
 }
 
 /* RODAPÉ */
@@ -667,17 +636,6 @@ button {
         height: 150px;
     }
 
-    .chamada-ofertas {
-        margin: 0 5% 40px;
-        padding: 27px;
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .chamada-ofertas h2 {
-        font-size: 23px;
-    }
-
     .rodape {
         padding: 30px 5%;
         align-items: flex-start;
@@ -709,8 +667,10 @@ button {
 .botao-sair:hover { border-color: #ff6b6b; color: #ff6b6b; }
 
 .imagem-produto .foto-produto {
+    display: block;
     width: 100%;
     height: 100%;
+    min-height: 0;
     object-fit: contain;
     padding: 12px;
 }

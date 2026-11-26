@@ -153,6 +153,20 @@
 .badge-status.enviado   { background: #cfe2ff; color: #084298; }
 .badge-status.cancelado { background: #f8d7da; color: #842029; }
 
+.link-pagar {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--yellow);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--black);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.link-pagar:hover { background: var(--yellow-dark); }
+
 /* FORM PERFIL */
 
 .form-perfil { max-width: 480px; }

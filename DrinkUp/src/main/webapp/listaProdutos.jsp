@@ -30,7 +30,6 @@
             <a href="index.html">Início</a>
             <a href="produtos" class="ativo">Produtos</a>
             <a href="index.html#categorias">Categorias</a>
-            <a href="index.html#ofertas" class="destaque">Ofertas</a>
         </nav>
 
         <div class="acoes-cabecalho">
@@ -209,13 +208,14 @@
         function adicionarAoCarrinho(botao) {
             const card = botao.closest('.card-produto');
             const nome = card.dataset.nome;
-            Carrinho.adicionar({
+            const adicionado = Carrinho.adicionar({
                 id: Number(card.dataset.id),
                 nome,
                 preco: Number(card.dataset.preco),
                 icone: card.dataset.icone,
                 imagem: card.dataset.imagem || null
             });
+            if (!adicionado) return;
             document.getElementById('toastMensagem').textContent = `"${nome}" adicionado ao carrinho!`;
             const toast = document.getElementById('toastCarrinho');
             toast.classList.add('visivel');

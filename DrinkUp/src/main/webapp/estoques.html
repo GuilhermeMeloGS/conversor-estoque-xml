@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,57 @@
     <script src="shared/auth.js"></script>
 
     <style>
+        .cabecalho {
+            background-color: #111;
+            color: #fff;
+            min-height: 85px;
+            padding: 15px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo img {
+            width: 150px;
+            height: auto;
+        }
+
+        .cabecalho nav a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .cabecalho nav a:hover {
+            color: #fff;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 45px auto;
+            flex: 1;
+        }
+
+        .titulo-pagina {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .titulo-pagina h1 {
+            font-size: 30px;
+            margin-bottom: 12px;
+            color: #222;
+        }
+
+        .titulo-pagina p {
+            color: #666;
+            font-size: 16px;
+        }
+
         .estoques-container {
             padding: 35px;
             width: 100%;
@@ -116,108 +168,108 @@
 
 <body>
 
-<header class="cabecalho">
-    <a href="index.html" class="logo">
-        <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
-    </a>
-</header>
+    <header class="cabecalho">
+        <a href="index.html" class="logo">
+            <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+        </a>
+    </header>
 
-<main class="estoques-container">
+    <main class="estoques-container">
 
-    <a href="admin.html" class="btn-estoque secundario">
-        ← Voltar ao painel
-    </a>
+        <a href="admin.html" class="btn-estoque secundario">
+            ← Voltar ao painel
+        </a>
 
-    <div class="estoques-cabecalho">
-        <div>
-            <h1>Gerenciar Estoques</h1>
-            <p>Gerencie o estoque principal e os estoques importados por XML.</p>
+        <div class="estoques-cabecalho">
+            <div>
+                <h1>Gerenciar Estoques</h1>
+                <p>Gerencie o estoque principal e os estoques importados por XML.</p>
+            </div>
+
+            <a href="xml/conversorXML.html" class="btn-estoque">
+                + Importar estoque XML
+            </a>
         </div>
 
-        <a href="xml/conversorXML.html" class="btn-estoque">
-            + Importar estoque XML
-        </a>
-    </div>
+        <div id="mensagemEstoques" class="mensagem-estoques">
+            Carregando estoques...
+        </div>
 
-    <div id="mensagemEstoques" class="mensagem-estoques">
-        Carregando estoques...
-    </div>
+        <div id="avisoImportacao" class="mensagem-estoques" style="display:none"></div>
 
-    <div id="avisoImportacao" class="mensagem-estoques" style="display:none"></div>
+        <section id="listaEstoques" class="lista-estoques"></section>
 
-    <section id="listaEstoques" class="lista-estoques"></section>
+    </main>
 
-</main>
+    <script>
+        if (!Auth.isAdmin()) {
+            window.location.href = 'paginaLogin.html';
+        }
 
-<script>
-    if (!Auth.isAdmin()) {
-        window.location.href = 'paginaLogin.html';
-    }
+        function escaparHTML(valor) {
+            return String(valor ?? '').replace(/[&<>"']/g, caractere => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[caractere]);
+        }
 
-    function escaparHTML(valor) {
-        return String(valor ?? '').replace(/[&<>"']/g, caractere => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        })[caractere]);
-    }
+        async function mostrarAvisoImportacao(url) {
+            try {
+                const resposta = await fetch(url);
+                const m = await resposta.json();
+                const texto = m.erro || m.sucesso;
+                if (!texto) return;
 
-    async function mostrarAvisoImportacao(url) {
-        try {
-            const resposta = await fetch(url);
-            const m = await resposta.json();
-            const texto = m.erro || m.sucesso;
-            if (!texto) return;
+                const aviso = document.getElementById('avisoImportacao');
+                aviso.textContent = texto;
+                aviso.style.display = 'block';
+                aviso.style.borderLeft = '5px solid ' + (m.erro ? '#c0392b' : '#27ae60');
+            } catch (e) { /* sem mensagem */ }
+        }
 
-            const aviso = document.getElementById('avisoImportacao');
-            aviso.textContent = texto;
-            aviso.style.display = 'block';
-            aviso.style.borderLeft = '5px solid ' + (m.erro ? '#c0392b' : '#27ae60');
-        } catch (e) { /* sem mensagem */ }
-    }
+        async function carregarEstoques() {
+            const lista = document.getElementById('listaEstoques');
+            const mensagem = document.getElementById('mensagemEstoques');
 
-    async function carregarEstoques() {
-        const lista = document.getElementById('listaEstoques');
-        const mensagem = document.getElementById('mensagemEstoques');
+            try {
+                const resposta = await fetch('estoques/dados');
 
-        try {
-            const resposta = await fetch('estoques/dados');
+                if (!resposta.ok) {
+                    throw new Error('Não foi possível consultar os estoques.');
+                }
 
-            if (!resposta.ok) {
-                throw new Error('Não foi possível consultar os estoques.');
-            }
+                const estoques = await resposta.json();
 
-            const estoques = await resposta.json();
+                mensagem.textContent = estoques.length + ' estoque(s) cadastrado(s).';
 
-            mensagem.textContent = estoques.length + ' estoque(s) cadastrado(s).';
+                if (!estoques.length) {
+                    lista.innerHTML = '<p>Nenhum estoque cadastrado.</p>';
+                    return;
+                }
 
-            if (!estoques.length) {
-                lista.innerHTML = '<p>Nenhum estoque cadastrado.</p>';
-                return;
-            }
+                lista.innerHTML = estoques.map(estoque => {
+                    const principal = estoque.tipo === 'PRINCIPAL';
 
-            lista.innerHTML = estoques.map(estoque => {
-                const principal = estoque.tipo === 'PRINCIPAL';
+                    const linkDetalhe = principal
+                        ? 'detalheEstoque.html?tipo=principal'
+                        : 'detalheEstoque.html?id=' + encodeURIComponent(estoque.id);
 
-                const linkDetalhe = principal
-                    ? 'detalheEstoque.html?tipo=principal'
-                    : 'detalheEstoque.html?id=' + encodeURIComponent(estoque.id);
+                    // Se o ExportarXMLServlet usar outro parâmetro (ex.: tipo=principal), ajuste aqui
+                    const linkExportar = principal
+                        ? 'estoque/xml/exportar'
+                        : 'estoque/xml/exportar?id=' + encodeURIComponent(estoque.id);
 
-                // Se o ExportarXMLServlet usar outro parâmetro (ex.: tipo=principal), ajuste aqui
-                const linkExportar = principal
-                    ? 'estoque/xml/exportar'
-                    : 'estoque/xml/exportar?id=' + encodeURIComponent(estoque.id);
-
-                return `
+                    return `
                     <article class="card-estoque">
                         <h2>${escaparHTML(estoque.nome)}</h2>
 
                         <p>
                             ${principal
-                    ? 'Estoque utilizado pela loja'
-                    : 'Estoque importado via XML'}
+                            ? 'Estoque utilizado pela loja'
+                            : 'Estoque importado via XML'}
                         </p>
 
                         <span class="tipo-estoque">
@@ -249,16 +301,17 @@
                         </div>
                     </article>
                 `;
-            }).join('');
+                }).join('');
 
-        } catch (erro) {
-            mensagem.textContent = erro.message;
+            } catch (erro) {
+                mensagem.textContent = erro.message;
+            }
         }
-    }
 
-    carregarEstoques();
-    mostrarAvisoImportacao('estoque/xml/mensagem');
-</script>
+        carregarEstoques();
+        mostrarAvisoImportacao('estoque/xml/mensagem');
+    </script>
 
 </body>
+
 </html>

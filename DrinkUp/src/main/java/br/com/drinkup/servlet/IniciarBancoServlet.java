@@ -70,6 +70,13 @@ public class IniciarBancoServlet implements ServletContextListener {
                         FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario)
                 )
                 """,
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoCep VARCHAR(9)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoRua VARCHAR(150)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoNumero VARCHAR(20)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoComplemento VARCHAR(100)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoBairro VARCHAR(100)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoCidade VARCHAR(100)",
+                "ALTER TABLE venda ADD COLUMN IF NOT EXISTS enderecoEstado VARCHAR(2)",
                 """
                 CREATE TABLE IF NOT EXISTS itemVenda (
                     idItemVenda INT PRIMARY KEY AUTO_INCREMENT NOT NULL,

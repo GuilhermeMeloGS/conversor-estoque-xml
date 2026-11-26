@@ -49,10 +49,11 @@
                             <th>Itens</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="tabelaMeusPedidos">
-                        <tr><td colspan="5">Carregando...</td></tr>
+                        <tr><td colspan="6">Carregando...</td></tr>
                     </tbody>
                 </table>
             </section>
@@ -122,7 +123,7 @@
             const pedidos = await resposta.json();
 
             if (pedidos.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="5">Você ainda não fez nenhum pedido.</td></tr>';
+                corpo.innerHTML = '<tr><td colspan="6">Você ainda não fez nenhum pedido.</td></tr>';
                 return;
             }
 
@@ -133,9 +134,10 @@
                     <td>${p.itens.map(i => esc(i.nome) + ' x' + i.quantidade).join(', ')}</td>
                     <td>${fmt(p.total)}</td>
                     <td><span class="badge-status ${STATUS_CLASSE[p.status]}">${STATUS_TEXTO[p.status]}</span></td>
+                    <td>${p.status === 'Pendente' ? `<a class="link-pagar" href="pagamento.html?pedido=${p.id}">Pagar agora</a>` : ''}</td>
                 </tr>`).join('');
         } catch {
-            corpo.innerHTML = '<tr><td colspan="5">Erro ao carregar pedidos.</td></tr>';
+            corpo.innerHTML = '<tr><td colspan="6">Erro ao carregar pedidos.</td></tr>';
         }
     }
 

@@ -394,7 +394,7 @@
         renderHeader();
 
         function adicionarAoCarrinho(id, nome, preco, icone) {
-            Carrinho.adicionar({ id, nome, preco, icone });
+            if (!Carrinho.adicionar({ id, nome, preco, icone })) return;
 
             const toast = document.getElementById('toastCarrinho');
             document.getElementById('toastMensagem').textContent = `"${nome}" adicionado ao carrinho!`;

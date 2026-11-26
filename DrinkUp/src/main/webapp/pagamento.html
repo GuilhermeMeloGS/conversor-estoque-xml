@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrinkUp | Pagamento</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="carrinho.css">
+    <link rel="stylesheet" href="pagamento.css">
+    <script src="shared/auth.js"></script>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <a href="index.html" class="logo" aria-label="Página inicial DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="Logo DrinkUp" class="logo-imagem">
+        </a>
+        <nav class="navegacao" aria-label="Menu principal"></nav>
+        <div class="acoes-cabecalho"></div>
+    </header>
+
+    <main class="pagina-carrinho">
+
+        <div class="titulo-pagina">
+            <h1 id="tituloPagina">📍 Endereço de entrega</h1>
+            <a href="carrinho.html" class="voltar-loja" id="linkVoltar">← Voltar ao carrinho</a>
+        </div>
+
+        <!-- ETAPA 1: ENDEREÇO -->
+        <div class="layout-carrinho" id="etapaEndereco">
+
+            <form class="caixa-pagamento" id="formEndereco" novalidate>
+                <h2>Onde devemos entregar?</h2>
+
+                <div class="grade-form">
+                    <label class="campo campo-cep">CEP
+                        <input type="text" id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" required>
+                    </label>
+                    <label class="campo campo-rua">Rua
+                        <input type="text" id="rua" maxlength="150" required>
+                    </label>
+                    <label class="campo campo-numero">Número
+                        <input type="text" id="numero" maxlength="20" required>
+                    </label>
+                    <label class="campo campo-complemento">Complemento <small>(opcional)</small>
+                        <input type="text" id="complemento" maxlength="100">
+                    </label>
+                    <label class="campo campo-bairro">Bairro
+                        <input type="text" id="bairro" maxlength="100" required>
+                    </label>
+                    <label class="campo campo-cidade">Cidade
+                        <input type="text" id="cidade" maxlength="100" required>
+                    </label>
+                    <label class="campo campo-estado">UF
+                        <input type="text" id="estado" maxlength="2" placeholder="SP" required>
+                    </label>
+                </div>
+
+                <p class="erro-form" id="erroForm" role="alert"></p>
+
+                <button type="submit" class="botao-finalizar" id="btnGerarPix">Continuar para o pagamento →</button>
+            </form>
+
+            <aside class="resumo-pedido">
+                <h2>Resumo do pedido</h2>
+                <div id="resumoItens"></div>
+                <div class="linha-resumo"><span>Subtotal</span><span id="resumoSubtotal">R$ 0,00</span></div>
+                <div class="linha-resumo"><span>Frete</span><span id="resumoFrete">R$ 0,00</span></div>
+                <div class="linha-resumo linha-total"><span>Total</span><span id="resumoTotal">R$ 0,00</span></div>
+            </aside>
+        </div>
+
+        <!-- ETAPA 2: PIX -->
+        <div class="layout-carrinho" id="etapaPix" style="display:none;">
+
+            <section class="caixa-pagamento caixa-pix">
+                <span class="selo-status" id="seloStatus">Aguardando pagamento</span>
+                <h2>Pague com PIX</h2>
+                <p class="texto-pix" id="textoPix">Escaneie o QR Code no app do seu banco ou use o código abaixo.</p>
+
+                <div class="qr-moldura" id="qrCode" aria-label="QR Code de pagamento PIX"></div>
+
+                <div class="pix-copia" id="blocoCopia">
+                    <label for="codigoPix">PIX copia e cola</label>
+                    <div class="pix-copia-linha">
+                        <input type="text" id="codigoPix" readonly>
+                        <button type="button" id="btnCopiar" onclick="copiarCodigo()">Copiar</button>
+                    </div>
+                    <p class="pix-chave">Chave: <strong>pagamentos@drinkup.com.br</strong></p>
+                </div>
+
+                <button type="button" class="botao-finalizar" id="btnJaPaguei" onclick="confirmarPagamento()">
+                    ✓ Já paguei
+                </button>
+                <p class="aviso-demo">Pagamento ilustrativo: o QR Code não leva a lugar nenhum. Clique em "Já paguei" para simular a confirmação.</p>
+
+                <div class="pago-ok" id="pagoOk" style="display:none;">
+                    <div class="pago-icone">✅</div>
+                    <h3>Pagamento confirmado!</h3>
+                    <p>Seu pedido foi marcado como <strong>Concluído</strong>.</p>
+                    <a href="minhaConta.html" class="botao-finalizar botao-link">Ver meus pedidos</a>
+                </div>
+            </section>
+
+            <aside class="resumo-pedido">
+                <h2>Pedido <span id="numeroPedido"></span></h2>
+                <div id="pixItens"></div>
+                <div class="linha-resumo linha-total"><span>Total</span><span id="pixTotal">R$ 0,00</span></div>
+                <div class="endereco-resumo" id="pixEndereco"></div>
+                <div class="linha-resumo"><span>Status</span><span id="pixStatus"></span></div>
+            </aside>
+        </div>
+
+    </main>
+
+    <footer class="rodape">
+        <div>
+            <div class="logo-nome">DRINK UP</div>
+            <p class="descricao-rodape">Distribuidora de bebidas<br>&copy; 2026 DrinkUp. Projeto acadêmico.</p>
+        </div>
+        <nav class="links-rodape">
+            <a href="index.html">Início</a>
+            <a href="produtos">Produtos</a>
+            <a href="paginaLogin.html">Entrar</a>
+        </nav>
+    </footer>
+
+<script>
+    const CHAVE_PIX = 'pagamentos@drinkup.com.br';
+    const FRETE = 8.90;
+    const FRETE_GRATIS_ACIMA_DE = 50;
+
+    let pedidoAtual = null; // pedido já criado (etapa PIX)
+
+    function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+
+    function esc(t) {
+        const d = document.createElement('div');
+        d.textContent = t == null ? '' : t;
+        return d.innerHTML;
+    }
+
+    function $(id) { return document.getElementById(id); }
+
+    /* ── QR CODE ILUSTRATIVO ──
+       Desenho determinístico (mesmo pedido = mesmo desenho) com os três
+       marcadores de canto de um QR Code. Não codifica nada de verdade. */
+    function gerarQr(semente) {
+        const N = 29, TAM = 8;
+        let x = (semente * 2654435761) >>> 0 || 1;
+        const rand = () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; };
+
+        const marcador = (r, c) => {
+            const cantos = [[0, 0], [0, N - 7], [N - 7, 0]];
+            for (const [r0, c0] of cantos) {
+                const dr = r - r0, dc = c - c0;
+                if (dr >= -1 && dr <= 7 && dc >= -1 && dc <= 7) {
+                    if (dr < 0 || dr > 6 || dc < 0 || dc > 6) return 0; // margem branca
+                    const borda = dr === 0 || dr === 6 || dc === 0 || dc === 6;
+                    const miolo = dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4;
+                    return borda || miolo ? 1 : 0;
+                }
+            }
+            return null;
+        };
+
+        let quadrados = '';
+        for (let r = 0; r < N; r++) {
+            for (let c = 0; c < N; c++) {
+                const m = marcador(r, c);
+                const preenchido = m === null ? rand() < 0.5 : m === 1;
+                if (preenchido) quadrados += `<rect x="${c * TAM}" y="${r * TAM}" width="${TAM}" height="${TAM}"/>`;
+            }
+        }
+        const lado = N * TAM;
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-16 -16 ${lado + 32} ${lado + 32}" shape-rendering="crispEdges">
+                    <rect x="-16" y="-16" width="${lado + 32}" height="${lado + 32}" fill="#fff"/>
+                    <g fill="#111">${quadrados}</g>
+                </svg>`;
+    }
+
+    function codigoCopiaECola(pedido) {
+        return `00020126PIX${CHAVE_PIX}|DRINKUP|PEDIDO${pedido.id}|VALOR${Number(pedido.total).toFixed(2)}`;
+    }
+
+    /* ── ETAPA 1: ENDEREÇO ── */
+    function preencherResumo() {
+        const itens = Carrinho.get();
+        const subtotal = itens.reduce((s, i) => s + i.preco * i.qty, 0);
+        const frete = subtotal > 0 && subtotal < FRETE_GRATIS_ACIMA_DE ? FRETE : 0;
+
+        $('resumoItens').innerHTML = itens.map(i => `
+            <div class="linha-resumo"><span>${esc(i.nome)} × ${i.qty}</span><span>${fmt(i.preco * i.qty)}</span></div>`).join('');
+        $('resumoSubtotal').textContent = fmt(subtotal);
+        $('resumoFrete').textContent = frete === 0 ? 'Grátis' : fmt(frete);
+        $('resumoTotal').textContent = fmt(subtotal + frete);
+    }
+
+    $('cep').addEventListener('input', e => {
+        const d = e.target.value.replace(/\D/g, '').slice(0, 8);
+        e.target.value = d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d;
+    });
+    $('estado').addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    });
+
+    function mostrarErro(msg) { $('erroForm').textContent = msg || ''; }
+
+    $('formEndereco').addEventListener('submit', async e => {
+        e.preventDefault();
+        mostrarErro('');
+
+        const endereco = {
+            cep: $('cep').value.trim(),
+            rua: $('rua').value.trim(),
+            numero: $('numero').value.trim(),
+            complemento: $('complemento').value.trim(),
+            bairro: $('bairro').value.trim(),
+            cidade: $('cidade').value.trim(),
+            estado: $('estado').value.trim()
+        };
+
+        if (!/^\d{5}-?\d{3}$/.test(endereco.cep)) { mostrarErro('Informe um CEP válido (00000-000).'); return; }
+        if (!endereco.rua || !endereco.numero || !endereco.bairro || !endereco.cidade) {
+            mostrarErro('Preencha rua, número, bairro e cidade.'); return;
+        }
+        if (!/^[A-Za-z]{2}$/.test(endereco.estado)) { mostrarErro('Informe a UF com 2 letras (ex.: SP).'); return; }
+
+        const itens = Carrinho.get().map(i => i.id + ':' + i.qty).join(',');
+        const btn = $('btnGerarPix');
+        btn.disabled = true;
+
+        try {
+            const resposta = await fetch('api/vendas/finalizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ itens, ...endereco })
+            });
+
+            if (resposta.status === 401) {
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+                return;
+            }
+            const dados = await resposta.json();
+            if (!resposta.ok) { mostrarErro(dados.erro || 'Não foi possível criar o pedido.'); return; }
+
+            // O pedido já existe como Pendente: o carrinho pode ser esvaziado.
+            Carrinho.limpar();
+            window.location.href = 'pagamento.html?pedido=' + dados.idVenda;
+        } catch {
+            mostrarErro('Erro de comunicação com o servidor.');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    /* ── ETAPA 2: PIX ── */
+    function atualizarStatusPix(pedido) {
+        const pago = pedido.status === 'Concluido';
+        const cancelado = pedido.status === 'Cancelado';
+
+        $('pixStatus').innerHTML = `<span class="badge-status ${pago ? 'pago' : cancelado ? 'cancelado' : 'pendente'}">
+            ${pago ? 'Concluído' : cancelado ? 'Cancelado' : 'Pendente'}</span>`;
+
+        const selo = $('seloStatus');
+        selo.textContent = pago ? 'Pago' : cancelado ? 'Pedido cancelado' : 'Aguardando pagamento';
+        selo.className = 'selo-status ' + (pago ? 'ok' : cancelado ? 'cancelado' : '');
+
+        const aberto = !pago && !cancelado;
+        $('qrCode').style.display = aberto ? '' : 'none';
+        $('blocoCopia').style.display = aberto ? '' : 'none';
+        $('btnJaPaguei').style.display = aberto ? '' : 'none';
+        document.querySelector('.aviso-demo').style.display = aberto ? '' : 'none';
+        $('textoPix').style.display = aberto ? '' : 'none';
+        $('pagoOk').style.display = pago ? '' : 'none';
+
+        if (cancelado) {
+            $('textoPix').style.display = '';
+            $('textoPix').textContent = 'Este pedido foi cancelado e não pode mais ser pago.';
+        }
+    }
+
+    function mostrarPix(pedido) {
+        pedidoAtual = pedido;
+        $('etapaEndereco').style.display = 'none';
+        $('etapaPix').style.display = '';
+        $('tituloPagina').textContent = '💳 Pagamento';
+        $('linkVoltar').textContent = 'Ver meus pedidos →';
+        $('linkVoltar').href = 'minhaConta.html';
+
+        $('numeroPedido').textContent = '#' + pedido.id;
+        $('pixTotal').textContent = fmt(pedido.total);
+        $('pixItens').innerHTML = pedido.itens.map(i => `
+            <div class="linha-resumo"><span>${esc(i.nome)} × ${i.quantidade}</span><span>${fmt(i.precoUnitario * i.quantidade)}</span></div>`).join('');
+
+        const e = pedido.endereco;
+        $('pixEndereco').innerHTML = e
+            ? `<strong>Entrega em</strong><br>${esc(e.rua)}, ${esc(e.numero)}${e.complemento ? ' - ' + esc(e.complemento) : ''}<br>
+               ${esc(e.bairro)} — ${esc(e.cidade)}/${esc(e.estado)}<br>CEP ${esc(e.cep)}`
+            : '';
+
+        $('qrCode').innerHTML = gerarQr(pedido.id);
+        $('codigoPix').value = codigoCopiaECola(pedido);
+        atualizarStatusPix(pedido);
+    }
+
+    async function copiarCodigo() {
+        const campo = $('codigoPix');
+        try {
+            await navigator.clipboard.writeText(campo.value);
+        } catch {
+            campo.select();
+            document.execCommand('copy');
+        }
+        const btn = $('btnCopiar');
+        btn.textContent = 'Copiado!';
+        setTimeout(() => btn.textContent = 'Copiar', 1800);
+    }
+
+    async function confirmarPagamento() {
+        if (!pedidoAtual) return;
+        const btn = $('btnJaPaguei');
+        btn.disabled = true;
+
+        try {
+            const resposta = await fetch('api/vendas/pagar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id: pedidoAtual.id })
+            });
+
+            if (resposta.status === 401) {
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+                return;
+            }
+            if (!resposta.ok) {
+                const dados = await resposta.json().catch(() => ({}));
+                alert(dados.erro || 'Não foi possível confirmar o pagamento.');
+                await carregarPedido(pedidoAtual.id); // pode já ter sido pago/cancelado
+                return;
+            }
+
+            pedidoAtual.status = 'Concluido';
+            atualizarStatusPix(pedidoAtual);
+        } catch {
+            alert('Erro de comunicação com o servidor.');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function carregarPedido(id) {
+        try {
+            const resposta = await fetch('api/minhasVendas');
+            if (resposta.status === 401) {
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+                return;
+            }
+            if (!resposta.ok) throw new Error();
+
+            const pedido = (await resposta.json()).find(p => p.id === id);
+            if (!pedido) {
+                alert('Pedido não encontrado.');
+                window.location.href = 'minhaConta.html';
+                return;
+            }
+            mostrarPix(pedido);
+        } catch {
+            alert('Erro ao carregar o pedido.');
+            window.location.href = 'minhaConta.html';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!Auth.isLoggedIn()) { window.location.href = 'paginaLogin.html'; return; }
+        renderHeader();
+
+        const idPedido = Number(new URLSearchParams(window.location.search).get('pedido'));
+        if (idPedido) { carregarPedido(idPedido); return; }
+
+        if (Carrinho.get().length === 0) { window.location.href = 'carrinho.html'; return; }
+        preencherResumo();
+    });
+</script>
+    <script src="shared/menu.js"></script>
+</body>
+</html>

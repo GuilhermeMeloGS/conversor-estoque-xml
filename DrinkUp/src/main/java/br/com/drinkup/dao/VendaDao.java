@@ -1,5 +1,6 @@
 package br.com.drinkup.dao;
 
+import br.com.drinkup.model.Endereco;
 import br.com.drinkup.model.ItemVenda;
 import br.com.drinkup.model.StatusVenda;
 import br.com.drinkup.model.Venda;
@@ -23,7 +24,9 @@ public class VendaDao {
     private static final BigDecimal FRETE_GRATIS_ACIMA_DE = new BigDecimal("50.00");
 
     private static final String SQL_VENDAS = """
-            SELECT v.idVenda, v.idUsuario, u.nome, u.sobrenome, v.dataVenda, v.valorTotal, v.status
+            SELECT v.idVenda, v.idUsuario, u.nome, u.sobrenome, v.dataVenda, v.valorTotal, v.status,
+                   v.enderecoCep, v.enderecoRua, v.enderecoNumero, v.enderecoComplemento,
+                   v.enderecoBairro, v.enderecoCidade, v.enderecoEstado
             FROM venda v
             JOIN usuario u ON u.idUsuario = v.idUsuario
             """;
@@ -36,7 +39,7 @@ public class VendaDao {
      * @return id da venda criada
      * @throws IllegalArgumentException regra de negócio violada (carrinho vazio, estoque insuficiente...)
      */
-    public int criarVenda(int idUsuario, Map<Integer, Integer> itens) throws SQLException {
+    public int criarVenda(int idUsuario, Map<Integer, Integer> itens, Endereco endereco) throws SQLException {
 
         if (itens == null || itens.isEmpty()) {
             throw new IllegalArgumentException("Carrinho vazio.");
@@ -86,11 +89,22 @@ public class VendaDao {
 
                 int idVenda;
                 try (PreparedStatement inserirVenda = connection.prepareStatement(
-                        "INSERT INTO venda (idUsuario, valorTotal, status) VALUES (?, ?, ?)",
+                        """
+                        INSERT INTO venda (idUsuario, valorTotal, status, enderecoCep, enderecoRua, enderecoNumero,
+                                           enderecoComplemento, enderecoBairro, enderecoCidade, enderecoEstado)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
                         Statement.RETURN_GENERATED_KEYS)) {
                     inserirVenda.setInt(1, idUsuario);
                     inserirVenda.setBigDecimal(2, total);
                     inserirVenda.setString(3, StatusVenda.Pendente.name());
+                    inserirVenda.setString(4, endereco.getCep());
+                    inserirVenda.setString(5, endereco.getRua());
+                    inserirVenda.setString(6, endereco.getNumero());
+                    inserirVenda.setString(7, endereco.getComplemento());
+                    inserirVenda.setString(8, endereco.getBairro());
+                    inserirVenda.setString(9, endereco.getCidade());
+                    inserirVenda.setString(10, endereco.getEstado());
                     inserirVenda.executeUpdate();
 
                     try (ResultSet chaves = inserirVenda.getGeneratedKeys()) {
@@ -148,7 +162,8 @@ public class VendaDao {
                                 cliente,
                                 rs.getObject("dataVenda", LocalDateTime.class),
                                 rs.getBigDecimal("valorTotal"),
-                                StatusVenda.valueOf(rs.getString("status")));
+                                StatusVenda.valueOf(rs.getString("status")),
+                                lerEndereco(rs));
                         vendas.put(venda.getIdVenda(), venda);
                     }
                 }
@@ -180,6 +195,38 @@ public class VendaDao {
         }
 
         return new ArrayList<>(vendas.values());
+    }
+
+    private Endereco lerEndereco(ResultSet rs) throws SQLException {
+        String rua = rs.getString("enderecoRua");
+        if (rua == null) {
+            return null; // pedido antigo, sem endereço de entrega
+        }
+        return new Endereco(
+                rs.getString("enderecoCep"),
+                rua,
+                rs.getString("enderecoNumero"),
+                rs.getString("enderecoComplemento"),
+                rs.getString("enderecoBairro"),
+                rs.getString("enderecoCidade"),
+                rs.getString("enderecoEstado"));
+    }
+
+    /**
+     * Confirma o pagamento PIX: só o dono do pedido, e só enquanto ele estiver Pendente.
+     *
+     * @return false se o pedido não existe, não é do usuário, já foi pago ou foi cancelado
+     */
+    public boolean confirmarPagamento(int idVenda, int idUsuario) throws SQLException {
+        try (Connection connection = ConnectionPoolConfig.getConnection();
+             PreparedStatement ps = connection.prepareStatement(
+                     "UPDATE venda SET status = ? WHERE idVenda = ? AND idUsuario = ? AND status = ?")) {
+            ps.setString(1, StatusVenda.Concluido.name());
+            ps.setInt(2, idVenda);
+            ps.setInt(3, idUsuario);
+            ps.setString(4, StatusVenda.Pendente.name());
+            return ps.executeUpdate() > 0;
+        }
     }
 
     /**

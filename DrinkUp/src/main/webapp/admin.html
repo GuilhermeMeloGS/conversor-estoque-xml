@@ -204,6 +204,58 @@
     </div>
 </div>
 
+<!-- MODAL: EDITAR USUÁRIO -->
+<div class="overlay-modal" id="overlayUsuario">
+
+    <div class="modal-admin">
+
+        <div class="cabecalho-modal">
+            <h3>Editar Usuário</h3>
+            <button class="fechar-modal" onclick="fecharModalUsuario()">✕</button>
+        </div>
+
+        <form class="form-admin" onsubmit="salvarUsuario(event)">
+
+            <div class="grid-form-admin">
+
+                <div class="campo-admin">
+                    <label>Nome *</label>
+                    <input type="text" id="usuNome" required maxlength="100">
+                </div>
+
+                <div class="campo-admin">
+                    <label>Sobrenome *</label>
+                    <input type="text" id="usuSobrenome" required maxlength="100">
+                </div>
+
+                <div class="campo-admin span-2">
+                    <label>E-mail *</label>
+                    <input type="email" id="usuEmail" required maxlength="100">
+                </div>
+
+                <div class="campo-admin span-2">
+                    <label>Nova senha</label>
+                    <input type="password" id="usuSenha" maxlength="50"
+                           autocomplete="new-password"
+                           placeholder="Deixe em branco para manter a senha atual">
+                </div>
+
+            </div>
+
+            <div class="acoes-modal">
+                <button type="button" class="btn-cancelar" onclick="fecharModalUsuario()">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn-salvar">
+                    Salvar Usuário
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
 <!-- RODAPÉ -->
 <footer class="rodape">
     <div>
@@ -244,13 +296,9 @@
         { id:8, nome:'Whisky Escocês 12 Anos 1L', categoria:'Destilados', preco:149.90, estoque:12 },
     ];
 
-    const usuarios = [];
+    let usuarios = [];
 
-    let pedidos = [
-        { id:'#1001', cliente:'João Silva', data:'20/06/2025', total:'R$ 33,30', status:'enviado' },
-        { id:'#1002', cliente:'Maria Santos', data:'14/07/2025', total:'R$ 47,60', status:'pago' },
-        { id:'#1003', cliente:'João Silva', data:'27/10/2026', total:'R$ 149,90', status:'pendente' },
-    ];
+    let pedidos = [];
 
     function fmt(v) {
         return 'R$ ' + Number(v).toFixed(2).replace('.', ',');
@@ -261,7 +309,8 @@
 
         renderProdutos();
         renderUsuarios();
-        renderPedidos();
+        carregarPedidos();
+        setInterval(carregarPedidos, 30000);
 
         // Apenas os links que possuem data-tab são abas internas.
         document.querySelectorAll('.item-admin[data-tab]').forEach(link => {
@@ -283,6 +332,8 @@
                 document.getElementById(
                     'tab-' + this.dataset.tab
                 ).classList.add('ativo');
+
+                if (this.dataset.tab === 'pedidos') carregarPedidos();
 
             });
 
@@ -319,78 +370,189 @@
 
     }
 
-    /* ── USUÁRIOS ── */
-    function renderUsuarios() {
+function renderUsuarios() {
+    fetch("usuarios")
+        .then(response => {
+            if (response.status === 401) {
+                // sessão do servidor expirou (ex.: reinício) mas o navegador ainda acha que está logado
+                Auth.logout();
+                window.location.href = 'paginaLogin.html';
+                throw new Error('Sessão expirada');
+            }
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(lista => {
+            usuarios = lista;
+            const tbody = document.getElementById('tabelaUsuarios');
 
-        fetch("/listarUsuarios")
-            .then(response => response.json())
-            .then(lista => {
+            tbody.innerHTML = lista.map(u => {
+                const tipo = u.tipo || 'Cliente';
+                return `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.nome} ${u.sobrenome || ''}</td>
+                        <td>${u.email}</td>
+                        <td>
+                            <span class="badge-role-admin ${tipo.toLowerCase()}">
+                                ${tipo}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn-acao editar"
+                                    onclick="abrirModalUsuario(${u.id})">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-acao editar"
+                                    onclick="alterarPermissao(${u.id})">
+                                🔑 Alterar Perfil
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        })
+        .catch(erro => {
+            console.error("Falha ao carregar usuários:", erro);
+            document.getElementById('tabelaUsuarios').innerHTML =
+                `<tr><td colspan="5">Erro ao carregar usuários (${erro.message}).</td></tr>`;
+        });
+}
 
-                document.getElementById('tabelaUsuarios').innerHTML =
-                    lista.map(u => `
-                        <tr>
-                            <td>${u.id}</td>
-                            <td>${u.nome} ${u.sobrenome}</td>
-                            <td>${u.email}</td>
-                            <td>
-                                <span class="badge-role-admin ${u.tipo.toLowerCase()}">
-                                    ${u.tipo}
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn-acao editar"
-                                        onclick="alterarPermissao(${u.id})">
-                                    🔑 Alterar Perfil
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
+    let editandoUsuarioId = null;
 
+    function abrirModalUsuario(id) {
+
+        const u = usuarios.find(x => x.id === id);
+
+        if (!u) return;
+
+        editandoUsuarioId = id;
+
+        document.getElementById('usuNome').value = u.nome;
+        document.getElementById('usuSobrenome').value = u.sobrenome || '';
+        document.getElementById('usuEmail').value = u.email;
+        document.getElementById('usuSenha').value = '';
+
+        document.getElementById('overlayUsuario').classList.add('ativo');
+
+    }
+
+    function fecharModalUsuario() {
+
+        document.getElementById('overlayUsuario').classList.remove('ativo');
+        editandoUsuarioId = null;
+
+    }
+
+    function salvarUsuario(event) {
+
+        event.preventDefault();
+
+        const body = new URLSearchParams({
+            id: editandoUsuarioId,
+            nome: document.getElementById('usuNome').value,
+            sobrenome: document.getElementById('usuSobrenome').value,
+            email: document.getElementById('usuEmail').value,
+            senha: document.getElementById('usuSenha').value
+        });
+
+        fetch("atualizarUsuario", { method: "POST", body })
+            .then(async response => {
+                if (!response.ok) {
+                    const erro = await response.json().catch(() => ({}));
+                    throw new Error(erro.erro || `Erro HTTP: ${response.status}`);
+                }
+                fecharModalUsuario();
+                renderUsuarios();
             })
-            .catch(() => {
-
-                document.getElementById('tabelaUsuarios').innerHTML =
-                    '<tr><td colspan="5">Erro ao carregar usuários.</td></tr>';
-
-            });
+            .catch(erro => alert(erro.message));
 
     }
 
     /* ── PEDIDOS ── */
-    const STATUS_OPTS = ['pendente', 'pago', 'enviado', 'cancelado'];
+    const STATUS_OPTS   = ['Pendente', 'Concluido', 'Cancelado'];
+    const STATUS_CLASSE = { Pendente: 'pendente', Concluido: 'pago', Cancelado: 'cancelado' };
+    const STATUS_TEXTO  = { Pendente: 'Pendente', Concluido: 'Concluído', Cancelado: 'Cancelado' };
+
+    function escHtml(t) {
+        const d = document.createElement('div');
+        d.textContent = t == null ? '' : t;
+        return d.innerHTML;
+    }
+
+    // Busca os pedidos no banco; chamada ao abrir, ao clicar na aba e a cada 30s.
+    async function carregarPedidos() {
+        try {
+            const resposta = await fetch('api/vendas');
+            if (!resposta.ok) throw new Error();
+            pedidos = await resposta.json();
+            renderPedidos();
+        } catch {
+            document.getElementById('tabelaPedidos').innerHTML =
+                '<tr><td colspan="6">Erro ao carregar pedidos.</td></tr>';
+        }
+    }
 
     function renderPedidos() {
 
-        document.getElementById('tabelaPedidos').innerHTML =
-            pedidos.map((p, i) => `
+        const corpo = document.getElementById('tabelaPedidos');
+
+        // Não redesenha enquanto o admin está com o seletor de status aberto.
+        if (corpo.contains(document.activeElement) && document.activeElement.tagName === 'SELECT') return;
+
+        if (pedidos.length === 0) {
+            corpo.innerHTML = '<tr><td colspan="6">Nenhum pedido registrado.</td></tr>';
+            return;
+        }
+
+        corpo.innerHTML = pedidos.map(p => {
+            // Pedido cancelado é definitivo (o estoque já voltou), então não pode mudar.
+            const travado = p.status === 'Cancelado';
+            return `
                 <tr>
-                    <td>${p.id}</td>
-                    <td>${p.cliente}</td>
-                    <td>${p.data}</td>
-                    <td>${p.total}</td>
+                    <td>#${p.id}</td>
+                    <td>${escHtml(p.cliente)}</td>
+                    <td>${escHtml(p.data)}</td>
+                    <td>${fmt(p.total)}</td>
                     <td>
-                        <span class="badge-status ${p.status}">
-                            ${p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                        <span class="badge-status ${STATUS_CLASSE[p.status]}">
+                            ${STATUS_TEXTO[p.status]}
                         </span>
                     </td>
                     <td>
-                        <select class="seletor-status"
-                                onchange="alterarStatus(${i}, this.value)">
+                        <select class="seletor-status" ${travado ? 'disabled' : ''}
+                                onchange="alterarStatus(${p.id}, this.value)">
                             ${STATUS_OPTS.map(s => `
                                 <option value="${s}" ${s === p.status ? 'selected' : ''}>
-                                    ${s.charAt(0).toUpperCase() + s.slice(1)}
+                                    ${STATUS_TEXTO[s]}
                                 </option>
                             `).join('')}
                         </select>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`;
+        }).join('');
 
     }
 
-    function alterarStatus(idx, novoStatus) {
-        pedidos[idx].status = novoStatus;
-        renderPedidos();
+    async function alterarStatus(id, novoStatus) {
+        try {
+            const resposta = await fetch('api/vendas/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id, status: novoStatus })
+            });
+            if (!resposta.ok) {
+                const dados = await resposta.json().catch(() => ({}));
+                alert(dados.erro || 'Não foi possível atualizar o pedido.');
+            }
+        } catch {
+            alert('Erro ao atualizar o pedido.');
+        }
+        document.activeElement.blur();
+        carregarPedidos();
     }
 
     /* ── MODAL ── */
@@ -495,15 +657,21 @@
 
         if (!u) return;
 
-        const novo = u.role === 'admin' ? 'cliente' : 'admin';
+        const novo = u.tipo === 'Admin' ? 'Cliente' : 'Admin';
 
-        if (confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) {
+        if (!confirm(`Alterar perfil de "${u.nome}" para ${novo}?`)) return;
 
-            u.role = novo;
-
-            renderUsuarios();
-
-        }
+        fetch("alterarTipoUsuario", {
+            method: "POST",
+            body: new URLSearchParams({ id, tipo: novo })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(e => { throw new Error(e.erro || `Erro HTTP: ${response.status}`); });
+                }
+                renderUsuarios();
+            })
+            .catch(erro => alert(erro.message));
 
     }
 
@@ -511,6 +679,14 @@
 
         if (e.target === this) {
             fecharModal();
+        }
+
+    });
+
+    document.getElementById('overlayUsuario').addEventListener('click', function(e) {
+
+        if (e.target === this) {
+            fecharModalUsuario();
         }
 
     });

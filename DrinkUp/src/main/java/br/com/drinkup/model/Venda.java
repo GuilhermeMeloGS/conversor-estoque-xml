@@ -13,16 +13,18 @@ public class Venda {
     private final LocalDateTime dataVenda;
     private final BigDecimal valorTotal;
     private final StatusVenda status;
+    private final Endereco endereco;
     private final List<ItemVenda> itens = new ArrayList<>();
 
     public Venda(int idVenda, int idUsuario, String nomeCliente, LocalDateTime dataVenda,
-                 BigDecimal valorTotal, StatusVenda status) {
+                 BigDecimal valorTotal, StatusVenda status, Endereco endereco) {
         this.idVenda = idVenda;
         this.idUsuario = idUsuario;
         this.nomeCliente = nomeCliente;
         this.dataVenda = dataVenda;
         this.valorTotal = valorTotal;
         this.status = status;
+        this.endereco = endereco;
     }
 
     public int getIdVenda() {
@@ -47,6 +49,11 @@ public class Venda {
 
     public StatusVenda getStatus() {
         return status;
+    }
+
+    /** Null em pedidos antigos, criados antes de existir o endereço de entrega. */
+    public Endereco getEndereco() {
+        return endereco;
     }
 
     public List<ItemVenda> getItens() {

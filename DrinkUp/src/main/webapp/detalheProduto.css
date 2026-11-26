@@ -156,6 +156,33 @@
     color: #555;
 }
 
+.seletor-qty {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    column-gap: 20px;
+}
+
+.seletor-qty label { flex-basis: 100%; }
+
+.total-qty-detalhe {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.total-qty-detalhe .total-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #777;
+    text-transform: uppercase;
+}
+
+.total-qty-detalhe strong {
+    font-size: 24px;
+    font-weight: 900;
+}
+
 .controle-qty-detalhe {
     display: inline-flex;
     align-items: center;

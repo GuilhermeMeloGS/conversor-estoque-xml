@@ -1,6 +1,7 @@
 package br.com.drinkup.servlet;
 
 import br.com.drinkup.dao.VendaDao;
+import br.com.drinkup.model.Endereco;
 import br.com.drinkup.model.StatusVenda;
 import br.com.drinkup.model.Usuario;
 import br.com.drinkup.model.Venda;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 /**
  *   GET  /api/vendas            (admin)   todas as vendas com seus itens
  *   GET  /api/minhasVendas      (logado)  vendas do usuário logado
- *   POST /api/vendas/finalizar  (logado)  itens=idProduto:qtd,idProduto:qtd
+ *   POST /api/vendas/finalizar  (logado)  itens=idProduto:qtd,idProduto:qtd + cep, rua, numero,
+ *                                         complemento (opcional), bairro, cidade, estado
+ *   POST /api/vendas/pagar      (logado)  id=N   confirma o pagamento PIX: Pendente -> Concluido
  *   POST /api/vendas/status     (admin)   id=N&status=Pendente|Concluido|Cancelado
  */
-@WebServlet({"/api/vendas", "/api/minhasVendas", "/api/vendas/finalizar", "/api/vendas/status"})
+@WebServlet({"/api/vendas", "/api/minhasVendas", "/api/vendas/finalizar", "/api/vendas/pagar", "/api/vendas/status"})
 public class ApiVendasServlet extends HttpServlet {
 
     private static final int MAX_QUANTIDADE_POR_ITEM = 1000;
@@ -59,6 +62,8 @@ public class ApiVendasServlet extends HttpServlet {
 
         if ("/api/vendas/finalizar".equals(request.getServletPath())) {
             finalizar(request, response);
+        } else if ("/api/vendas/pagar".equals(request.getServletPath())) {
+            pagar(request, response);
         } else if ("/api/vendas/status".equals(request.getServletPath())) {
             alterarStatus(request, response);
         } else {
@@ -77,8 +82,14 @@ public class ApiVendasServlet extends HttpServlet {
             return;
         }
 
+        Endereco endereco = lerEndereco(request);
+        if (endereco == null) {
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST, "Endereço de entrega inválido");
+            return;
+        }
+
         try {
-            int idVenda = new VendaDao().criarVenda(logado.getId(), itens);
+            int idVenda = new VendaDao().criarVenda(logado.getId(), itens, endereco);
             UtilidadesJSON.enviar(response, HttpServletResponse.SC_CREATED, "{\"idVenda\":" + idVenda + "}");
 
         } catch (IllegalArgumentException e) {
@@ -88,6 +99,62 @@ public class ApiVendasServlet extends HttpServlet {
             log("Erro ao finalizar compra", e);
             UtilidadesJSON.erro(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Falha ao registrar o pedido");
         }
+    }
+
+    /**
+     * O QR Code do PIX é apenas ilustrativo: não há gateway de pagamento, então o cliente
+     * confirma manualmente. Só o dono do pedido pode pagar, e só enquanto estiver Pendente.
+     */
+    private void pagar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        Usuario logado = UtilidadesSessao.exigirLogin(request, response, false);
+        if (logado == null) return;
+
+        int id;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+            return;
+        }
+
+        try {
+            if (!new VendaDao().confirmarPagamento(id, logado.getId())) {
+                UtilidadesJSON.erro(response, HttpServletResponse.SC_CONFLICT,
+                        "Pedido não encontrado, já pago ou cancelado");
+                return;
+            }
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+
+        } catch (Exception e) {
+            log("Erro ao confirmar pagamento", e);
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Falha ao confirmar o pagamento");
+        }
+    }
+
+    /** Devolve null se algum campo obrigatório faltar, vier em branco ou passar do tamanho da coluna. */
+    private Endereco lerEndereco(HttpServletRequest request) {
+        String cep = limpar(request.getParameter("cep"));
+        String rua = limpar(request.getParameter("rua"));
+        String numero = limpar(request.getParameter("numero"));
+        String complemento = limpar(request.getParameter("complemento"));
+        String bairro = limpar(request.getParameter("bairro"));
+        String cidade = limpar(request.getParameter("cidade"));
+        String estado = limpar(request.getParameter("estado")).toUpperCase();
+
+        if (!cep.matches("\\d{5}-?\\d{3}")) return null;
+        if (!estado.matches("[A-Z]{2}")) return null;
+        if (rua.isEmpty() || rua.length() > 150) return null;
+        if (numero.isEmpty() || numero.length() > 20) return null;
+        if (complemento.length() > 100) return null;
+        if (bairro.isEmpty() || bairro.length() > 100) return null;
+        if (cidade.isEmpty() || cidade.length() > 100) return null;
+
+        return new Endereco(cep, rua, numero, complemento.isEmpty() ? null : complemento, bairro, cidade, estado);
+    }
+
+    private String limpar(String valor) {
+        return valor == null ? "" : valor.trim();
     }
 
     private void alterarStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {

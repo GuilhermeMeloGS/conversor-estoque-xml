@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.drinkup.model.Categoria;
+import br.com.drinkup.model.Endereco;
 import br.com.drinkup.model.ItemVenda;
 import br.com.drinkup.model.Produto;
 import br.com.drinkup.model.Usuario;
@@ -74,12 +75,23 @@ public class UtilidadesJSON {
         }
         itens.append("]");
 
+        Endereco e = venda.getEndereco();
+        String endereco = e == null ? "null"
+            : "{\"cep\":\"" + escapeJson(e.getCep()) + "\""
+            + ",\"rua\":\"" + escapeJson(e.getRua()) + "\""
+            + ",\"numero\":\"" + escapeJson(e.getNumero()) + "\""
+            + ",\"complemento\":\"" + escapeJson(e.getComplemento() == null ? "" : e.getComplemento()) + "\""
+            + ",\"bairro\":\"" + escapeJson(e.getBairro()) + "\""
+            + ",\"cidade\":\"" + escapeJson(e.getCidade()) + "\""
+            + ",\"estado\":\"" + escapeJson(e.getEstado()) + "\"}";
+
         return "{\"id\":" + venda.getIdVenda()
             + ",\"idUsuario\":" + venda.getIdUsuario()
             + ",\"cliente\":\"" + escapeJson(venda.getNomeCliente()) + "\""
             + ",\"data\":\"" + (venda.getDataVenda() == null ? "" : venda.getDataVenda().format(FORMATO_DATA)) + "\""
             + ",\"total\":" + venda.getValorTotal().toPlainString()
             + ",\"status\":\"" + venda.getStatus().name() + "\""
+            + ",\"endereco\":" + endereco
             + ",\"itens\":" + itens + "}";
     }
 

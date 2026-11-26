@@ -35,7 +35,7 @@ public class AlterarTipoUsuarioServlet extends HttpServlet {
         try {
             id = Integer.parseInt(request.getParameter("id"));
             tipo = TipoUsuario.valueOf(request.getParameter("tipo"));
-        } catch (IllegalAccessError | NullPointerException e ) {
+        } catch (IllegalArgumentException | NullPointerException e ) {
             UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST, "ID ou tipo inválido");
             return;
         }
