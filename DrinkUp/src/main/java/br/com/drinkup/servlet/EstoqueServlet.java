@@ -44,6 +44,7 @@ public class EstoqueServlet extends HttpServlet {
                         .append(",\"id\":").append(e.get("id"))
                         .append(",\"nome\":\"")
                         .append(UtilidadesJSON.escapeJson((String) e.get("nome"))).append("\"")
+                        .append(",\"enviadoLoja\":").append(e.get("enviadoLoja"))
                         .append(",\"quantidadeProdutos\":").append(e.get("quantidadeProdutos"))
                         .append(",\"quantidadeTotal\":").append(e.get("quantidadeTotal"))
                         .append("}");

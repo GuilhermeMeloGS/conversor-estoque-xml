@@ -141,6 +141,7 @@ public class IniciarBancoServlet implements ServletContextListener {
                         REFERENCES produto(idProduto)
                 )
                 """,
+                "ALTER TABLE estoqueXML ADD COLUMN IF NOT EXISTS enviadoLoja BOOLEAN DEFAULT FALSE NOT NULL",
                 "ALTER TABLE produtoEstoqueXML ADD COLUMN IF NOT EXISTS idProduto INT",
                 "ALTER TABLE produtoEstoqueXML ADD CONSTRAINT IF NOT EXISTS fk_produtoEstoqueXML_produto FOREIGN KEY (idProduto) REFERENCES produto(idProduto)"
         );

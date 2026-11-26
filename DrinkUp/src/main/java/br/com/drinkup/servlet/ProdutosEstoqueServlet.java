@@ -33,6 +33,7 @@ public class ProdutosEstoqueServlet extends HttpServlet {
             boolean principal = "principal".equals(request.getParameter("tipo"));
             String nome;
             List<Produto> produtos;
+            boolean enviadoLoja = false;
 
             if (principal) {
                 nome = "Estoque principal";
@@ -54,11 +55,13 @@ public class ProdutosEstoqueServlet extends HttpServlet {
                     return;
                 }
                 produtos = dao.listarProdutosDoEstoque(id);
+                enviadoLoja = dao.estoqueJaEnviadoParaLoja(id);
             }
 
             StringBuilder json = new StringBuilder("{\"nome\":\"")
                     .append(UtilidadesJSON.escapeJson(nome))
                     .append("\",\"editavel\":").append(!principal)
+                    .append(",\"enviadoLoja\":").append(enviadoLoja)
                     .append(",\"produtos\":[");
 
             for (int i = 0; i < produtos.size(); i++) {

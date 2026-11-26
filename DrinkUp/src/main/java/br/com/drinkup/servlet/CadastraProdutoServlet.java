@@ -29,16 +29,32 @@ public class CadastraProdutoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         Produto produto = new Produto();
-        produto.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
-        produto.setNomeDoProduto(request.getParameter("nome"));
-        produto.setCodigoDeBarras(request.getParameter("codigoDeBarras"));
-        produto.setDescricao(request.getParameter("descricao"));
-        produto.setPreco(Double.parseDouble(request.getParameter("preco")));
+        int quantidadeInformada;
 
-        // A quantidade digitada pode pertencer ao estoque principal ou a um estoque importado.
-        int quantidadeInformada = Integer.parseInt(request.getParameter("quantidadeEstoque"));
-        produto.setQuantidadeEstoque(quantidadeInformada);
-        produto.setVolumeML(Integer.parseInt(request.getParameter("volumeML")));
+        try {
+            produto.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
+            produto.setNomeDoProduto(request.getParameter("nome"));
+            produto.setCodigoDeBarras(request.getParameter("codigoDeBarras"));
+            produto.setDescricao(request.getParameter("descricao"));
+            produto.setPreco(Double.parseDouble(request.getParameter("preco")));
+
+            // A quantidade digitada pode pertencer ao estoque principal ou a um estoque importado.
+            quantidadeInformada = Integer.parseInt(request.getParameter("quantidadeEstoque"));
+            produto.setQuantidadeEstoque(quantidadeInformada);
+            produto.setVolumeML(Integer.parseInt(request.getParameter("volumeML")));
+        } catch (NumberFormatException | NullPointerException e) {
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Preencha preço, quantidade e volume com números válidos "
+                            + "(quantidade e volume até 2.147.483.647).");
+            return;
+        }
+
+        if (produto.getPreco() < 0 || produto.getPreco() >= 100_000_000
+                || quantidadeInformada < 0 || produto.getVolumeML() < 0) {
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Preço, quantidade e volume devem ser positivos; o preço deve ser menor que R$ 100.000.000.");
+            return;
+        }
 
         try {
             produto.setImagem(UtilidadesImagem.lerUpload(request, "imagem"));
@@ -72,8 +88,12 @@ public class CadastraProdutoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/produtos");
             }
 
-        } catch (Exception e) {
-            throw new ServletException(e);
+        } catch (IllegalArgumentException e) {
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } catch (java.sql.SQLException e) {
+            log("Erro ao cadastrar produto", e);
+            UtilidadesJSON.erro(response, HttpServletResponse.SC_CONFLICT,
+                    "Não foi possível salvar o produto. Verifique se o código de barras já existe.");
         }
     }
 }

@@ -11,21 +11,6 @@
     <script src="shared/auth.js"></script>
 
     <style>
-        .cabecalho {
-            background-color: #111;
-            color: #fff;
-            min-height: 85px;
-            padding: 15px 6%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo img {
-            width: 150px;
-            height: auto;
-        }
-
         .cabecalho nav a {
             color: #ffcc00;
             text-decoration: none;
@@ -118,6 +103,11 @@
             margin-top: 5px;
         }
 
+        .tipo-estoque.enviado {
+            background: #d9f2e1;
+            color: #1e6b3a;
+        }
+
         .tipo-estoque {
             display: inline-block;
             background: #fff0b3;
@@ -170,7 +160,7 @@
 
     <header class="cabecalho">
         <a href="index.html" class="logo">
-            <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+            <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp" class="logo-imagem">
         </a>
     </header>
 
@@ -275,6 +265,9 @@
                         <span class="tipo-estoque">
                             ${principal ? 'ESTOQUE PRINCIPAL' : 'IMPORTADO VIA XML'}
                         </span>
+                        ${estoque.enviadoLoja
+                            ? '<span class="tipo-estoque enviado">✓ JÁ ENVIADO PARA A LOJA</span>'
+                            : ''}
 
                         <div class="informacoes-estoque">
                             <div>

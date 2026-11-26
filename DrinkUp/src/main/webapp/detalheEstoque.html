@@ -129,7 +129,7 @@
 
 <header class="cabecalho">
     <a href="index.html" class="logo">
-        <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp">
+        <img src="imagensHtml/logoDrinkUp.png" alt="DrinkUp" class="logo-imagem">
     </a>
 </header>
 
@@ -257,7 +257,9 @@
             document.getElementById('painelNome').classList.toggle('oculto', !editavel);
             document.getElementById('painelAdicionar').classList.toggle('oculto', !editavel);
             document.getElementById('colAcoes').classList.toggle('oculto', !editavel);
-            document.getElementById('btnEnviarLoja').classList.toggle('oculto', !editavel);
+            // Estoque já enviado: o botão some e os produtos já fazem parte do estoque principal.
+            document.getElementById('btnEnviarLoja')
+                .classList.toggle('oculto', !editavel || dados.enviadoLoja === true);
 
             // Monta a tabela de produtos.
             linhas.innerHTML = '';
@@ -350,8 +352,8 @@
         try {
             const r = await editar({ acao: 'enviarLoja' });
 
-            aviso(r.criados + ' produto(s) novo(s) criado(s) na loja; '
-                + r.existentes + ' já existiam e não foram alterados.', 'ok');
+            await carregar(r.criados + ' produto(s) novo(s) criado(s) na loja; '
+                + r.existentes + ' já existiam e não foram alterados.');
         } catch (erro) {
             aviso(erro.message, 'erro');
         } finally {

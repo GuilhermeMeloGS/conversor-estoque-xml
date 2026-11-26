@@ -52,7 +52,7 @@
 
             <div class="cabecalho-painel">
                 <h2>Gerenciar Produtos</h2>
-                <button class="btn-novo" onclick="abrirModal('produto')">
+                <button class="btn-novo" onclick="window.location.href='cadastroBebida.html'">
                     + Novo Produto
                 </button>
             </div>
@@ -285,16 +285,8 @@
     });
 
     /* ── DADOS DOS PRODUTOS ── */
-    let produtos = [
-        { id:1, nome:'Cerveja Heineken Long Neck 330ml', categoria:'Cervejas', preco:9.90, estoque:142 },
-        { id:2, nome:'Coca-Cola Original Lata 350ml', categoria:'Refrigerantes', preco:4.50, estoque:310 },
-        { id:3, nome:'Cerveja Brahma Chopp Lata 350ml', categoria:'Cervejas', preco:3.80, estoque:256 },
-        { id:4, nome:'Red Bull Energy Drink 250ml', categoria:'Energéticos', preco:11.90, estoque:88 },
-        { id:5, nome:'Suco Del Valle Uva 1L', categoria:'Sucos', preco:7.90, estoque:67 },
-        { id:6, nome:'Água Mineral Crystal 500ml', categoria:'Águas', preco:2.50, estoque:500 },
-        { id:7, nome:'Vinho Tinto Seco Reserva 750ml', categoria:'Vinhos', preco:45.90, estoque:34 },
-        { id:8, nome:'Whisky Escocês 12 Anos 1L', categoria:'Destilados', preco:149.90, estoque:12 },
-    ];
+    // Vem do banco (tabela produto), a mesma usada pela loja e pelo envio de estoques XML.
+    let produtos = [];
 
     let usuarios = [];
 
@@ -307,7 +299,7 @@
     /* ── INICIALIZAÇÃO ── */
     function init() {
 
-        renderProdutos();
+        carregarProdutos();
         renderUsuarios();
         carregarPedidos();
         setInterval(carregarPedidos, 30000);
@@ -342,14 +334,32 @@
     }
 
     /* ── PRODUTOS ── */
+    function esc(valor) {
+        return String(valor ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    async function carregarProdutos() {
+        try {
+            const resposta = await fetch('api/produtos');
+            if (!resposta.ok) throw new Error();
+            produtos = await resposta.json();
+        } catch {
+            produtos = [];
+            alert('Não foi possível carregar os produtos do banco.');
+        }
+        renderProdutos();
+    }
+
     function renderProdutos() {
 
         document.getElementById('tabelaProdutos').innerHTML =
             produtos.map(p => `
                 <tr>
                     <td>${p.id}</td>
-                    <td class="nome-td">${p.nome}</td>
-                    <td><span class="chip-cat">${p.categoria}</span></td>
+                    <td class="nome-td">${esc(p.nome)}</td>
+                    <td><span class="chip-cat">${esc(p.categoria)}</span></td>
                     <td>${fmt(p.preco)}</td>
                     <td class="${p.estoque < 20 ? 'estoque-baixo' : ''}">
                         ${p.estoque}
@@ -638,16 +648,30 @@ function renderUsuarios() {
     }
 
     function editarProduto(id) {
-        abrirModal('produto', id);
+        window.location.href = 'cadastroBebida.html?id=' + encodeURIComponent(id);
     }
 
-    function excluirProduto(id) {
+    async function excluirProduto(id) {
 
         if (!confirm('Excluir este produto?')) return;
 
-        produtos = produtos.filter(p => p.id !== id);
+        try {
+            const resposta = await fetch('produtos/excluir', {
+                method: 'POST',
+                body: new URLSearchParams({ id })
+            });
 
-        renderProdutos();
+            if (!resposta.ok) {
+                const dados = await resposta.json().catch(() => ({}));
+                alert(dados.erro || 'Não foi possível excluir o produto.');
+                return;
+            }
+        } catch {
+            alert('Erro de comunicação com o servidor.');
+            return;
+        }
+
+        carregarProdutos();
 
     }
 

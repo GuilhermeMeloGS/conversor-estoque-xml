@@ -48,12 +48,13 @@ public class EstoqueDao {
                 SELECT
                     e.idEstoque,
                     e.nome,
+                    e.enviadoLoja,
                     COUNT(p.idProdutoEstoque) AS quantidadeProdutos,
                     COALESCE(SUM(p.quantidadeEstoque), 0) AS quantidadeTotal
                 FROM estoqueXML e
                 LEFT JOIN produtoEstoqueXML p
                     ON p.idEstoque = e.idEstoque
-                GROUP BY e.idEstoque, e.nome
+                GROUP BY e.idEstoque, e.nome, e.enviadoLoja
                 ORDER BY e.idEstoque DESC
                 """;
 
@@ -68,6 +69,7 @@ public class EstoqueDao {
 
                 estoque.put("id", resultSet.getInt("idEstoque"));
                 estoque.put("nome", resultSet.getString("nome"));
+                estoque.put("enviadoLoja", resultSet.getBoolean("enviadoLoja"));
                 estoque.put("quantidadeProdutos", resultSet.getInt("quantidadeProdutos"));
                 estoque.put("quantidadeTotal", resultSet.getInt("quantidadeTotal"));
 
@@ -76,6 +78,15 @@ public class EstoqueDao {
         }
 
         return estoques;
+    }
+
+    /** Indica se o estoque importado já foi enviado para a loja. */
+    public boolean estoqueJaEnviadoParaLoja(int idEstoque) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM estoqueXML WHERE idEstoque = ? AND enviadoLoja = TRUE";
+
+        try (Connection connection = ConnectionPoolConfig.getConnection()) {
+            return existe(connection, sql, idEstoque);
+        }
     }
 
     /** Nome do estoque importado, ou null se não existir. */
@@ -352,6 +363,12 @@ public class EstoqueDao {
                     throw new IllegalArgumentException("Estoque não encontrado.");
                 }
 
+                if (existe(connection,
+                        "SELECT COUNT(*) FROM estoqueXML WHERE idEstoque = ? AND enviadoLoja = TRUE",
+                        idEstoque)) {
+                    throw new IllegalArgumentException("Este estoque já foi enviado para a loja.");
+                }
+
                 // Lê todos os produtos do estoque antes de gravar.
                 List<Produto> itens = new ArrayList<>();
                 try (PreparedStatement st = connection.prepareStatement(sqlProdutos)) {
@@ -425,6 +442,12 @@ public class EstoqueDao {
                         vincular.setInt(2, p.getIdProduto());
                         vincular.executeUpdate();
                     }
+                }
+
+                try (PreparedStatement marcar = connection.prepareStatement(
+                        "UPDATE estoqueXML SET enviadoLoja = TRUE WHERE idEstoque = ?")) {
+                    marcar.setInt(1, idEstoque);
+                    marcar.executeUpdate();
                 }
 
                 connection.commit();

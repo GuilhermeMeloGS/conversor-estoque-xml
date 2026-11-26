@@ -42,12 +42,17 @@ public class ConfirmarImportacaoXMLServlet extends HttpServlet {
         }
 
         try {
-            // Grava em estoque próprio; o estoque principal (produto) não é alterado.
-            new EstoqueDao().salvarImportacao(usuario.getId(), nomeArquivo, produtos);
+            EstoqueDao dao = new EstoqueDao();
+
+            // Grava o estoque importado e envia seus produtos para a loja (tabela produto).
+            int idEstoque = dao.salvarImportacao(usuario.getId(), nomeArquivo, produtos);
+            int[] resultado = dao.enviarEstoqueParaLoja(idEstoque);
 
             sessao.removeAttribute("produtosImportacaoXML");
             sessao.removeAttribute("nomeArquivoImportacaoXML");
-            sessao.setAttribute("sucessoImportacao", "Estoque importado com sucesso!");
+            sessao.setAttribute("sucessoImportacao", "Estoque importado com sucesso! "
+                    + resultado[0] + " produto(s) novo(s) enviado(s) para a loja, "
+                    + resultado[1] + " já existia(m).");
 
             response.sendRedirect(request.getContextPath() + "/estoques.html");
 
