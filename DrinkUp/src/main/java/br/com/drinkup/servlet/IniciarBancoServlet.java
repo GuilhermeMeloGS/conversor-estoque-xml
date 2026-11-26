@@ -127,15 +127,15 @@ public class IniciarBancoServlet implements ServletContextListener {
                     preco DECIMAL(10,2),
                     quantidadeEstoque INT,
                     volumeML INT,
-                
+
                     CONSTRAINT fk_produtoEstoqueXML_estoque
                         FOREIGN KEY (idEstoque)
                         REFERENCES estoqueXML(idEstoque),
-                
+
                     CONSTRAINT fk_produtoEstoqueXML_categoria
                         FOREIGN KEY (idCategoria)
                         REFERENCES categoria(idCategoria),
-                
+
                     CONSTRAINT fk_produtoEstoqueXML_produto
                         FOREIGN KEY (idProduto)
                         REFERENCES produto(idProduto)
@@ -207,8 +207,23 @@ public class IniciarBancoServlet implements ServletContextListener {
         try (Connection connection = ConnectionPoolConfig.getConnection();
              Statement stmt = connection.createStatement()) {
 
+            // Migração: bancos criados antes da correção tinham a PK de importacaoXML
+            // escrita "idImportacoa". Renomeia antes de criar estoqueXML (que referencia idImportacao).
+            try {
+                stmt.execute("ALTER TABLE IF EXISTS importacaoXML "
+                        + "ALTER COLUMN IF EXISTS idImportacoa RENAME TO idImportacao");
+            } catch (Exception e) {
+                System.out.println("Migração de importacaoXML ignorada: " + e.getMessage());
+            }
+
             for (String sql : scriptsCriacao) {
-                stmt.execute(sql);
+                try {
+                    stmt.execute(sql);
+                } catch (Exception e) {
+                    // Não interrompe o restante da inicialização; mostra qual comando falhou.
+                    System.out.println("Erro ao executar script de criação: " + e.getMessage());
+                    System.out.println("SQL: " + sql);
+                }
             }
 
             try (PreparedStatement psUsuario = connection.prepareStatement(sqlInserirUsuario)) {

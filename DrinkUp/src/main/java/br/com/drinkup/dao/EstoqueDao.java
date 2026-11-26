@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -420,24 +421,28 @@ public class EstoqueDao {
 
                 int idImportacao;
                 try (PreparedStatement st = connection.prepareStatement(
-                        sqlImportacao, new int[]{1})) {
+                        sqlImportacao, Statement.RETURN_GENERATED_KEYS)) {
                     st.setInt(1, idUsuarioAdmin);
                     st.setString(2, nomeArquivo);
                     st.executeUpdate();
                     try (ResultSet keys = st.getGeneratedKeys()) {
-                        keys.next();
+                        if (!keys.next()) {
+                            throw new SQLException("Não foi possível obter o ID da importação.");
+                        }
                         idImportacao = keys.getInt(1);
                     }
                 }
 
                 int idEstoque;
                 try (PreparedStatement st = connection.prepareStatement(
-                        sqlEstoque, new int[]{1})) {
+                        sqlEstoque, Statement.RETURN_GENERATED_KEYS)) {
                     st.setInt(1, idImportacao);
                     st.setString(2, nomeEstoque);
                     st.executeUpdate();
                     try (ResultSet keys = st.getGeneratedKeys()) {
-                        keys.next();
+                        if (!keys.next()) {
+                            throw new SQLException("Não foi possível obter o ID do estoque.");
+                        }
                         idEstoque = keys.getInt(1);
                     }
                 }
